@@ -1,17 +1,5 @@
 const airportsData = [
     {
-        iata: "DXB",
-        city: "Dubai",
-        country: "UAE",
-        terminal: "T3 (EK) | T2 (FZ)",
-        timezone: "Asia/Dubai",
-        distanceCenter: "5 km to Center",
-        nearbyAirports: "DWC: 60km",
-        phone: "+971 4 224 5555",
-        website: "https://dubaiairports.ae",
-        locationUrl: "https://goo.gl/maps/dxb"
-    },
-    {
         iata: "ABH",
         city: "Abha",
         country: "Saudi Arabia",
@@ -70,6 +58,18 @@ const airportsData = [
         phone: "+7 800 301 19 91",
         website: "https://aer.aero",
         locationUrl: "https://goo.gl/maps/aer"
+    },
+    {
+        iata: "AHB",
+        city: "Abha",
+        country: "Saudi Arabia",
+        terminal: "International",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "20 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 7 224 6011",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/ahb"
     },
     {
         iata: "AKL",
@@ -144,6 +144,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/ams"
     },
     {
+        iata: "AQI",
+        city: "Al Qaisumah",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "20 km to Hafr Al Batin",
+        nearbyAirports: "None",
+        phone: "+966 13 722 0000",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/aqi"
+    },
+    {
         iata: "ARN",
         city: "Stockholm",
         country: "Sweden",
@@ -166,6 +178,18 @@ const airportsData = [
         phone: "+993 12 23 20 34",
         website: "https://ashgabatairport.gov.tm",
         locationUrl: "https://goo.gl/maps/asb"
+    },
+    {
+        iata: "ASM",
+        city: "Asmara",
+        country: "Eritrea",
+        terminal: "Main Terminal",
+        timezone: "Africa/Asmara",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+291 1 181 822",
+        website: "https://asmara-airport.com",
+        locationUrl: "https://goo.gl/maps/asm"
     },
     {
         iata: "ATH",
@@ -252,18 +276,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/bey"
     },
     {
-        iata: "BFS",
-        city: "Belfast",
-        country: "UK",
-        terminal: "Main Terminal",
-        timezone: "Europe/London",
-        distanceCenter: "21 km to Center",
-        nearbyAirports: "BHD: 25km",
-        phone: "+44 28 9448 4848",
-        website: "https://belfastairport.com",
-        locationUrl: "https://goo.gl/maps/bfs"
-    },
-    {
         iata: "BGW",
         city: "Baghdad",
         country: "Iraq",
@@ -298,6 +310,18 @@ const airportsData = [
         phone: "+44 871 222 0072",
         website: "https://birminghamairport.co.uk",
         locationUrl: "https://goo.gl/maps/bhx"
+    },
+    {
+        iata: "BJV",
+        city: "Bodrum",
+        country: "Turkey",
+        terminal: "International",
+        timezone: "Europe/Istanbul",
+        distanceCenter: "36 km to Center",
+        nearbyAirports: "DLM: 200km",
+        phone: "+90 252 523 01 01",
+        website: "http://milas-bodrumairport.com",
+        locationUrl: "https://goo.gl/maps/bjv"
     },
     {
         iata: "BKK",
@@ -358,6 +382,18 @@ const airportsData = [
         phone: "+1 800 235 6426",
         website: "https://massport.com",
         locationUrl: "https://goo.gl/maps/bos"
+    },
+    {
+        iata: "BSR",
+        city: "Basra",
+        country: "Iraq",
+        terminal: "Main Terminal",
+        timezone: "Asia/Baghdad",
+        distanceCenter: "20 km to Center",
+        nearbyAirports: "None",
+        phone: "+964 40 888 123",
+        website: "http://basraairport.com",
+        locationUrl: "https://goo.gl/maps/bsr"
     },
     {
         iata: "BRU",
@@ -492,6 +528,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/chc"
     },
     {
+        iata: "CIT",
+        city: "Shymkent",
+        country: "Kazakhstan",
+        terminal: "Main Terminal",
+        timezone: "Asia/Almaty",
+        distanceCenter: "12 km to Center",
+        nearbyAirports: "TAS: 120km",
+        phone: "+7 7252 45 50 30",
+        website: "http://airserver.kz",
+        locationUrl: "https://goo.gl/maps/cit"
+    },
+    {
         iata: "CMB",
         city: "Colombo",
         country: "Sri Lanka",
@@ -552,6 +600,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/crk"
     },
     {
+        iata: "CTA",
+        city: "Catania",
+        country: "Italy",
+        terminal: "Terminal A",
+        timezone: "Europe/Rome",
+        distanceCenter: "4 km to Center",
+        nearbyAirports: "PMO: 240km",
+        phone: "+39 095 723 9111",
+        website: "https://aeroporto.catania.it",
+        locationUrl: "https://goo.gl/maps/cta"
+    },
+    {
         iata: "DAC",
         city: "Dhaka",
         country: "Bangladesh",
@@ -562,6 +622,18 @@ const airportsData = [
         phone: "+880 2 7911042",
         website: "http://caab.gov.bd",
         locationUrl: "https://goo.gl/maps/dac"
+    },
+    {
+        iata: "DAM",
+        city: "Damascus",
+        country: "Syria",
+        terminal: "Main Terminal",
+        timezone: "Asia/Damascus",
+        distanceCenter: "30 km to Center",
+        nearbyAirports: "BEY: 110km",
+        phone: "+963 11 540 0000",
+        website: "http://damascus-airport.com",
+        locationUrl: "https://goo.gl/maps/dam"
     },
     {
         iata: "DAR",
@@ -708,6 +780,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/dus"
     },
     {
+        iata: "DWC",
+        city: "Dubai World Central",
+        country: "UAE",
+        terminal: "Main Terminal",
+        timezone: "Asia/Dubai",
+        distanceCenter: "60 km to Center",
+        nearbyAirports: "DXB: 60km",
+        phone: "+971 4 224 5555",
+        website: "https://dubaiairports.ae",
+        locationUrl: "https://goo.gl/maps/dwc"
+    },
+    {
         iata: "DXB",
         city: "Dubai",
         country: "UAE",
@@ -718,6 +802,30 @@ const airportsData = [
         phone: "+971 4 224 5555",
         website: "https://dubaiairports.ae",
         locationUrl: "https://goo.gl/maps/dxb"
+    },
+    {
+        iata: "DYU",
+        city: "Dushanbe",
+        country: "Tajikistan",
+        terminal: "Main Terminal",
+        timezone: "Asia/Dushanbe",
+        distanceCenter: "5 km to Center",
+        nearbyAirports: "None",
+        phone: "+992 47 449 4233",
+        website: "http://airport.tj",
+        locationUrl: "https://goo.gl/maps/dyu"
+    },
+    {
+        iata: "EAM",
+        city: "Najran",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "26 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 7 544 0444",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/eam"
     },
     {
         iata: "EBB",
@@ -756,6 +864,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/edi"
     },
     {
+        iata: "ELQ",
+        city: "Gassim",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "25 km to Buraydah",
+        nearbyAirports: "None",
+        phone: "+966 6 380 0055",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/elq"
+    },
+    {
         iata: "ESB",
         city: "Ankara",
         country: "Turkey",
@@ -766,6 +886,18 @@ const airportsData = [
         phone: "+90 312 398 00 00",
         website: "https://esenbogaairport.com",
         locationUrl: "https://goo.gl/maps/esb"
+    },
+    {
+        iata: "EVN",
+        city: "Yerevan",
+        country: "Armenia",
+        terminal: "Zvartnots Intl",
+        timezone: "Asia/Yerevan",
+        distanceCenter: "12 km to Center",
+        nearbyAirports: "None",
+        phone: "+374 10 493 000",
+        website: "http://www.zvartnots.aero",
+        locationUrl: "https://goo.gl/maps/evn"
     },
     {
         iata: "EWR",
@@ -828,6 +960,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/gla"
     },
     {
+        iata: "GSM",
+        city: "Qeshm Island",
+        country: "Iran",
+        terminal: "Main Terminal",
+        timezone: "Asia/Tehran",
+        distanceCenter: "50 km to City",
+        nearbyAirports: "BND: Ferry",
+        phone: "+98 76 3533 5040",
+        website: "http://qeshmairport.ir",
+        locationUrl: "https://goo.gl/maps/gsm"
+    },
+    {
         iata: "GVA",
         city: "Geneva",
         country: "Switzerland",
@@ -876,6 +1020,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/han"
     },
     {
+        iata: "HAS",
+        city: "Hail",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "10 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 16 532 0000",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/has"
+    },
+    {
         iata: "HBE",
         city: "Alexandria",
         country: "Egypt",
@@ -922,6 +1078,18 @@ const airportsData = [
         phone: "+81 3 5757 8111",
         website: "https://tokyo-haneda.com",
         locationUrl: "https://goo.gl/maps/hnd"
+    },
+    {
+        iata: "HOF",
+        city: "Hofuf",
+        country: "Saudi Arabia",
+        terminal: "Al-Ahsa Intl",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "17 km to Center",
+        nearbyAirports: "DMM: 150km",
+        phone: "+966 13 594 4000",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/hof"
     },
     {
         iata: "HRE",
@@ -984,6 +1152,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/icn"
     },
     {
+        iata: "IFN",
+        city: "Isfahan",
+        country: "Iran",
+        terminal: "International",
+        timezone: "Asia/Tehran",
+        distanceCenter: "25 km to Center",
+        nearbyAirports: "None",
+        phone: "+98 31 3527 5050",
+        website: "https://isfahan.airport.ir",
+        locationUrl: "https://goo.gl/maps/ifn"
+    },
+    {
         iata: "IKA",
         city: "Tehran",
         country: "Iran",
@@ -1020,6 +1200,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/ist"
     },
     {
+        iata: "ISU",
+        city: "Sulaymaniyah",
+        country: "Iraq",
+        terminal: "Main Terminal",
+        timezone: "Asia/Baghdad",
+        distanceCenter: "15 km to Center",
+        nearbyAirports: "EBL: 170km",
+        phone: "+964 53 312 0000",
+        website: "http://sulairport.krd",
+        locationUrl: "https://goo.gl/maps/isu"
+    },
+    {
         iata: "JED",
         city: "Jeddah",
         country: "Saudi Arabia",
@@ -1044,6 +1236,30 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/jfk"
     },
     {
+        iata: "JIB",
+        city: "Djibouti",
+        country: "Djibouti",
+        terminal: "Ambouli Intl",
+        timezone: "Africa/Nairobi",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+253 21 34 06 05",
+        website: "https://aeroport-djibouti.com",
+        locationUrl: "https://goo.gl/maps/jib"
+    },
+    {
+        iata: "JMK",
+        city: "Mykonos",
+        country: "Greece",
+        terminal: "Main Terminal",
+        timezone: "Europe/Athens",
+        distanceCenter: "4 km to Chora",
+        nearbyAirports: "JTR: Ferry/Flight",
+        phone: "+30 2289 079000",
+        website: "https://jmk-airport.gr",
+        locationUrl: "https://goo.gl/maps/jmk"
+    },
+    {
         iata: "JNB",
         city: "Johannesburg",
         country: "South Africa",
@@ -1054,6 +1270,18 @@ const airportsData = [
         phone: "+27 11 921 6262",
         website: "https://airports.co.za",
         locationUrl: "https://goo.gl/maps/jnb"
+    },
+    {
+        iata: "JTR",
+        city: "Santorini",
+        country: "Greece",
+        terminal: "Main Terminal",
+        timezone: "Europe/Athens",
+        distanceCenter: "5 km to Fira",
+        nearbyAirports: "JMK: Ferry/Flight",
+        phone: "+30 2286 028400",
+        website: "https://jtr-airport.gr",
+        locationUrl: "https://goo.gl/maps/jtr"
     },
     {
         iata: "KBP",
@@ -1080,6 +1308,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/kbv"
     },
     {
+        iata: "KER",
+        city: "Kerman",
+        country: "Iran",
+        terminal: "Main Terminal",
+        timezone: "Asia/Tehran",
+        distanceCenter: "10 km to Center",
+        nearbyAirports: "None",
+        phone: "+98 34 3211 0031",
+        website: "https://kerman.airport.ir",
+        locationUrl: "https://goo.gl/maps/ker"
+    },
+    {
         iata: "KHI",
         city: "Karachi",
         country: "Pakistan",
@@ -1104,6 +1344,30 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/kix"
     },
     {
+        iata: "KRK",
+        city: "Krakow",
+        country: "Poland",
+        terminal: "Main Terminal",
+        timezone: "Europe/Warsaw",
+        distanceCenter: "11 km to Center",
+        nearbyAirports: "None",
+        phone: "+48 12 295 58 00",
+        website: "https://krakowairport.pl",
+        locationUrl: "https://goo.gl/maps/krk"
+    },
+    {
+        iata: "KRT",
+        city: "Khartoum",
+        country: "Sudan",
+        terminal: "Main Terminal",
+        timezone: "Africa/Khartoum",
+        distanceCenter: "15 km to Center",
+        nearbyAirports: "None",
+        phone: "+249 18 377 7160",
+        website: "http://khartoum-airport.com",
+        locationUrl: "https://goo.gl/maps/krt"
+    },
+    {
         iata: "KTM",
         city: "Kathmandu",
         country: "Nepal",
@@ -1114,6 +1378,18 @@ const airportsData = [
         phone: "+977 1 411 3033",
         website: "https://tiairport.com.np",
         locationUrl: "https://goo.gl/maps/ktm"
+    },
+    {
+        iata: "KUF",
+        city: "Samara",
+        country: "Russia",
+        terminal: "Terminal 1",
+        timezone: "Europe/Samara",
+        distanceCenter: "35 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 846 966 50 55",
+        website: "https://uwww.aero",
+        locationUrl: "https://goo.gl/maps/kuf"
     },
     {
         iata: "KUL",
@@ -1140,10 +1416,22 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/kwi"
     },
     {
+        iata: "KZN",
+        city: "Kazan",
+        country: "Russia",
+        terminal: "Terminal 1A",
+        timezone: "Europe/Moscow",
+        distanceCenter: "25 km to Kremlin",
+        nearbyAirports: "None",
+        phone: "+7 843 267 88 07",
+        website: "https://kazan.aero",
+        locationUrl: "https://goo.gl/maps/kzn"
+    },
+    {
         iata: "LAX",
         city: "Los Angeles",
         country: "USA",
-        terminal: "TBIT (Tom Bradley)",
+        terminal: "TBIT",
         timezone: "America/Los_Angeles",
         distanceCenter: "30 km to Downtown",
         nearbyAirports: "LGB: 35km",
@@ -1212,6 +1500,30 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/lis"
     },
     {
+        iata: "LJU",
+        city: "Ljubljana",
+        country: "Slovenia",
+        terminal: "Main Terminal",
+        timezone: "Europe/Ljubljana",
+        distanceCenter: "24 km to Center",
+        nearbyAirports: "ZAG: 140km",
+        phone: "+386 4 20 61 000",
+        website: "https://lju-airport.si",
+        locationUrl: "https://goo.gl/maps/lju"
+    },
+    {
+        iata: "LKO",
+        city: "Lucknow",
+        country: "India",
+        terminal: "Terminal 2",
+        timezone: "Asia/Kolkata",
+        distanceCenter: "15 km to Center",
+        nearbyAirports: "None",
+        phone: "+91 522 243 5404",
+        website: "https://aai.aero",
+        locationUrl: "https://goo.gl/maps/lko"
+    },
+    {
         iata: "LOS",
         city: "Lagos",
         country: "Nigeria",
@@ -1222,6 +1534,18 @@ const airportsData = [
         phone: "+234 1 493 3385",
         website: "https://faan.gov.ng",
         locationUrl: "https://goo.gl/maps/los"
+    },
+    {
+        iata: "LRR",
+        city: "Lar",
+        country: "Iran",
+        terminal: "Main Terminal",
+        timezone: "Asia/Tehran",
+        distanceCenter: "5 km to Center",
+        nearbyAirports: "None",
+        phone: "+98 71 5233 8222",
+        website: "https://lar.airport.ir",
+        locationUrl: "https://goo.gl/maps/lrr"
     },
     {
         iata: "LUN",
@@ -1284,6 +1608,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/man"
     },
     {
+        iata: "MBA",
+        city: "Mombasa",
+        country: "Kenya",
+        terminal: "Terminal 1",
+        timezone: "Africa/Nairobi",
+        distanceCenter: "10 km to Center",
+        nearbyAirports: "None",
+        phone: "+254 41 343 3211",
+        website: "https://kaa.go.ke",
+        locationUrl: "https://goo.gl/maps/mba"
+    },
+    {
         iata: "MCO",
         city: "Orlando",
         country: "USA",
@@ -1306,6 +1642,18 @@ const airportsData = [
         phone: "+968 24 351234",
         website: "https://muscatairport.co.om",
         locationUrl: "https://goo.gl/maps/mct"
+    },
+    {
+        iata: "MCX",
+        city: "Makhachkala",
+        country: "Russia",
+        terminal: "Main Terminal",
+        timezone: "Europe/Moscow",
+        distanceCenter: "20 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 8722 55 55 00",
+        website: "https://mcx.aero",
+        locationUrl: "https://goo.gl/maps/mcx"
     },
     {
         iata: "MED",
@@ -1404,6 +1752,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/mru"
     },
     {
+        iata: "MRV",
+        city: "Mineralnye Vody",
+        country: "Russia",
+        terminal: "Main Terminal",
+        timezone: "Europe/Moscow",
+        distanceCenter: "4 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 879 222 07 77",
+        website: "https://mvairport.ru",
+        locationUrl: "https://goo.gl/maps/mrv"
+    },
+    {
         iata: "MUC",
         city: "Munich",
         country: "Germany",
@@ -1426,6 +1786,18 @@ const airportsData = [
         phone: "+92 61 9200 301",
         website: "http://caapakistan.com.pk",
         locationUrl: "https://goo.gl/maps/mult"
+    },
+    {
+        iata: "MUX",
+        city: "Multan",
+        country: "Pakistan",
+        terminal: "Main Terminal",
+        timezone: "Asia/Karachi",
+        distanceCenter: "10 km to Center",
+        nearbyAirports: "None",
+        phone: "+92 61 9200 301",
+        website: "http://caapakistan.com.pk",
+        locationUrl: "https://goo.gl/maps/mux"
     },
     {
         iata: "MXP",
@@ -1476,6 +1848,30 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/nce"
     },
     {
+        iata: "NJF",
+        city: "Najaf",
+        country: "Iraq",
+        terminal: "Main Terminal",
+        timezone: "Asia/Baghdad",
+        distanceCenter: "10 km to Center",
+        nearbyAirports: "BGW: 160km",
+        phone: "+964 33 360 000",
+        website: "http://njf.iq",
+        locationUrl: "https://goo.gl/maps/njf"
+    },
+    {
+        iata: "NQZ",
+        city: "Astana",
+        country: "Kazakhstan",
+        terminal: "Terminal 1",
+        timezone: "Asia/Almaty",
+        distanceCenter: "17 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 7172 702 999",
+        website: "https://nn-airport.kz",
+        locationUrl: "https://goo.gl/maps/nqz"
+    },
+    {
         iata: "NRT",
         city: "Tokyo",
         country: "Japan",
@@ -1486,6 +1882,30 @@ const airportsData = [
         phone: "+81 476 34 8000",
         website: "https://narita-airport.jp",
         locationUrl: "https://goo.gl/maps/nrt"
+    },
+    {
+        iata: "NUM",
+        city: "Neom",
+        country: "Saudi Arabia",
+        terminal: "Neom Bay",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "New Development",
+        nearbyAirports: "TUU: 150km",
+        phone: "+966 14 420 0000",
+        website: "https://neom.com",
+        locationUrl: "https://goo.gl/maps/num"
+    },
+    {
+        iata: "OLB",
+        city: "Olbia",
+        country: "Italy",
+        terminal: "Main Terminal",
+        timezone: "Europe/Rome",
+        distanceCenter: "4 km to Center",
+        nearbyAirports: "None",
+        phone: "+39 0789 563 444",
+        website: "https://geasar.it",
+        locationUrl: "https://goo.gl/maps/olb"
     },
     {
         iata: "OSL",
@@ -1512,6 +1932,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/otp"
     },
     {
+        iata: "OVB",
+        city: "Novosibirsk",
+        country: "Russia",
+        terminal: "Terminal B",
+        timezone: "Asia/Novosibirsk",
+        distanceCenter: "16 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 383 216 99 99",
+        website: "https://tolmachevo.ru",
+        locationUrl: "https://goo.gl/maps/ovb"
+    },
+    {
         iata: "PEK",
         city: "Beijing",
         country: "China",
@@ -1522,6 +1954,18 @@ const airportsData = [
         phone: "+86 10 96158",
         website: "https://bcia.com.cn",
         locationUrl: "https://goo.gl/maps/pek"
+    },
+    {
+        iata: "PEN",
+        city: "Penang",
+        country: "Malaysia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Kuala_Lumpur",
+        distanceCenter: "16 km to Center",
+        nearbyAirports: "LGK: 120km",
+        phone: "+60 4 643 4411",
+        website: "https://penangairport.com",
+        locationUrl: "https://goo.gl/maps/pen"
     },
     {
         iata: "PER",
@@ -1572,6 +2016,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/pmo"
     },
     {
+        iata: "POZ",
+        city: "Poznan",
+        country: "Poland",
+        terminal: "Main Terminal",
+        timezone: "Europe/Warsaw",
+        distanceCenter: "7 km to Center",
+        nearbyAirports: "None",
+        phone: "+48 61 849 23 43",
+        website: "https://poznan-airport.com.pl",
+        locationUrl: "https://goo.gl/maps/poz"
+    },
+    {
         iata: "PRG",
         city: "Prague",
         country: "Czech Republic",
@@ -1582,6 +2038,30 @@ const airportsData = [
         phone: "+420 220 111 888",
         website: "https://prg.aero",
         locationUrl: "https://goo.gl/maps/prg"
+    },
+    {
+        iata: "PSA",
+        city: "Pisa",
+        country: "Italy",
+        terminal: "Main Terminal",
+        timezone: "Europe/Rome",
+        distanceCenter: "2 km to Center",
+        nearbyAirports: "FLR: 80km",
+        phone: "+39 050 849 111",
+        website: "https://pisa-airport.com",
+        locationUrl: "https://goo.gl/maps/psa"
+    },
+    {
+        iata: "RSI",
+        city: "Red Sea",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "Resort Area",
+        nearbyAirports: "YNB: 150km",
+        phone: "+966 14 420 1111",
+        website: "https://redseaglobal.com",
+        locationUrl: "https://goo.gl/maps/rsi"
     },
     {
         iata: "RUH",
@@ -1680,6 +2160,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/sjj"
     },
     {
+        iata: "SKD",
+        city: "Samarkand",
+        country: "Uzbekistan",
+        terminal: "New Terminal",
+        timezone: "Asia/Samarkand",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+998 66 230 86 41",
+        website: "https://ssl.uz",
+        locationUrl: "https://goo.gl/maps/skd"
+    },
+    {
         iata: "SKT",
         city: "Sialkot",
         country: "Pakistan",
@@ -1690,6 +2182,18 @@ const airportsData = [
         phone: "+92 52 111 742 575",
         website: "https://sialkotairport.com.pk",
         locationUrl: "https://goo.gl/maps/skt"
+    },
+    {
+        iata: "SLL",
+        city: "Salalah",
+        country: "Oman",
+        terminal: "New Terminal",
+        timezone: "Asia/Muscat",
+        distanceCenter: "5 km to Center",
+        nearbyAirports: "None",
+        phone: "+968 23 368 002",
+        website: "https://salalahairport.co.om",
+        locationUrl: "https://goo.gl/maps/sll"
     },
     {
         iata: "SOF",
@@ -1728,6 +2232,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/stn"
     },
     {
+        iata: "SVX",
+        city: "Yekaterinburg",
+        country: "Russia",
+        terminal: "Terminal B",
+        timezone: "Asia/Yekaterinburg",
+        distanceCenter: "16 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 343 226 85 82",
+        website: "https://svx.aero",
+        locationUrl: "https://goo.gl/maps/svx"
+    },
+    {
         iata: "SYD",
         city: "Sydney",
         country: "Australia",
@@ -1738,6 +2254,30 @@ const airportsData = [
         phone: "+61 2 9667 9111",
         website: "https://sydneyairport.com.au",
         locationUrl: "https://goo.gl/maps/syd"
+    },
+    {
+        iata: "SYZ",
+        city: "Shiraz",
+        country: "Iran",
+        terminal: "International",
+        timezone: "Asia/Tehran",
+        distanceCenter: "12 km to Center",
+        nearbyAirports: "None",
+        phone: "+98 71 3323 1800",
+        website: "https://shiraz.airport.ir",
+        locationUrl: "https://goo.gl/maps/syz"
+    },
+    {
+        iata: "SZG",
+        city: "Salzburg",
+        country: "Austria",
+        terminal: "Terminal 1",
+        timezone: "Europe/Vienna",
+        distanceCenter: "4 km to Center",
+        nearbyAirports: "MUC: 180km",
+        phone: "+43 662 8580 0",
+        website: "https://salzburg-airport.com",
+        locationUrl: "https://goo.gl/maps/szg"
     },
     {
         iata: "TAS",
@@ -1774,6 +2314,18 @@ const airportsData = [
         phone: "+98 21 61021",
         website: "https://mehrabad.airport.ir",
         locationUrl: "https://goo.gl/maps/thr"
+    },
+    {
+        iata: "TIF",
+        city: "Taif",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "30 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 2 736 7777",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/tif"
     },
     {
         iata: "TIV",
@@ -1836,6 +2388,66 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/tun"
     },
     {
+        iata: "TUU",
+        city: "Tabuk",
+        country: "Saudi Arabia",
+        terminal: "International",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "5 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 4 422 2300",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/tuu"
+    },
+    {
+        iata: "TZX",
+        city: "Trabzon",
+        country: "Turkey",
+        terminal: "Main Terminal",
+        timezone: "Europe/Istanbul",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+90 462 328 09 40",
+        website: "https://trabzon.dhmi.gov.tr",
+        locationUrl: "https://goo.gl/maps/tzx"
+    },
+    {
+        iata: "UET",
+        city: "Quetta",
+        country: "Pakistan",
+        terminal: "Main Terminal",
+        timezone: "Asia/Karachi",
+        distanceCenter: "12 km to Center",
+        nearbyAirports: "None",
+        phone: "+92 81 924 1002",
+        website: "http://caapakistan.com.pk",
+        locationUrl: "https://goo.gl/maps/uet"
+    },
+    {
+        iata: "UFA",
+        city: "Ufa",
+        country: "Russia",
+        terminal: "Terminal 1",
+        timezone: "Asia/Yekaterinburg",
+        distanceCenter: "25 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 347 229 52 95",
+        website: "https://airportufa.ru",
+        locationUrl: "https://goo.gl/maps/ufa"
+    },
+    {
+        iata: "UTP",
+        city: "Pattaya",
+        country: "Thailand",
+        terminal: "U-Tapao Intl",
+        timezone: "Asia/Bangkok",
+        distanceCenter: "40 km to Pattaya Beach",
+        nearbyAirports: "BKK: 140km",
+        phone: "+66 38 245 595",
+        website: "http://utapao.com",
+        locationUrl: "https://goo.gl/maps/utp"
+    },
+    {
         iata: "VIE",
         city: "Vienna",
         country: "Austria",
@@ -1860,6 +2472,30 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/vko"
     },
     {
+        iata: "VNO",
+        city: "Vilnius",
+        country: "Lithuania",
+        terminal: "Main Terminal",
+        timezone: "Europe/Vilnius",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+370 612 44442",
+        website: "https://vilnius-airport.lt",
+        locationUrl: "https://goo.gl/maps/vno"
+    },
+    {
+        iata: "VOG",
+        city: "Volgograd",
+        country: "Russia",
+        terminal: "Terminal C",
+        timezone: "Europe/Volgograd",
+        distanceCenter: "15 km to Center",
+        nearbyAirports: "None",
+        phone: "+7 8442 26 10 87",
+        website: "https://mav.ru",
+        locationUrl: "https://goo.gl/maps/vog"
+    },
+    {
         iata: "WAW",
         city: "Warsaw",
         country: "Poland",
@@ -1870,6 +2506,18 @@ const airportsData = [
         phone: "+48 22 650 42 20",
         website: "https://lotnisko-chopina.pl",
         locationUrl: "https://goo.gl/maps/waw"
+    },
+    {
+        iata: "YNB",
+        city: "Yanbu",
+        country: "Saudi Arabia",
+        terminal: "Main Terminal",
+        timezone: "Asia/Riyadh",
+        distanceCenter: "6 km to Center",
+        nearbyAirports: "None",
+        phone: "+966 4 390 0000",
+        website: "https://gaca.gov.sa",
+        locationUrl: "https://goo.gl/maps/ynb"
     },
     {
         iata: "YYZ",
