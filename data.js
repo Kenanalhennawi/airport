@@ -1508,7 +1508,7 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "None",
         phone: "+91 522 243 5404",
-        website: "https://aai.aero",
+        website: "https://www.aai.aero",
         locationUrl: "https://www.google.com/maps/search/?api=1&query=Lucknow+Airport"
     },
     {
@@ -1580,7 +1580,7 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "None",
         phone: "+91 44 2256 0551",
-        website: "https://aai.aero",
+        website: "https://www.aai.aero",
         locationUrl: "https://www.google.com/maps/search/?api=1&query=Chennai+Airport"
     },
     {
