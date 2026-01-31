@@ -39,18 +39,22 @@ h1 { font-size: 2.5rem; font-weight: 800; }
     color: var(--fz-blue); pointer-events: none; z-index: 10;
 }
 
-.clear-icon {
-    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-    color: #94a3b8; cursor: pointer; transition: color 0.2s;
-    z-index: 20; /* High Z-Index to ensure it is clickable */
-    background: rgba(255,255,255,0.8);
+/* FIXED: Button Wrapper Styles */
+.clear-btn {
+    position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: #94a3b8; cursor: pointer; 
+    z-index: 50; /* Very High Priority */
+    background: rgba(255,255,255,0.9);
     border-radius: 50%;
-    padding: 2px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-.clear-icon:hover { color: var(--fz-orange); background: white; }
+.clear-btn:hover { color: var(--fz-orange); transform: translateY(-50%) scale(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
 input {
-    width: 100%; padding: 15px 50px 15px 50px; font-size: 1.1rem; border-radius: 50px;
+    width: 100%; padding: 15px 55px 15px 50px; font-size: 1.1rem; border-radius: 50px;
     border: none; outline: none; background: rgba(255,255,255,0.95);
     box-shadow: 0 5px 20px rgba(0,0,0,0.2); font-weight: bold; color: var(--fz-blue);
 }
