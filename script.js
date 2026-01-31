@@ -1,10 +1,9 @@
-// DOM Elements
 const container = document.getElementById('cardsContainer');
 const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
-// Time Function
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', {
@@ -18,9 +17,15 @@ function getLocalTime(timezone) {
     }
 }
 
-// Render Cards
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
+
+    if (!filterText.trim()) {
+        clearBtn.classList.add('hidden');
+        return; 
+    }
+
+    clearBtn.classList.remove('hidden');
 
     const filtered = airportsData.filter(airport => 
         airport.iata.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -34,10 +39,8 @@ function renderCards(filterText = '') {
     }
 
     filtered.forEach(airport => {
-        // Create Card Element
         const card = document.createElement('div');
         card.className = 'card';
-        // Add Click Event to Open Modal
         card.onclick = () => openModal(airport);
 
         card.innerHTML = `
@@ -70,25 +73,20 @@ function renderCards(filterText = '') {
     lucide.createIcons();
 }
 
-// Modal Functions
 function openModal(data) {
-    // Fill Data
     document.getElementById('modalIata').textContent = data.iata;
     document.getElementById('modalCity').textContent = `${data.city}, ${data.country}`;
     document.getElementById('modalDistance').textContent = data.distanceCenter;
     document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
     document.getElementById('modalPhone').textContent = data.phone;
     
-    // Set Links
     document.getElementById('modalMapBtn').href = data.locationUrl;
     document.getElementById('modalWebBtn').href = data.website;
 
-    // Show Modal
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
 
-// Close Modal
 closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => {
     if (event.target == modal) {
@@ -96,8 +94,13 @@ window.onclick = (event) => {
     }
 }
 
-// Live Search & Time Update
 searchInput.addEventListener('input', (e) => renderCards(e.target.value));
+
+clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    renderCards('');
+    searchInput.focus();
+});
 
 setInterval(() => {
     document.querySelectorAll('.time-badge').forEach(el => {
@@ -106,5 +109,4 @@ setInterval(() => {
     });
 }, 1000);
 
-// Initial Render
-renderCards();
+renderCards('');
