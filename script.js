@@ -20,11 +20,11 @@ function getLocalTime(timezone) {
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
 
+    // Hide clear button if input is empty
     if (!filterText.trim()) {
         clearBtn.classList.add('hidden');
         return; 
     }
-
     clearBtn.classList.remove('hidden');
 
     const filtered = airportsData.filter(airport => 
@@ -96,6 +96,7 @@ window.onclick = (event) => {
 
 searchInput.addEventListener('input', (e) => renderCards(e.target.value));
 
+// FIXED: This listener now works because it is attached to the Wrapper DIV
 clearBtn.addEventListener('click', () => {
     searchInput.value = '';
     renderCards('');
