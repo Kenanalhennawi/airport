@@ -1,0 +1,196 @@
+/* FlyDubai Colors */
+:root {
+    --fz-blue: #005EB8;
+    --fz-orange: #F6881F;
+    --dark-bg: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.85); /* خلفية بيضاء شفافة */
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-main: #1e293b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* هنا نضع الصورة التي رفعتها كخلفية */
+    background-image: url('background.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text-main);
+}
+
+/* طبقة تغميق خفيفة فوق الصورة لجعل النص أوضح */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 94, 184, 0.3), rgba(0, 0, 0, 0.6));
+    z-index: -1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header Styling */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.logo-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--fz-orange);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.highlight {
+    color: var(--fz-orange);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Search Bar Styling */
+.search-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 50px auto;
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fz-blue);
+    width: 24px;
+    height: 24px;
+}
+
+input {
+    width: 100%;
+    padding: 18px 20px 18px 60px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    color: var(--fz-blue);
+    font-weight: bold;
+}
+
+input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 94, 184, 0.3);
+}
+
+/* Grid Layout */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Card Styling - The Glass Effect */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid var(--fz-blue);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.iata-code {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--fz-blue);
+    line-height: 1;
+}
+
+.city-name {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.time-badge {
+    background: var(--fz-blue);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.terminal-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #334155;
+    font-weight: 600;
+    margin-bottom: 15px;
+    background: #f1f5f9;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* Alert Styling */
+.card.alert-active {
+    border-left-color: #ef4444; /* Red border */
+}
+
+.alert-box {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 8px;
+    line-height: 1.4;
+}
