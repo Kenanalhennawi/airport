@@ -12,6 +12,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/abh"
     },
     {
+        iata: "ABJ",
+        city: "Abidjan",
+        country: "Ivory Coast",
+        terminal: "Main Terminal",
+        timezone: "Africa/Abidjan",
+        distanceCenter: "16 km to Center",
+        nearbyAirports: "None",
+        phone: "+225 21 75 79 01",
+        website: "https://aeroport-abidjan.com",
+        locationUrl: "https://goo.gl/maps/abj"
+    },
+    {
         iata: "ACC",
         city: "Accra",
         country: "Ghana",
@@ -60,18 +72,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/aer"
     },
     {
-        iata: "AHB",
-        city: "Abha",
-        country: "Saudi Arabia",
-        terminal: "International",
-        timezone: "Asia/Riyadh",
-        distanceCenter: "20 km to Center",
-        nearbyAirports: "None",
-        phone: "+966 7 224 6011",
-        website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/ahb"
-    },
-    {
         iata: "AKL",
         city: "Auckland",
         country: "New Zealand",
@@ -108,18 +108,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/alg"
     },
     {
-        iata: "AMD",
-        city: "Ahmedabad",
-        country: "India",
-        terminal: "Terminal 2",
-        timezone: "Asia/Kolkata",
-        distanceCenter: "9 km to Center",
-        nearbyAirports: "None",
-        phone: "+91 79 2286 9211",
-        website: "https://svpia.com",
-        locationUrl: "https://goo.gl/maps/amd"
-    },
-    {
         iata: "AMM",
         city: "Amman",
         country: "Jordan",
@@ -144,18 +132,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/ams"
     },
     {
-        iata: "AQI",
-        city: "Al Qaisumah",
-        country: "Saudi Arabia",
-        terminal: "Main Terminal",
-        timezone: "Asia/Riyadh",
-        distanceCenter: "20 km to Hafr Al Batin",
-        nearbyAirports: "None",
-        phone: "+966 13 722 0000",
-        website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/aqi"
-    },
-    {
         iata: "ARN",
         city: "Stockholm",
         country: "Sweden",
@@ -178,18 +154,6 @@ const airportsData = [
         phone: "+993 12 23 20 34",
         website: "https://ashgabatairport.gov.tm",
         locationUrl: "https://goo.gl/maps/asb"
-    },
-    {
-        iata: "ASM",
-        city: "Asmara",
-        country: "Eritrea",
-        terminal: "Main Terminal",
-        timezone: "Africa/Asmara",
-        distanceCenter: "6 km to Center",
-        nearbyAirports: "None",
-        phone: "+291 1 181 822",
-        website: "https://asmara-airport.com",
-        locationUrl: "https://goo.gl/maps/asm"
     },
     {
         iata: "ATH",
@@ -312,18 +276,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/bhx"
     },
     {
-        iata: "BJV",
-        city: "Bodrum",
-        country: "Turkey",
-        terminal: "International",
-        timezone: "Europe/Istanbul",
-        distanceCenter: "36 km to Center",
-        nearbyAirports: "DLM: 200km",
-        phone: "+90 252 523 01 01",
-        website: "http://milas-bodrumairport.com",
-        locationUrl: "https://goo.gl/maps/bjv"
-    },
-    {
         iata: "BKK",
         city: "Bangkok",
         country: "Thailand",
@@ -384,18 +336,6 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/bos"
     },
     {
-        iata: "BSR",
-        city: "Basra",
-        country: "Iraq",
-        terminal: "Main Terminal",
-        timezone: "Asia/Baghdad",
-        distanceCenter: "20 km to Center",
-        nearbyAirports: "None",
-        phone: "+964 40 888 123",
-        website: "http://basraairport.com",
-        locationUrl: "https://goo.gl/maps/bsr"
-    },
-    {
         iata: "BRU",
         city: "Brussels",
         country: "Belgium",
@@ -406,6 +346,30 @@ const airportsData = [
         phone: "+32 2 753 77 53",
         website: "https://brusselsairport.be",
         locationUrl: "https://goo.gl/maps/bru"
+    },
+    {
+        iata: "BSL",
+        city: "Basel / Mulhouse",
+        country: "Switzerland / France",
+        terminal: "Bi-National",
+        timezone: "Europe/Zurich",
+        distanceCenter: "6 km to Basel | 20 km to Mulhouse",
+        nearbyAirports: "ZRH: 85km",
+        phone: "+33 3 89 90 31 11",
+        website: "https://euroairport.com",
+        locationUrl: "https://goo.gl/maps/bsl"
+    },
+    {
+        iata: "BSR",
+        city: "Basra",
+        country: "Iraq",
+        terminal: "Main Terminal",
+        timezone: "Asia/Baghdad",
+        distanceCenter: "20 km to Center",
+        nearbyAirports: "None",
+        phone: "+964 40 888 123",
+        website: "http://basraairport.com",
+        locationUrl: "https://goo.gl/maps/bsr"
     },
     {
         iata: "BSZ",
@@ -526,18 +490,6 @@ const airportsData = [
         phone: "+64 3 353 7777",
         website: "https://christchurchairport.co.nz",
         locationUrl: "https://goo.gl/maps/chc"
-    },
-    {
-        iata: "CIT",
-        city: "Shymkent",
-        country: "Kazakhstan",
-        terminal: "Main Terminal",
-        timezone: "Asia/Almaty",
-        distanceCenter: "12 km to Center",
-        nearbyAirports: "TAS: 120km",
-        phone: "+7 7252 45 50 30",
-        website: "http://airserver.kz",
-        locationUrl: "https://goo.gl/maps/cit"
     },
     {
         iata: "CMB",
@@ -1560,6 +1512,18 @@ const airportsData = [
         locationUrl: "https://goo.gl/maps/lun"
     },
     {
+        iata: "LYO",
+        city: "Lyon",
+        country: "France",
+        terminal: "Terminal 1",
+        timezone: "Europe/Paris",
+        distanceCenter: "20 km to Center",
+        nearbyAirports: "GVA: 110km",
+        phone: "+33 4 26 00 70 07",
+        website: "https://lyonaeroports.com",
+        locationUrl: "https://goo.gl/maps/lyo"
+    },
+    {
         iata: "LYP",
         city: "Faisalabad",
         country: "Pakistan",
@@ -2446,6 +2410,18 @@ const airportsData = [
         phone: "+66 38 245 595",
         website: "http://utapao.com",
         locationUrl: "https://goo.gl/maps/utp"
+    },
+    {
+        iata: "VCE",
+        city: "Venice",
+        country: "Italy",
+        terminal: "Main Terminal",
+        timezone: "Europe/Rome",
+        distanceCenter: "13 km to Center",
+        nearbyAirports: "TSF: 40km",
+        phone: "+39 041 260 9260",
+        website: "https://veneziaairport.it",
+        locationUrl: "https://goo.gl/maps/vce"
     },
     {
         iata: "VIE",
