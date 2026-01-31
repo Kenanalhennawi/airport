@@ -39,13 +39,13 @@ h1 { font-size: 2.5rem; font-weight: 800; }
     color: var(--fz-blue); pointer-events: none; z-index: 10;
 }
 
-/* FIXED: Button Wrapper Styles */
+/* Clear Button Wrapper Style */
 .clear-btn {
     position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
     color: #94a3b8; cursor: pointer; 
-    z-index: 50; /* Very High Priority */
+    z-index: 50; 
     background: rgba(255,255,255,0.9);
     border-radius: 50%;
     transition: all 0.2s ease;
@@ -80,8 +80,34 @@ input {
 
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .iata-code { font-size: 2.2rem; font-weight: 800; color: var(--fz-blue); line-height: 1; }
-.city-name { color: #64748b; font-weight: 600; font-size: 1rem; }
-.time-badge { background: var(--fz-blue); color: white; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-family: monospace; }
+
+.city-name { 
+    color: #64748b; font-weight: 600; font-size: 1rem; 
+    display: flex; align-items: center;
+}
+
+/* Flag Style */
+.flag-icon {
+    width: 24px; height: 18px; object-fit: cover;
+    border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-right: 8px; vertical-align: middle;
+}
+
+.time-container {
+    text-align: right;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+
+.time-badge { 
+    background: var(--fz-blue); color: white; 
+    padding: 4px 10px; border-radius: 8px; 
+    font-weight: bold; font-family: monospace; 
+    display: flex; align-items: center; gap: 6px; /* Space for Sun/Moon icon */
+}
+
+/* Sun/Moon Icon Styles */
+.icon-sun { color: #FDB813; width: 16px; height: 16px; fill: #FDB813; }
+.icon-moon { color: #94a3b8; width: 16px; height: 16px; fill: #94a3b8; }
 
 .terminal-info, .distance-preview {
     display: flex; align-items: center; gap: 8px;
@@ -95,6 +121,7 @@ input {
 
 .hidden { display: none !important; }
 
+/* Modal Styles */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
