@@ -39,13 +39,13 @@ h1 { font-size: 2.5rem; font-weight: 800; }
     color: var(--fz-blue); pointer-events: none; z-index: 10;
 }
 
-/* Clear Button Wrapper Style */
+/* Clear Button Wrapper */
 .clear-btn {
     position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
     color: #94a3b8; cursor: pointer; 
-    z-index: 50; 
+    z-index: 50; /* High priority to ensure clickability */
     background: rgba(255,255,255,0.9);
     border-radius: 50%;
     transition: all 0.2s ease;
@@ -86,7 +86,7 @@ input {
     display: flex; align-items: center;
 }
 
-/* Flag Style */
+/* Flag Icon Style */
 .flag-icon {
     width: 24px; height: 18px; object-fit: cover;
     border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -102,10 +102,10 @@ input {
     background: var(--fz-blue); color: white; 
     padding: 4px 10px; border-radius: 8px; 
     font-weight: bold; font-family: monospace; 
-    display: flex; align-items: center; gap: 6px; /* Space for Sun/Moon icon */
+    display: flex; align-items: center; gap: 6px; 
 }
 
-/* Sun/Moon Icon Styles */
+/* Sun & Moon Icons */
 .icon-sun { color: #FDB813; width: 16px; height: 16px; fill: #FDB813; }
 .icon-moon { color: #94a3b8; width: 16px; height: 16px; fill: #94a3b8; }
 
