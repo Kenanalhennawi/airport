@@ -8,8 +8,8 @@ const airportsData = [
         distanceCenter: "18 km to Center",
         nearbyAirports: "None",
         phone: "+966 17 224 6011",
-        website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/abh"
+        website: "https://gaca.gov.sa/web/en-gb/airport/abha-international-airport",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=ABH+Airport"
     },
     {
         iata: "ABJ",
@@ -20,8 +20,8 @@ const airportsData = [
         distanceCenter: "16 km to Center",
         nearbyAirports: "None",
         phone: "+225 21 75 79 01",
-        website: "https://aeroport-abidjan.com",
-        locationUrl: "https://goo.gl/maps/abj"
+        website: "https://www.aeroport-abidjan.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Abidjan+Airport"
     },
     {
         iata: "ACC",
@@ -32,8 +32,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "None",
         phone: "+233 30 277 6171",
-        website: "https://gacl.com.gh",
-        locationUrl: "https://goo.gl/maps/acc"
+        website: "https://www.gacl.com.gh",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kotoka+International+Airport"
     },
     {
         iata: "ADD",
@@ -45,7 +45,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+251 11 665 0400",
         website: "https://addisairport.com",
-        locationUrl: "https://goo.gl/maps/add"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Addis+Ababa+Bole+Airport"
     },
     {
         iata: "ADL",
@@ -56,8 +56,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+61 8 8308 9211",
-        website: "https://adelaideairport.com.au",
-        locationUrl: "https://goo.gl/maps/adl"
+        website: "https://www.adelaideairport.com.au",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Adelaide+Airport"
     },
     {
         iata: "AER",
@@ -69,7 +69,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 800 301 19 91",
         website: "https://aer.aero",
-        locationUrl: "https://goo.gl/maps/aer"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sochi+Airport"
     },
     {
         iata: "AKL",
@@ -80,8 +80,8 @@ const airportsData = [
         distanceCenter: "21 km to Center",
         nearbyAirports: "None",
         phone: "+64 9 275 0789",
-        website: "https://aucklandairport.co.nz",
-        locationUrl: "https://goo.gl/maps/akl"
+        website: "https://www.aucklandairport.co.nz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Auckland+Airport"
     },
     {
         iata: "ALA",
@@ -93,7 +93,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 727 270 3333",
         website: "https://alaport.com",
-        locationUrl: "https://goo.gl/maps/ala"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Almaty+Airport"
     },
     {
         iata: "ALG",
@@ -104,8 +104,20 @@ const airportsData = [
         distanceCenter: "17 km to Center",
         nearbyAirports: "None",
         phone: "+213 21 50 91 91",
-        website: "https://aeroportalger.dz",
-        locationUrl: "https://goo.gl/maps/alg"
+        website: "https://www.aeroportalger.dz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Algiers+Airport"
+    },
+    {
+        iata: "AMD",
+        city: "Ahmedabad",
+        country: "India",
+        terminal: "Terminal 2",
+        timezone: "Asia/Kolkata",
+        distanceCenter: "9 km to Center",
+        nearbyAirports: "None",
+        phone: "+91 79 2286 9211",
+        website: "https://www.svpia.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ahmedabad+Airport"
     },
     {
         iata: "AMM",
@@ -116,8 +128,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "ADJ (Civil Only)",
         phone: "+962 6 401 0250",
-        website: "https://qaiairport.com",
-        locationUrl: "https://goo.gl/maps/amm"
+        website: "https://www.qaiairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Queen+Alia+Airport"
     },
     {
         iata: "AMS",
@@ -128,8 +140,8 @@ const airportsData = [
         distanceCenter: "9 km to Center",
         nearbyAirports: "RTM: 60km",
         phone: "+31 20 794 0800",
-        website: "https://schiphol.nl",
-        locationUrl: "https://goo.gl/maps/ams"
+        website: "https://www.schiphol.nl",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Schiphol+Airport"
     },
     {
         iata: "ARN",
@@ -140,8 +152,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "BMA: 40km",
         phone: "+46 10 109 10 00",
-        website: "https://swedavia.com/arlanda",
-        locationUrl: "https://goo.gl/maps/arn"
+        website: "https://www.swedavia.com/arlanda",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Arlanda+Airport"
     },
     {
         iata: "ASB",
@@ -153,7 +165,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+993 12 23 20 34",
         website: "https://ashgabatairport.gov.tm",
-        locationUrl: "https://goo.gl/maps/asb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ashgabat+Airport"
     },
     {
         iata: "ATH",
@@ -164,8 +176,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "None",
         phone: "+30 21 0353 0000",
-        website: "https://aja.gr",
-        locationUrl: "https://goo.gl/maps/ath"
+        website: "https://www.aja.gr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Athens+Airport"
     },
     {
         iata: "AUH",
@@ -176,8 +188,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "DXB: 115km",
         phone: "+971 2 505 5555",
-        website: "https://abudhabiairport.ae",
-        locationUrl: "https://goo.gl/maps/auh"
+        website: "https://www.abudhabiairport.ae",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Abu+Dhabi+Airport"
     },
     {
         iata: "AYT",
@@ -188,8 +200,8 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "None",
         phone: "+90 242 330 30 30",
-        website: "https://antalya-airport.aero",
-        locationUrl: "https://goo.gl/maps/ayt"
+        website: "https://www.antalya-airport.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Antalya+Airport"
     },
     {
         iata: "BAH",
@@ -200,8 +212,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "DMM: 85km",
         phone: "+973 1733 9339",
-        website: "https://bahrainairport.bh",
-        locationUrl: "https://goo.gl/maps/bah"
+        website: "https://www.bahrainairport.bh",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Bahrain+Airport"
     },
     {
         iata: "BCN",
@@ -212,8 +224,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "None",
         phone: "+34 913 21 10 00",
-        website: "https://aena.es",
-        locationUrl: "https://goo.gl/maps/bcn"
+        website: "https://www.aena.es/en/josep-tarradellas-barcelona-el-prat.html",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Barcelona+Airport"
     },
     {
         iata: "BEG",
@@ -225,7 +237,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+381 11 209 4000",
         website: "https://beg.aero",
-        locationUrl: "https://goo.gl/maps/beg"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Belgrade+Airport"
     },
     {
         iata: "BEY",
@@ -236,8 +248,8 @@ const airportsData = [
         distanceCenter: "9 km to Center",
         nearbyAirports: "None",
         phone: "+961 1 628 000",
-        website: "http://beirutairport.gov.lb",
-        locationUrl: "https://goo.gl/maps/bey"
+        website: "http://www.beirutairport.gov.lb",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Beirut+Rafic+Hariri+Airport"
     },
     {
         iata: "BGW",
@@ -248,20 +260,20 @@ const airportsData = [
         distanceCenter: "16 km to Center",
         nearbyAirports: "None",
         phone: "+964 0790 140 3537",
-        website: "http://baghdadairport.info",
-        locationUrl: "https://goo.gl/maps/bgw"
+        website: "http://www.baghdadairport.info",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Baghdad+International+Airport"
     },
     {
         iata: "BGY",
-        city: "Milan",
+        city: "Milan / Bergamo",
         country: "Italy",
         terminal: "Bergamo Orio",
         timezone: "Europe/Rome",
         distanceCenter: "45 km to Milan",
         nearbyAirports: "MXP: 90km",
         phone: "+39 035 326323",
-        website: "https://milanbergamoairport.it",
-        locationUrl: "https://goo.gl/maps/bgy"
+        website: "https://www.milanbergamoairport.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Orio+al+Serio+Airport"
     },
     {
         iata: "BHX",
@@ -272,8 +284,20 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "EMA: 60km",
         phone: "+44 871 222 0072",
-        website: "https://birminghamairport.co.uk",
-        locationUrl: "https://goo.gl/maps/bhx"
+        website: "https://www.birminghamairport.co.uk",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Birmingham+Airport"
+    },
+    {
+        iata: "BJV",
+        city: "Bodrum",
+        country: "Turkey",
+        terminal: "International",
+        timezone: "Europe/Istanbul",
+        distanceCenter: "36 km to Center",
+        nearbyAirports: "DLM: 200km",
+        phone: "+90 252 523 01 01",
+        website: "http://www.milas-bodrumairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Milas+Bodrum+Airport"
     },
     {
         iata: "BKK",
@@ -285,7 +309,7 @@ const airportsData = [
         nearbyAirports: "DMK: 45km",
         phone: "+66 2 132 1888",
         website: "https://suvarnabhumi.airportthai.co.th",
-        locationUrl: "https://goo.gl/maps/bkk"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Suvarnabhumi+Airport"
     },
     {
         iata: "BLR",
@@ -296,8 +320,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "None",
         phone: "+91 80 2201 2001",
-        website: "https://bengaluruairport.com",
-        locationUrl: "https://goo.gl/maps/blr"
+        website: "https://www.bengaluruairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kempegowda+International+Airport"
     },
     {
         iata: "BNE",
@@ -308,8 +332,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "None",
         phone: "+61 7 3406 3000",
-        website: "https://bne.com.au",
-        locationUrl: "https://goo.gl/maps/bne"
+        website: "https://www.bne.com.au",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Brisbane+Airport"
     },
     {
         iata: "BOM",
@@ -321,7 +345,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+91 22 6685 1010",
         website: "https://csmia.adaniairports.com",
-        locationUrl: "https://goo.gl/maps/bom"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mumbai+Airport"
     },
     {
         iata: "BOS",
@@ -332,8 +356,8 @@ const airportsData = [
         distanceCenter: "5 km to Center",
         nearbyAirports: "None",
         phone: "+1 800 235 6426",
-        website: "https://massport.com",
-        locationUrl: "https://goo.gl/maps/bos"
+        website: "https://www.massport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Logan+Airport"
     },
     {
         iata: "BRU",
@@ -344,8 +368,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "CRL: 45km",
         phone: "+32 2 753 77 53",
-        website: "https://brusselsairport.be",
-        locationUrl: "https://goo.gl/maps/bru"
+        website: "https://www.brusselsairport.be",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Brussels+Airport"
     },
     {
         iata: "BSL",
@@ -356,8 +380,8 @@ const airportsData = [
         distanceCenter: "6 km to Basel | 20 km to Mulhouse",
         nearbyAirports: "ZRH: 85km",
         phone: "+33 3 89 90 31 11",
-        website: "https://euroairport.com",
-        locationUrl: "https://goo.gl/maps/bsl"
+        website: "https://www.euroairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Basel+Mulhouse+Airport"
     },
     {
         iata: "BSR",
@@ -368,8 +392,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "None",
         phone: "+964 40 888 123",
-        website: "http://basraairport.com",
-        locationUrl: "https://goo.gl/maps/bsr"
+        website: "https://www.basraairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Basra+Airport"
     },
     {
         iata: "BSZ",
@@ -380,8 +404,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+996 312 693 109",
-        website: "http://airport.kg",
-        locationUrl: "https://goo.gl/maps/bsz"
+        website: "http://www.airport.kg",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Manas+Airport"
     },
     {
         iata: "BUD",
@@ -392,8 +416,8 @@ const airportsData = [
         distanceCenter: "16 km to Center",
         nearbyAirports: "None",
         phone: "+36 1 296 7000",
-        website: "https://bud.hu",
-        locationUrl: "https://goo.gl/maps/bud"
+        website: "https://www.bud.hu",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Budapest+Airport"
     },
     {
         iata: "CAI",
@@ -404,8 +428,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "SPX: 65km",
         phone: "+20 2 2265 5000",
-        website: "https://cairo-airport.com",
-        locationUrl: "https://goo.gl/maps/cai"
+        website: "https://www.cairo-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Cairo+International+Airport"
     },
     {
         iata: "CAN",
@@ -416,8 +440,8 @@ const airportsData = [
         distanceCenter: "28 km to Center",
         nearbyAirports: "None",
         phone: "+86 20 96158",
-        website: "https://gbiac.net",
-        locationUrl: "https://goo.gl/maps/can"
+        website: "https://www.gbiac.net",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Guangzhou+Baiyun+Airport"
     },
     {
         iata: "CCJ",
@@ -428,8 +452,8 @@ const airportsData = [
         distanceCenter: "28 km to Center",
         nearbyAirports: "COK: 160km",
         phone: "+91 483 271 2630",
-        website: "https://aai.aero",
-        locationUrl: "https://goo.gl/maps/ccj"
+        website: "https://www.aai.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Calicut+International+Airport"
     },
     {
         iata: "CCU",
@@ -440,8 +464,8 @@ const airportsData = [
         distanceCenter: "17 km to Center",
         nearbyAirports: "None",
         phone: "+91 33 2511 8036",
-        website: "https://aai.aero",
-        locationUrl: "https://goo.gl/maps/ccu"
+        website: "https://www.aai.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kolkata+Airport"
     },
     {
         iata: "CDG",
@@ -452,8 +476,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "ORY: 40km",
         phone: "+33 1 70 36 39 50",
-        website: "https://parisaeroport.fr",
-        locationUrl: "https://goo.gl/maps/cdg"
+        website: "https://www.parisaeroport.fr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Charles+de+Gaulle+Airport"
     },
     {
         iata: "CEB",
@@ -464,8 +488,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "None",
         phone: "+63 32 340 2486",
-        website: "https://mactancebuairport.com",
-        locationUrl: "https://goo.gl/maps/ceb"
+        website: "https://www.mactancebuairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mactan-Cebu+Airport"
     },
     {
         iata: "CFU",
@@ -476,8 +500,8 @@ const airportsData = [
         distanceCenter: "2 km to Center",
         nearbyAirports: "None",
         phone: "+30 2661 089600",
-        website: "https://cfu-airport.gr",
-        locationUrl: "https://goo.gl/maps/cfu"
+        website: "https://www.cfu-airport.gr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Corfu+Airport"
     },
     {
         iata: "CHC",
@@ -488,8 +512,20 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "None",
         phone: "+64 3 353 7777",
-        website: "https://christchurchairport.co.nz",
-        locationUrl: "https://goo.gl/maps/chc"
+        website: "https://www.christchurchairport.co.nz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Christchurch+Airport"
+    },
+    {
+        iata: "CIT",
+        city: "Shymkent",
+        country: "Kazakhstan",
+        terminal: "Main Terminal",
+        timezone: "Asia/Almaty",
+        distanceCenter: "12 km to Center",
+        nearbyAirports: "TAS: 120km",
+        phone: "+7 7252 45 50 30",
+        website: "http://airserver.kz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Shymkent+Airport"
     },
     {
         iata: "CMB",
@@ -500,8 +536,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "None",
         phone: "+94 11 225 2861",
-        website: "https://airport.lk",
-        locationUrl: "https://goo.gl/maps/cmb"
+        website: "https://www.airport.lk",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Bandaranaike+Airport"
     },
     {
         iata: "CMN",
@@ -512,8 +548,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "None",
         phone: "+212 5225-39040",
-        website: "https://onda.ma",
-        locationUrl: "https://goo.gl/maps/cmn"
+        website: "http://www.onda.ma",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Casablanca+Mohammed+V+Airport"
     },
     {
         iata: "COK",
@@ -524,8 +560,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+91 484 261 0115",
-        website: "https://cial.aero",
-        locationUrl: "https://goo.gl/maps/cok"
+        website: "https://www.cial.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Cochin+Airport"
     },
     {
         iata: "CPT",
@@ -536,8 +572,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "None",
         phone: "+27 21 937 1200",
-        website: "https://airports.co.za",
-        locationUrl: "https://goo.gl/maps/cpt"
+        website: "https://www.airports.co.za",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Cape+Town+Airport"
     },
     {
         iata: "CRK",
@@ -549,7 +585,7 @@ const airportsData = [
         nearbyAirports: "MNL: 100km",
         phone: "+63 45 599 2888",
         website: "https://clarkinternationalairport.com",
-        locationUrl: "https://goo.gl/maps/crk"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Clark+International+Airport"
     },
     {
         iata: "CTA",
@@ -560,8 +596,8 @@ const airportsData = [
         distanceCenter: "4 km to Center",
         nearbyAirports: "PMO: 240km",
         phone: "+39 095 723 9111",
-        website: "https://aeroporto.catania.it",
-        locationUrl: "https://goo.gl/maps/cta"
+        website: "https://www.aeroporto.catania.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Catania+Airport"
     },
     {
         iata: "DAC",
@@ -573,7 +609,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+880 2 7911042",
         website: "http://caab.gov.bd",
-        locationUrl: "https://goo.gl/maps/dac"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dhaka+Airport"
     },
     {
         iata: "DAM",
@@ -584,8 +620,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "BEY: 110km",
         phone: "+963 11 540 0000",
-        website: "http://damascus-airport.com",
-        locationUrl: "https://goo.gl/maps/dam"
+        website: "http://www.damascus-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Damascus+International+Airport"
     },
     {
         iata: "DAR",
@@ -596,8 +632,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "ZNZ: 70km (Ferry)",
         phone: "+255 22 284 4371",
-        website: "https://taa.go.tz",
-        locationUrl: "https://goo.gl/maps/dar"
+        website: "https://www.taa.go.tz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Julius+Nyerere+International+Airport"
     },
     {
         iata: "DBB",
@@ -609,7 +645,7 @@ const airportsData = [
         nearbyAirports: "HBE: 100km",
         phone: "+20 46 410 0000",
         website: "http://eac-airports.com",
-        locationUrl: "https://goo.gl/maps/dbb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Al+Alamein+International+Airport"
     },
     {
         iata: "DBV",
@@ -620,8 +656,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "TIV: 50km",
         phone: "+385 20 773 100",
-        website: "https://airport-dubrovnik.hr",
-        locationUrl: "https://goo.gl/maps/dbv"
+        website: "https://www.airport-dubrovnik.hr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dubrovnik+Airport"
     },
     {
         iata: "DEL",
@@ -632,8 +668,8 @@ const airportsData = [
         distanceCenter: "16 km to Center",
         nearbyAirports: "None",
         phone: "+91 124 3376000",
-        website: "https://newdelhiairport.in",
-        locationUrl: "https://goo.gl/maps/del"
+        website: "https://www.newdelhiairport.in",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Delhi+Airport"
     },
     {
         iata: "DFW",
@@ -644,8 +680,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+1 972 973 3112",
-        website: "https://dfwairport.com",
-        locationUrl: "https://goo.gl/maps/dfw"
+        website: "https://www.dfwairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=DFW+Airport"
     },
     {
         iata: "DMM",
@@ -657,7 +693,7 @@ const airportsData = [
         nearbyAirports: "BAH: 85km",
         phone: "+966 13 883 4444",
         website: "https://kfia.gov.sa",
-        locationUrl: "https://goo.gl/maps/dmm"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dammam+Airport"
     },
     {
         iata: "DOH",
@@ -669,7 +705,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+974 4010 6666",
         website: "https://dohahamadairport.com",
-        locationUrl: "https://goo.gl/maps/doh"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Hamad+International+Airport"
     },
     {
         iata: "DPS",
@@ -680,8 +716,8 @@ const airportsData = [
         distanceCenter: "13 km to Denpasar",
         nearbyAirports: "None",
         phone: "+62 361 935 1011",
-        website: "https://bali-airport.com",
-        locationUrl: "https://goo.gl/maps/dps"
+        website: "https://www.bali-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Bali+Airport"
     },
     {
         iata: "DSS",
@@ -692,8 +728,8 @@ const airportsData = [
         distanceCenter: "45 km to Center",
         nearbyAirports: "None",
         phone: "+221 33 939 69 00",
-        website: "https://dakaraeroport.com",
-        locationUrl: "https://goo.gl/maps/dss"
+        website: "https://www.dakaraeroport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Blaise+Diagne+Airport"
     },
     {
         iata: "DUB",
@@ -704,8 +740,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "None",
         phone: "+353 1 814 1111",
-        website: "https://dublinairport.com",
-        locationUrl: "https://goo.gl/maps/dub"
+        website: "https://www.dublinairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dublin+Airport"
     },
     {
         iata: "DUR",
@@ -716,8 +752,8 @@ const airportsData = [
         distanceCenter: "35 km to Center",
         nearbyAirports: "None",
         phone: "+27 32 436 6758",
-        website: "https://airports.co.za",
-        locationUrl: "https://goo.gl/maps/dur"
+        website: "https://www.airports.co.za",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=King+Shaka+Airport"
     },
     {
         iata: "DUS",
@@ -728,8 +764,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "CGN: 50km",
         phone: "+49 211 4210",
-        website: "https://dus.com",
-        locationUrl: "https://goo.gl/maps/dus"
+        website: "https://www.dus.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dusseldorf+Airport"
     },
     {
         iata: "DWC",
@@ -740,8 +776,8 @@ const airportsData = [
         distanceCenter: "60 km to Center",
         nearbyAirports: "DXB: 60km",
         phone: "+971 4 224 5555",
-        website: "https://dubaiairports.ae",
-        locationUrl: "https://goo.gl/maps/dwc"
+        website: "https://www.dubaiairports.ae",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Al+Maktoum+Airport"
     },
     {
         iata: "DXB",
@@ -752,8 +788,8 @@ const airportsData = [
         distanceCenter: "5 km to Center",
         nearbyAirports: "DWC: 60km",
         phone: "+971 4 224 5555",
-        website: "https://dubaiairports.ae",
-        locationUrl: "https://goo.gl/maps/dxb"
+        website: "https://www.dubaiairports.ae",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dubai+International+Airport"
     },
     {
         iata: "DYU",
@@ -765,7 +801,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+992 47 449 4233",
         website: "http://airport.tj",
-        locationUrl: "https://goo.gl/maps/dyu"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dushanbe+Airport"
     },
     {
         iata: "EAM",
@@ -777,7 +813,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 7 544 0444",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/eam"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Najran+Airport"
     },
     {
         iata: "EBB",
@@ -789,7 +825,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+256 31 235 2000",
         website: "https://caa.go.ug",
-        locationUrl: "https://goo.gl/maps/ebb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Entebbe+Airport"
     },
     {
         iata: "EBL",
@@ -800,8 +836,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "ISU: 170km",
         phone: "+964 66 281 0000",
-        website: "https://erbilairport.com",
-        locationUrl: "https://goo.gl/maps/ebl"
+        website: "https://www.erbilairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Erbil+Airport"
     },
     {
         iata: "EDI",
@@ -812,8 +848,8 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "GLA: 70km",
         phone: "+44 844 448 8833",
-        website: "https://edinburghairport.com",
-        locationUrl: "https://goo.gl/maps/edi"
+        website: "https://www.edinburghairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Edinburgh+Airport"
     },
     {
         iata: "ELQ",
@@ -825,7 +861,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 6 380 0055",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/elq"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Prince+Nayef+Airport"
     },
     {
         iata: "ESB",
@@ -836,8 +872,8 @@ const airportsData = [
         distanceCenter: "28 km to Center",
         nearbyAirports: "None",
         phone: "+90 312 398 00 00",
-        website: "https://esenbogaairport.com",
-        locationUrl: "https://goo.gl/maps/esb"
+        website: "https://www.esenbogaairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Esenboga+Airport"
     },
     {
         iata: "EVN",
@@ -849,7 +885,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+374 10 493 000",
         website: "http://www.zvartnots.aero",
-        locationUrl: "https://goo.gl/maps/evn"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Zvartnots+Airport"
     },
     {
         iata: "EWR",
@@ -860,8 +896,8 @@ const airportsData = [
         distanceCenter: "20 km to NYC",
         nearbyAirports: "JFK: 35km",
         phone: "+1 973 961 6000",
-        website: "https://newarkairport.com",
-        locationUrl: "https://goo.gl/maps/ewr"
+        website: "https://www.newarkairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Newark+Airport"
     },
     {
         iata: "FCO",
@@ -872,8 +908,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "CIA: 30km",
         phone: "+39 06 65951",
-        website: "https://adr.it",
-        locationUrl: "https://goo.gl/maps/fco"
+        website: "https://www.adr.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Fiumicino+Airport"
     },
     {
         iata: "FRA",
@@ -884,8 +920,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "None",
         phone: "+49 180 6 372 4636",
-        website: "https://frankfurt-airport.com",
-        locationUrl: "https://goo.gl/maps/fra"
+        website: "https://www.frankfurt-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Frankfurt+Airport"
     },
     {
         iata: "GIZ",
@@ -897,7 +933,7 @@ const airportsData = [
         nearbyAirports: "ABH: 200km",
         phone: "+966 7 322 2222",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/giz"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Jizan+Airport"
     },
     {
         iata: "GLA",
@@ -908,8 +944,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "EDI: 70km",
         phone: "+44 844 481 5555",
-        website: "https://glasgowairport.com",
-        locationUrl: "https://goo.gl/maps/gla"
+        website: "https://www.glasgowairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Glasgow+Airport"
     },
     {
         iata: "GSM",
@@ -921,7 +957,7 @@ const airportsData = [
         nearbyAirports: "BND: Ferry",
         phone: "+98 76 3533 5040",
         website: "http://qeshmairport.ir",
-        locationUrl: "https://goo.gl/maps/gsm"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Qeshm+Airport"
     },
     {
         iata: "GVA",
@@ -932,8 +968,8 @@ const airportsData = [
         distanceCenter: "4 km to Center",
         nearbyAirports: "None",
         phone: "+41 22 717 71 11",
-        website: "https://gva.ch",
-        locationUrl: "https://goo.gl/maps/gva"
+        website: "https://www.gva.ch",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Geneva+Airport"
     },
     {
         iata: "GYD",
@@ -945,7 +981,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+994 12 497 27 27",
         website: "https://airport.az",
-        locationUrl: "https://goo.gl/maps/gyd"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Heydar+Aliyev+Airport"
     },
     {
         iata: "HAM",
@@ -956,8 +992,8 @@ const airportsData = [
         distanceCenter: "8 km to Center",
         nearbyAirports: "None",
         phone: "+49 40 50750",
-        website: "https://hamburg-airport.de",
-        locationUrl: "https://goo.gl/maps/ham"
+        website: "https://www.hamburg-airport.de",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Hamburg+Airport"
     },
     {
         iata: "HAN",
@@ -969,7 +1005,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+84 24 3886 5041",
         website: "http://noibaiairport.vn",
-        locationUrl: "https://goo.gl/maps/han"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Noi+Bai+Airport"
     },
     {
         iata: "HAS",
@@ -981,7 +1017,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 16 532 0000",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/has"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Hail+Airport"
     },
     {
         iata: "HBE",
@@ -993,7 +1029,7 @@ const airportsData = [
         nearbyAirports: "DBB: 100km",
         phone: "+20 3 463 10 10",
         website: "http://eac-airports.com",
-        locationUrl: "https://goo.gl/maps/hbe"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Borg+El+Arab+Airport"
     },
     {
         iata: "HKG",
@@ -1004,8 +1040,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "SZX: 40km (Ferry)",
         phone: "+852 2181 8888",
-        website: "https://hongkongairport.com",
-        locationUrl: "https://goo.gl/maps/hkg"
+        website: "https://www.hongkongairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Hong+Kong+Airport"
     },
     {
         iata: "HKT",
@@ -1017,7 +1053,7 @@ const airportsData = [
         nearbyAirports: "KBV: 140km",
         phone: "+66 76 351 166",
         website: "https://phuket.airportthai.co.th",
-        locationUrl: "https://goo.gl/maps/hkt"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Phuket+Airport"
     },
     {
         iata: "HND",
@@ -1029,7 +1065,7 @@ const airportsData = [
         nearbyAirports: "NRT: 60km",
         phone: "+81 3 5757 8111",
         website: "https://tokyo-haneda.com",
-        locationUrl: "https://goo.gl/maps/hnd"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Haneda+Airport"
     },
     {
         iata: "HOF",
@@ -1041,7 +1077,7 @@ const airportsData = [
         nearbyAirports: "DMM: 150km",
         phone: "+966 13 594 4000",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/hof"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Al-Ahsa+Airport"
     },
     {
         iata: "HRE",
@@ -1053,7 +1089,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+263 24 257 5111",
         website: "https://caaz.co.zw",
-        locationUrl: "https://goo.gl/maps/hre"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Robert+Gabriel+Mugabe+Airport"
     },
     {
         iata: "HYD",
@@ -1064,8 +1100,8 @@ const airportsData = [
         distanceCenter: "24 km to Center",
         nearbyAirports: "None",
         phone: "+91 40 6654 6370",
-        website: "https://hyderabad.aero",
-        locationUrl: "https://goo.gl/maps/hyd"
+        website: "https://www.hyderabad.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Hyderabad+Airport"
     },
     {
         iata: "IAD",
@@ -1076,8 +1112,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "DCA: 45km",
         phone: "+1 703 572 2700",
-        website: "https://flydulles.com",
-        locationUrl: "https://goo.gl/maps/iad"
+        website: "https://www.flydulles.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Dulles+Airport"
     },
     {
         iata: "IAH",
@@ -1088,8 +1124,8 @@ const airportsData = [
         distanceCenter: "35 km to Center",
         nearbyAirports: "HOU: 40km",
         phone: "+1 281 230 3100",
-        website: "https://fly2houston.com",
-        locationUrl: "https://goo.gl/maps/iah"
+        website: "https://www.fly2houston.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=George+Bush+Intercontinental+Airport"
     },
     {
         iata: "ICN",
@@ -1100,8 +1136,8 @@ const airportsData = [
         distanceCenter: "50 km to Center",
         nearbyAirports: "GMP: 35km",
         phone: "+82 1577 2600",
-        website: "https://airport.kr",
-        locationUrl: "https://goo.gl/maps/icn"
+        website: "https://www.airport.kr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Incheon+Airport"
     },
     {
         iata: "IFN",
@@ -1113,7 +1149,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+98 31 3527 5050",
         website: "https://isfahan.airport.ir",
-        locationUrl: "https://goo.gl/maps/ifn"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Isfahan+Airport"
     },
     {
         iata: "IKA",
@@ -1124,8 +1160,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "THR (Domestic)",
         phone: "+98 21 5100 118",
-        website: "https://ikac.ir",
-        locationUrl: "https://goo.gl/maps/ika"
+        website: "https://www.ikac.ir",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Imam+Khomeini+Airport"
     },
     {
         iata: "ISB",
@@ -1137,7 +1173,7 @@ const airportsData = [
         nearbyAirports: "PEW: 180km",
         phone: "+92 51 111 222 114",
         website: "https://islamabadairport.com.pk",
-        locationUrl: "https://goo.gl/maps/isb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Islamabad+Airport"
     },
     {
         iata: "IST",
@@ -1148,8 +1184,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "SAW: 85km",
         phone: "+90 444 1 442",
-        website: "https://istairport.com",
-        locationUrl: "https://goo.gl/maps/ist"
+        website: "https://www.istairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Istanbul+Airport"
     },
     {
         iata: "ISU",
@@ -1161,7 +1197,7 @@ const airportsData = [
         nearbyAirports: "EBL: 170km",
         phone: "+964 53 312 0000",
         website: "http://sulairport.krd",
-        locationUrl: "https://goo.gl/maps/isu"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sulaymaniyah+Airport"
     },
     {
         iata: "JED",
@@ -1173,7 +1209,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 9200 11233",
         website: "https://jeddahairports.com",
-        locationUrl: "https://goo.gl/maps/jed"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=King+Abdulaziz+International+Airport"
     },
     {
         iata: "JFK",
@@ -1184,8 +1220,8 @@ const airportsData = [
         distanceCenter: "25 km to Manhattan",
         nearbyAirports: "EWR: 35km",
         phone: "+1 718 244 4444",
-        website: "https://jfkairport.com",
-        locationUrl: "https://goo.gl/maps/jfk"
+        website: "https://www.jfkairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=JFK+Airport"
     },
     {
         iata: "JIB",
@@ -1196,8 +1232,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+253 21 34 06 05",
-        website: "https://aeroport-djibouti.com",
-        locationUrl: "https://goo.gl/maps/jib"
+        website: "https://www.aeroport-djibouti.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Djibouti+Airport"
     },
     {
         iata: "JMK",
@@ -1208,8 +1244,8 @@ const airportsData = [
         distanceCenter: "4 km to Chora",
         nearbyAirports: "JTR: Ferry/Flight",
         phone: "+30 2289 079000",
-        website: "https://jmk-airport.gr",
-        locationUrl: "https://goo.gl/maps/jmk"
+        website: "https://www.jmk-airport.gr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mykonos+Airport"
     },
     {
         iata: "JNB",
@@ -1220,8 +1256,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+27 11 921 6262",
-        website: "https://airports.co.za",
-        locationUrl: "https://goo.gl/maps/jnb"
+        website: "https://www.airports.co.za",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=OR+Tambo+Airport"
     },
     {
         iata: "JTR",
@@ -1232,8 +1268,8 @@ const airportsData = [
         distanceCenter: "5 km to Fira",
         nearbyAirports: "JMK: Ferry/Flight",
         phone: "+30 2286 028400",
-        website: "https://jtr-airport.gr",
-        locationUrl: "https://goo.gl/maps/jtr"
+        website: "https://www.jtr-airport.gr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Santorini+Airport"
     },
     {
         iata: "KBP",
@@ -1245,7 +1281,7 @@ const airportsData = [
         nearbyAirports: "IEV: 40km",
         phone: "+380 44 281 7122",
         website: "https://kbp.aero",
-        locationUrl: "https://goo.gl/maps/kbp"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Boryspil+Airport"
     },
     {
         iata: "KBV",
@@ -1257,7 +1293,7 @@ const airportsData = [
         nearbyAirports: "HKT: 140km",
         phone: "+66 75 701 470",
         website: "https://minisite.airports.go.th/krabi",
-        locationUrl: "https://goo.gl/maps/kbv"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Krabi+Airport"
     },
     {
         iata: "KER",
@@ -1269,7 +1305,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+98 34 3211 0031",
         website: "https://kerman.airport.ir",
-        locationUrl: "https://goo.gl/maps/ker"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kerman+Airport"
     },
     {
         iata: "KHI",
@@ -1281,7 +1317,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+92 21 9907 1111",
         website: "https://karachiairport.com.pk",
-        locationUrl: "https://goo.gl/maps/khi"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Karachi+Airport"
     },
     {
         iata: "KIX",
@@ -1292,8 +1328,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "ITM: 70km",
         phone: "+81 72 455 2500",
-        website: "https://kansai-airport.or.jp",
-        locationUrl: "https://goo.gl/maps/kix"
+        website: "https://www.kansai-airport.or.jp",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kansai+Airport"
     },
     {
         iata: "KRK",
@@ -1304,8 +1340,8 @@ const airportsData = [
         distanceCenter: "11 km to Center",
         nearbyAirports: "None",
         phone: "+48 12 295 58 00",
-        website: "https://krakowairport.pl",
-        locationUrl: "https://goo.gl/maps/krk"
+        website: "https://www.krakowairport.pl",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Krakow+Airport"
     },
     {
         iata: "KRT",
@@ -1317,7 +1353,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+249 18 377 7160",
         website: "http://khartoum-airport.com",
-        locationUrl: "https://goo.gl/maps/krt"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Khartoum+Airport"
     },
     {
         iata: "KTM",
@@ -1328,8 +1364,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+977 1 411 3033",
-        website: "https://tiairport.com.np",
-        locationUrl: "https://goo.gl/maps/ktm"
+        website: "https://www.tiairport.com.np",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kathmandu+Airport"
     },
     {
         iata: "KUF",
@@ -1341,7 +1377,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 846 966 50 55",
         website: "https://uwww.aero",
-        locationUrl: "https://goo.gl/maps/kuf"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kurumoch+Airport"
     },
     {
         iata: "KUL",
@@ -1353,7 +1389,7 @@ const airportsData = [
         nearbyAirports: "SZB: 50km",
         phone: "+60 3 8776 2000",
         website: "https://klia.com.my",
-        locationUrl: "https://goo.gl/maps/kul"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kuala+Lumpur+Airport"
     },
     {
         iata: "KWI",
@@ -1364,8 +1400,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "None",
         phone: "+965 2433 6699",
-        website: "https://kuwaitairport.gov.kw",
-        locationUrl: "https://goo.gl/maps/kwi"
+        website: "https://www.kuwaitairport.gov.kw",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kuwait+Airport"
     },
     {
         iata: "KZN",
@@ -1377,7 +1413,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 843 267 88 07",
         website: "https://kazan.aero",
-        locationUrl: "https://goo.gl/maps/kzn"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Kazan+Airport"
     },
     {
         iata: "LAX",
@@ -1388,8 +1424,8 @@ const airportsData = [
         distanceCenter: "30 km to Downtown",
         nearbyAirports: "LGB: 35km",
         phone: "+1 855 463 5252",
-        website: "https://flylax.com",
-        locationUrl: "https://goo.gl/maps/lax"
+        website: "https://www.flylax.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=LAX+Airport"
     },
     {
         iata: "LED",
@@ -1401,7 +1437,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 812 337 38 22",
         website: "https://pulkovoairport.ru",
-        locationUrl: "https://goo.gl/maps/led"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Pulkovo+Airport"
     },
     {
         iata: "LGW",
@@ -1412,8 +1448,8 @@ const airportsData = [
         distanceCenter: "45 km to London",
         nearbyAirports: "LHR: 45km",
         phone: "+44 344 892 0322",
-        website: "https://gatwickairport.com",
-        locationUrl: "https://goo.gl/maps/lgw"
+        website: "https://www.gatwickairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Gatwick+Airport"
     },
     {
         iata: "LHE",
@@ -1425,7 +1461,7 @@ const airportsData = [
         nearbyAirports: "ATD: 100km",
         phone: "+92 42 9903 1000",
         website: "https://lahoreairport.com.pk",
-        locationUrl: "https://goo.gl/maps/lhe"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lahore+Airport"
     },
     {
         iata: "LHR",
@@ -1436,8 +1472,8 @@ const airportsData = [
         distanceCenter: "23 km to London",
         nearbyAirports: "LGW: 45km",
         phone: "+44 844 335 1801",
-        website: "https://heathrow.com",
-        locationUrl: "https://goo.gl/maps/lhr"
+        website: "https://www.heathrow.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Heathrow+Airport"
     },
     {
         iata: "LIS",
@@ -1448,8 +1484,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "None",
         phone: "+351 21 841 3500",
-        website: "https://aeroportolisboa.pt",
-        locationUrl: "https://goo.gl/maps/lis"
+        website: "https://www.aeroportolisboa.pt",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lisbon+Airport"
     },
     {
         iata: "LJU",
@@ -1460,8 +1496,8 @@ const airportsData = [
         distanceCenter: "24 km to Center",
         nearbyAirports: "ZAG: 140km",
         phone: "+386 4 20 61 000",
-        website: "https://lju-airport.si",
-        locationUrl: "https://goo.gl/maps/lju"
+        website: "https://www.lju-airport.si",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ljubljana+Airport"
     },
     {
         iata: "LKO",
@@ -1473,7 +1509,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+91 522 243 5404",
         website: "https://aai.aero",
-        locationUrl: "https://goo.gl/maps/lko"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lucknow+Airport"
     },
     {
         iata: "LOS",
@@ -1485,7 +1521,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+234 1 493 3385",
         website: "https://faan.gov.ng",
-        locationUrl: "https://goo.gl/maps/los"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lagos+Airport"
     },
     {
         iata: "LRR",
@@ -1497,7 +1533,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+98 71 5233 8222",
         website: "https://lar.airport.ir",
-        locationUrl: "https://goo.gl/maps/lrr"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lar+International+Airport"
     },
     {
         iata: "LUN",
@@ -1508,8 +1544,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+260 211 271359",
-        website: "https://zacl.co.zm",
-        locationUrl: "https://goo.gl/maps/lun"
+        website: "https://www.zacl.co.zm",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lusaka+Airport"
     },
     {
         iata: "LYO",
@@ -1520,8 +1556,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "GVA: 110km",
         phone: "+33 4 26 00 70 07",
-        website: "https://lyonaeroports.com",
-        locationUrl: "https://goo.gl/maps/lyo"
+        website: "https://www.lyonaeroports.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Lyon+Saint+Exupery+Airport"
     },
     {
         iata: "LYP",
@@ -1533,7 +1569,7 @@ const airportsData = [
         nearbyAirports: "LHE: 120km",
         phone: "+92 41 111 222 114",
         website: "http://caapakistan.com.pk",
-        locationUrl: "https://goo.gl/maps/lyp"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Faisalabad+Airport"
     },
     {
         iata: "MAA",
@@ -1545,7 +1581,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+91 44 2256 0551",
         website: "https://aai.aero",
-        locationUrl: "https://goo.gl/maps/maa"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Chennai+Airport"
     },
     {
         iata: "MAD",
@@ -1556,8 +1592,8 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "None",
         phone: "+34 913 21 10 00",
-        website: "https://aena.es",
-        locationUrl: "https://goo.gl/maps/mad"
+        website: "https://www.aena.es/en/adolfo-suarez-madrid-barajas.html",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Madrid+Barajas+Airport"
     },
     {
         iata: "MAN",
@@ -1568,8 +1604,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "LPL: 50km",
         phone: "+44 871 271 0711",
-        website: "https://manchesterairport.co.uk",
-        locationUrl: "https://goo.gl/maps/man"
+        website: "https://www.manchesterairport.co.uk",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Manchester+Airport"
     },
     {
         iata: "MBA",
@@ -1581,7 +1617,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+254 41 343 3211",
         website: "https://kaa.go.ke",
-        locationUrl: "https://goo.gl/maps/mba"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Moi+International+Airport"
     },
     {
         iata: "MCO",
@@ -1593,7 +1629,7 @@ const airportsData = [
         nearbyAirports: "SFB: 50km",
         phone: "+1 407 825 2001",
         website: "https://orlandoairports.net",
-        locationUrl: "https://goo.gl/maps/mco"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Orlando+International+Airport"
     },
     {
         iata: "MCT",
@@ -1604,8 +1640,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "None",
         phone: "+968 24 351234",
-        website: "https://muscatairport.co.om",
-        locationUrl: "https://goo.gl/maps/mct"
+        website: "https://www.muscatairport.co.om",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Muscat+Airport"
     },
     {
         iata: "MCX",
@@ -1617,7 +1653,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 8722 55 55 00",
         website: "https://mcx.aero",
-        locationUrl: "https://goo.gl/maps/mcx"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Makhachkala+Airport"
     },
     {
         iata: "MED",
@@ -1629,7 +1665,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 4 842 0000",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/med"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Medina+Airport"
     },
     {
         iata: "MEL",
@@ -1640,8 +1676,8 @@ const airportsData = [
         distanceCenter: "23 km to Center",
         nearbyAirports: "AVV: 55km",
         phone: "+61 3 9297 1600",
-        website: "https://melbourneairport.com.au",
-        locationUrl: "https://goo.gl/maps/mel"
+        website: "https://www.melbourneairport.com.au",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Melbourne+Airport"
     },
     {
         iata: "MEX",
@@ -1652,8 +1688,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "NLU: 40km",
         phone: "+52 55 2482 2400",
-        website: "https://aicm.com.mx",
-        locationUrl: "https://goo.gl/maps/mex"
+        website: "https://www.aicm.com.mx",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mexico+City+Airport"
     },
     {
         iata: "MHD",
@@ -1665,7 +1701,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+98 51 3340 0001",
         website: "https://mashhad.airport.ir",
-        locationUrl: "https://goo.gl/maps/mhd"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mashhad+Airport"
     },
     {
         iata: "MIA",
@@ -1676,8 +1712,8 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "FLL: 35km",
         phone: "+1 305 876 7000",
-        website: "https://miami-airport.com",
-        locationUrl: "https://goo.gl/maps/mia"
+        website: "https://www.miami-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Miami+International+Airport"
     },
     {
         iata: "MLE",
@@ -1689,7 +1725,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+960 332 3211",
         website: "https://macl.aero",
-        locationUrl: "https://goo.gl/maps/mle"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Velana+International+Airport"
     },
     {
         iata: "MNL",
@@ -1700,8 +1736,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "CRK: 90km",
         phone: "+63 2 877 1109",
-        website: "https://miaa.gov.ph",
-        locationUrl: "https://goo.gl/maps/mnl"
+        website: "https://www.miaa.gov.ph",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ninoy+Aquino+International+Airport"
     },
     {
         iata: "MRU",
@@ -1713,7 +1749,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+230 603 6000",
         website: "https://mauritius-airport.atol.aero",
-        locationUrl: "https://goo.gl/maps/mru"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mauritius+Airport"
     },
     {
         iata: "MRV",
@@ -1725,7 +1761,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 879 222 07 77",
         website: "https://mvairport.ru",
-        locationUrl: "https://goo.gl/maps/mrv"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mineralnye+Vody+Airport"
     },
     {
         iata: "MUC",
@@ -1736,8 +1772,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "None",
         phone: "+49 89 97500",
-        website: "https://munich-airport.de",
-        locationUrl: "https://goo.gl/maps/muc"
+        website: "https://www.munich-airport.de",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Munich+Airport"
     },
     {
         iata: "MULT",
@@ -1749,7 +1785,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+92 61 9200 301",
         website: "http://caapakistan.com.pk",
-        locationUrl: "https://goo.gl/maps/mult"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Multan+Airport"
     },
     {
         iata: "MUX",
@@ -1761,7 +1797,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+92 61 9200 301",
         website: "http://caapakistan.com.pk",
-        locationUrl: "https://goo.gl/maps/mux"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Multan+Airport"
     },
     {
         iata: "MXP",
@@ -1772,8 +1808,8 @@ const airportsData = [
         distanceCenter: "50 km to Center",
         nearbyAirports: "LIN: 50km",
         phone: "+39 02 232323",
-        website: "https://milanomalpensa-airport.com",
-        locationUrl: "https://goo.gl/maps/mxp"
+        website: "https://www.milanomalpensa-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Malpensa+Airport"
     },
     {
         iata: "NAP",
@@ -1784,8 +1820,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+39 081 789 6111",
-        website: "https://aeroportodinapoli.it",
-        locationUrl: "https://goo.gl/maps/nap"
+        website: "https://www.aeroportodinapoli.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Naples+Airport"
     },
     {
         iata: "NBO",
@@ -1797,7 +1833,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+254 20 661 1000",
         website: "https://kaa.go.ke",
-        locationUrl: "https://goo.gl/maps/nbo"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Nairobi+Airport"
     },
     {
         iata: "NCE",
@@ -1808,8 +1844,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "None",
         phone: "+33 820 42 33 33",
-        website: "https://nice.aeroport.fr",
-        locationUrl: "https://goo.gl/maps/nce"
+        website: "https://www.nice.aeroport.fr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Nice+Airport"
     },
     {
         iata: "NJF",
@@ -1821,7 +1857,7 @@ const airportsData = [
         nearbyAirports: "BGW: 160km",
         phone: "+964 33 360 000",
         website: "http://njf.iq",
-        locationUrl: "https://goo.gl/maps/njf"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Najaf+Airport"
     },
     {
         iata: "NQZ",
@@ -1833,7 +1869,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 7172 702 999",
         website: "https://nn-airport.kz",
-        locationUrl: "https://goo.gl/maps/nqz"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Nursultan+Nazarbayev+Airport"
     },
     {
         iata: "NRT",
@@ -1844,8 +1880,8 @@ const airportsData = [
         distanceCenter: "60 km to Center",
         nearbyAirports: "HND: 60km",
         phone: "+81 476 34 8000",
-        website: "https://narita-airport.jp",
-        locationUrl: "https://goo.gl/maps/nrt"
+        website: "https://www.narita-airport.jp",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Narita+Airport"
     },
     {
         iata: "NUM",
@@ -1856,8 +1892,8 @@ const airportsData = [
         distanceCenter: "New Development",
         nearbyAirports: "TUU: 150km",
         phone: "+966 14 420 0000",
-        website: "https://neom.com",
-        locationUrl: "https://goo.gl/maps/num"
+        website: "https://www.neom.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Neom+Bay+Airport"
     },
     {
         iata: "OLB",
@@ -1868,8 +1904,8 @@ const airportsData = [
         distanceCenter: "4 km to Center",
         nearbyAirports: "None",
         phone: "+39 0789 563 444",
-        website: "https://geasar.it",
-        locationUrl: "https://goo.gl/maps/olb"
+        website: "https://www.geasar.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Olbia+Airport"
     },
     {
         iata: "OSL",
@@ -1880,8 +1916,8 @@ const airportsData = [
         distanceCenter: "50 km to Center",
         nearbyAirports: "TRF: 120km",
         phone: "+47 64 81 20 00",
-        website: "https://avinor.no",
-        locationUrl: "https://goo.gl/maps/osl"
+        website: "https://avinor.no/en/airport/oslo-airport/",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Oslo+Airport"
     },
     {
         iata: "OTP",
@@ -1892,8 +1928,8 @@ const airportsData = [
         distanceCenter: "17 km to Center",
         nearbyAirports: "BBU: 8km",
         phone: "+40 21 204 1000",
-        website: "https://bucharestairports.ro",
-        locationUrl: "https://goo.gl/maps/otp"
+        website: "https://www.bucharestairports.ro",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Henri+Coanda+Airport"
     },
     {
         iata: "OVB",
@@ -1905,7 +1941,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 383 216 99 99",
         website: "https://tolmachevo.ru",
-        locationUrl: "https://goo.gl/maps/ovb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tolmachevo+Airport"
     },
     {
         iata: "PEK",
@@ -1916,8 +1952,8 @@ const airportsData = [
         distanceCenter: "30 km to Center",
         nearbyAirports: "PKX: 50km",
         phone: "+86 10 96158",
-        website: "https://bcia.com.cn",
-        locationUrl: "https://goo.gl/maps/pek"
+        website: "https://www.bcia.com.cn",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Beijing+Capital+Airport"
     },
     {
         iata: "PEN",
@@ -1928,8 +1964,8 @@ const airportsData = [
         distanceCenter: "16 km to Center",
         nearbyAirports: "LGK: 120km",
         phone: "+60 4 643 4411",
-        website: "https://penangairport.com",
-        locationUrl: "https://goo.gl/maps/pen"
+        website: "https://www.penangairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Penang+Airport"
     },
     {
         iata: "PER",
@@ -1940,8 +1976,8 @@ const airportsData = [
         distanceCenter: "12 km to Center",
         nearbyAirports: "None",
         phone: "+61 8 9478 8888",
-        website: "https://perthairport.com.au",
-        locationUrl: "https://goo.gl/maps/per"
+        website: "https://www.perthairport.com.au",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Perth+Airport"
     },
     {
         iata: "PEW",
@@ -1953,7 +1989,7 @@ const airportsData = [
         nearbyAirports: "ISB: 180km",
         phone: "+92 91 921 1525",
         website: "http://caapakistan.com.pk",
-        locationUrl: "https://goo.gl/maps/pew"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Peshawar+Airport"
     },
     {
         iata: "PHL",
@@ -1964,8 +2000,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "EWR: 130km",
         phone: "+1 215 937 6937",
-        website: "https://phl.org",
-        locationUrl: "https://goo.gl/maps/phl"
+        website: "https://www.phl.org",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Philadelphia+Airport"
     },
     {
         iata: "PMO",
@@ -1976,8 +2012,8 @@ const airportsData = [
         distanceCenter: "35 km to Center",
         nearbyAirports: "CTA: 240km",
         phone: "+39 091 702 0111",
-        website: "https://aeroportodipalermo.it",
-        locationUrl: "https://goo.gl/maps/pmo"
+        website: "https://www.aeroportodipalermo.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Palermo+Airport"
     },
     {
         iata: "POZ",
@@ -1988,8 +2024,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "None",
         phone: "+48 61 849 23 43",
-        website: "https://poznan-airport.com.pl",
-        locationUrl: "https://goo.gl/maps/poz"
+        website: "https://www.poznan-airport.com.pl",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Poznan+Airport"
     },
     {
         iata: "PRG",
@@ -2000,8 +2036,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "None",
         phone: "+420 220 111 888",
-        website: "https://prg.aero",
-        locationUrl: "https://goo.gl/maps/prg"
+        website: "https://www.prg.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Prague+Airport"
     },
     {
         iata: "PSA",
@@ -2012,8 +2048,8 @@ const airportsData = [
         distanceCenter: "2 km to Center",
         nearbyAirports: "FLR: 80km",
         phone: "+39 050 849 111",
-        website: "https://pisa-airport.com",
-        locationUrl: "https://goo.gl/maps/psa"
+        website: "https://www.pisa-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Pisa+Airport"
     },
     {
         iata: "RSI",
@@ -2024,8 +2060,8 @@ const airportsData = [
         distanceCenter: "Resort Area",
         nearbyAirports: "YNB: 150km",
         phone: "+966 14 420 1111",
-        website: "https://redseaglobal.com",
-        locationUrl: "https://goo.gl/maps/rsi"
+        website: "https://www.redseaglobal.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Red+Sea+International+Airport"
     },
     {
         iata: "RUH",
@@ -2037,7 +2073,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 9200 20090",
         website: "https://kkia.sa",
-        locationUrl: "https://goo.gl/maps/ruh"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=King+Khalid+International+Airport"
     },
     {
         iata: "SAW",
@@ -2048,8 +2084,8 @@ const airportsData = [
         distanceCenter: "40 km to Kadikoy",
         nearbyAirports: "IST: 85km",
         phone: "+90 216 588 88 88",
-        website: "https://sabihagokcen.aero",
-        locationUrl: "https://goo.gl/maps/saw"
+        website: "https://www.sabihagokcen.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sabiha+Gokcen+Airport"
     },
     {
         iata: "SEA",
@@ -2060,8 +2096,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "BFI: 10km",
         phone: "+1 206 787 5388",
-        website: "https://portseattle.org",
-        locationUrl: "https://goo.gl/maps/sea"
+        website: "https://www.portseattle.org",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Seattle+Tacoma+Airport"
     },
     {
         iata: "SEZ",
@@ -2073,7 +2109,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+248 438 4000",
         website: "https://seychellesairports.sc",
-        locationUrl: "https://goo.gl/maps/sez"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Seychelles+International+Airport"
     },
     {
         iata: "SFO",
@@ -2084,8 +2120,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "OAK: 30km",
         phone: "+1 650 821 8211",
-        website: "https://flysfo.com",
-        locationUrl: "https://goo.gl/maps/sfo"
+        website: "https://www.flysfo.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=San+Francisco+Airport"
     },
     {
         iata: "SGN",
@@ -2097,7 +2133,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+84 28 3848 5383",
         website: "http://tansonnhatairport.vn",
-        locationUrl: "https://goo.gl/maps/sgn"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tan+Son+Nhat+Airport"
     },
     {
         iata: "SIN",
@@ -2108,8 +2144,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "XSP: 15km",
         phone: "+65 6595 6868",
-        website: "https://changiairport.com",
-        locationUrl: "https://goo.gl/maps/sin"
+        website: "https://www.changiairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Changi+Airport"
     },
     {
         iata: "SJJ",
@@ -2120,8 +2156,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "None",
         phone: "+387 33 289 100",
-        website: "https://sarajevo-airport.ba",
-        locationUrl: "https://goo.gl/maps/sjj"
+        website: "https://www.sarajevo-airport.ba",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sarajevo+Airport"
     },
     {
         iata: "SKD",
@@ -2132,8 +2168,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+998 66 230 86 41",
-        website: "https://ssl.uz",
-        locationUrl: "https://goo.gl/maps/skd"
+        website: "https://www.ssl.uz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Samarkand+Airport"
     },
     {
         iata: "SKT",
@@ -2144,8 +2180,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "LHE: 130km",
         phone: "+92 52 111 742 575",
-        website: "https://sialkotairport.com.pk",
-        locationUrl: "https://goo.gl/maps/skt"
+        website: "https://www.sialkotairport.com.pk",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sialkot+Airport"
     },
     {
         iata: "SLL",
@@ -2157,7 +2193,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+968 23 368 002",
         website: "https://salalahairport.co.om",
-        locationUrl: "https://goo.gl/maps/sll"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Salalah+Airport"
     },
     {
         iata: "SOF",
@@ -2169,7 +2205,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+359 2 937 2211",
         website: "https://sofia-airport.eu",
-        locationUrl: "https://goo.gl/maps/sof"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sofia+Airport"
     },
     {
         iata: "SPX",
@@ -2180,8 +2216,8 @@ const airportsData = [
         distanceCenter: "45 km to Downtown",
         nearbyAirports: "CAI: 65km",
         phone: "+20 2 3344 5555",
-        website: "http://civilaviation.gov.eg",
-        locationUrl: "https://goo.gl/maps/spx"
+        website: "http://www.civilaviation.gov.eg",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sphinx+International+Airport"
     },
     {
         iata: "STN",
@@ -2192,8 +2228,8 @@ const airportsData = [
         distanceCenter: "60 km to London",
         nearbyAirports: "LHR: 90km",
         phone: "+44 844 335 1803",
-        website: "https://stanstedairport.com",
-        locationUrl: "https://goo.gl/maps/stn"
+        website: "https://www.stanstedairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Stansted+Airport"
     },
     {
         iata: "SVX",
@@ -2205,7 +2241,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 343 226 85 82",
         website: "https://svx.aero",
-        locationUrl: "https://goo.gl/maps/svx"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Koltsovo+Airport"
     },
     {
         iata: "SYD",
@@ -2216,8 +2252,8 @@ const airportsData = [
         distanceCenter: "8 km to Center",
         nearbyAirports: "None",
         phone: "+61 2 9667 9111",
-        website: "https://sydneyairport.com.au",
-        locationUrl: "https://goo.gl/maps/syd"
+        website: "https://www.sydneyairport.com.au",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Sydney+Airport"
     },
     {
         iata: "SYZ",
@@ -2229,7 +2265,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+98 71 3323 1800",
         website: "https://shiraz.airport.ir",
-        locationUrl: "https://goo.gl/maps/syz"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Shiraz+Airport"
     },
     {
         iata: "SZG",
@@ -2240,8 +2276,8 @@ const airportsData = [
         distanceCenter: "4 km to Center",
         nearbyAirports: "MUC: 180km",
         phone: "+43 662 8580 0",
-        website: "https://salzburg-airport.com",
-        locationUrl: "https://goo.gl/maps/szg"
+        website: "https://www.salzburg-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Salzburg+Airport"
     },
     {
         iata: "TAS",
@@ -2253,7 +2289,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+998 78 140 28 01",
         website: "https://tashkent-airport.uz",
-        locationUrl: "https://goo.gl/maps/tas"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tashkent+Airport"
     },
     {
         iata: "TBS",
@@ -2264,8 +2300,8 @@ const airportsData = [
         distanceCenter: "17 km to Center",
         nearbyAirports: "None",
         phone: "+995 32 231 04 21",
-        website: "https://tbilisiairport.com",
-        locationUrl: "https://goo.gl/maps/tbs"
+        website: "https://www.tbilisiairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tbilisi+Airport"
     },
     {
         iata: "THR",
@@ -2277,7 +2313,7 @@ const airportsData = [
         nearbyAirports: "IKA (Intl)",
         phone: "+98 21 61021",
         website: "https://mehrabad.airport.ir",
-        locationUrl: "https://goo.gl/maps/thr"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Mehrabad+Airport"
     },
     {
         iata: "TIF",
@@ -2289,7 +2325,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 2 736 7777",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/tif"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Taif+Airport"
     },
     {
         iata: "TIV",
@@ -2301,7 +2337,7 @@ const airportsData = [
         nearbyAirports: "DBV: 50km",
         phone: "+382 32 671 337",
         website: "https://montenegroairports.com",
-        locationUrl: "https://goo.gl/maps/tiv"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tivat+Airport"
     },
     {
         iata: "TLV",
@@ -2312,8 +2348,8 @@ const airportsData = [
         distanceCenter: "20 km to Center",
         nearbyAirports: "None",
         phone: "+972 3 978 3333",
-        website: "https://iaa.gov.il",
-        locationUrl: "https://goo.gl/maps/tlv"
+        website: "https://www.iaa.gov.il",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ben+Gurion+Airport"
     },
     {
         iata: "TPE",
@@ -2324,8 +2360,8 @@ const airportsData = [
         distanceCenter: "40 km to Center",
         nearbyAirports: "TSA: 5km",
         phone: "+886 3 398 3728",
-        website: "https://taoyuan-airport.com",
-        locationUrl: "https://goo.gl/maps/tpe"
+        website: "https://www.taoyuan-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Taoyuan+Airport"
     },
     {
         iata: "TRV",
@@ -2336,8 +2372,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+91 471 270 2600",
-        website: "https://aai.aero",
-        locationUrl: "https://goo.gl/maps/trv"
+        website: "https://www.aai.aero",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Trivandrum+Airport"
     },
     {
         iata: "TUN",
@@ -2348,8 +2384,8 @@ const airportsData = [
         distanceCenter: "7 km to Center",
         nearbyAirports: "None",
         phone: "+216 71 754 000",
-        website: "https://tunis-carthage-airport.com",
-        locationUrl: "https://goo.gl/maps/tun"
+        website: "https://www.tunis-carthage-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tunis+Carthage+Airport"
     },
     {
         iata: "TUU",
@@ -2361,7 +2397,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 4 422 2300",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/tuu"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Tabuk+Airport"
     },
     {
         iata: "TZX",
@@ -2373,7 +2409,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+90 462 328 09 40",
         website: "https://trabzon.dhmi.gov.tr",
-        locationUrl: "https://goo.gl/maps/tzx"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Trabzon+Airport"
     },
     {
         iata: "UET",
@@ -2385,7 +2421,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+92 81 924 1002",
         website: "http://caapakistan.com.pk",
-        locationUrl: "https://goo.gl/maps/uet"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Quetta+Airport"
     },
     {
         iata: "UFA",
@@ -2396,8 +2432,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "None",
         phone: "+7 347 229 52 95",
-        website: "https://airportufa.ru",
-        locationUrl: "https://goo.gl/maps/ufa"
+        website: "https://www.airportufa.ru",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Ufa+Airport"
     },
     {
         iata: "UTP",
@@ -2408,8 +2444,8 @@ const airportsData = [
         distanceCenter: "40 km to Pattaya Beach",
         nearbyAirports: "BKK: 140km",
         phone: "+66 38 245 595",
-        website: "http://utapao.com",
-        locationUrl: "https://goo.gl/maps/utp"
+        website: "http://www.utapao.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=U-Tapao+Airport"
     },
     {
         iata: "VCE",
@@ -2420,8 +2456,8 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "TSF: 40km",
         phone: "+39 041 260 9260",
-        website: "https://veneziaairport.it",
-        locationUrl: "https://goo.gl/maps/vce"
+        website: "https://www.veneziaairport.it",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Venice+Marco+Polo+Airport"
     },
     {
         iata: "VIE",
@@ -2432,8 +2468,8 @@ const airportsData = [
         distanceCenter: "18 km to Center",
         nearbyAirports: "BTS: 60km",
         phone: "+43 1 70070",
-        website: "https://viennaairport.com",
-        locationUrl: "https://goo.gl/maps/vie"
+        website: "https://www.viennaairport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Vienna+Airport"
     },
     {
         iata: "VKO",
@@ -2445,7 +2481,7 @@ const airportsData = [
         nearbyAirports: "SVO: 50km | DME: 60km",
         phone: "+7 495 937 55 55",
         website: "http://vnukovo.ru",
-        locationUrl: "https://goo.gl/maps/vko"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Vnukovo+Airport"
     },
     {
         iata: "VNO",
@@ -2456,8 +2492,8 @@ const airportsData = [
         distanceCenter: "6 km to Center",
         nearbyAirports: "None",
         phone: "+370 612 44442",
-        website: "https://vilnius-airport.lt",
-        locationUrl: "https://goo.gl/maps/vno"
+        website: "https://www.vilnius-airport.lt",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Vilnius+Airport"
     },
     {
         iata: "VOG",
@@ -2469,7 +2505,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+7 8442 26 10 87",
         website: "https://mav.ru",
-        locationUrl: "https://goo.gl/maps/vog"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Volgograd+Airport"
     },
     {
         iata: "WAW",
@@ -2480,8 +2516,8 @@ const airportsData = [
         distanceCenter: "10 km to Center",
         nearbyAirports: "WMI: 40km",
         phone: "+48 22 650 42 20",
-        website: "https://lotnisko-chopina.pl",
-        locationUrl: "https://goo.gl/maps/waw"
+        website: "https://www.lotnisko-chopina.pl",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Warsaw+Chopin+Airport"
     },
     {
         iata: "YNB",
@@ -2493,7 +2529,7 @@ const airportsData = [
         nearbyAirports: "None",
         phone: "+966 4 390 0000",
         website: "https://gaca.gov.sa",
-        locationUrl: "https://goo.gl/maps/ynb"
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Yanbu+Airport"
     },
     {
         iata: "YYZ",
@@ -2504,8 +2540,8 @@ const airportsData = [
         distanceCenter: "25 km to Center",
         nearbyAirports: "YTZ: 25km",
         phone: "+1 416 247 7678",
-        website: "https://torontopearson.com",
-        locationUrl: "https://goo.gl/maps/yyz"
+        website: "https://www.torontopearson.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Toronto+Pearson+Airport"
     },
     {
         iata: "ZAG",
@@ -2516,8 +2552,8 @@ const airportsData = [
         distanceCenter: "15 km to Center",
         nearbyAirports: "None",
         phone: "+385 1 4562 170",
-        website: "https://zagreb-airport.hr",
-        locationUrl: "https://goo.gl/maps/zag"
+        website: "https://www.zagreb-airport.hr",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Zagreb+Airport"
     },
     {
         iata: "ZNZ",
@@ -2528,8 +2564,8 @@ const airportsData = [
         distanceCenter: "7 km to Stone Town",
         nearbyAirports: "DAR: Ferry/Flight",
         phone: "+255 24 223 3979",
-        website: "https://zaa.go.tz",
-        locationUrl: "https://goo.gl/maps/znz"
+        website: "https://www.zaa.go.tz",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Zanzibar+Airport"
     },
     {
         iata: "ZRH",
@@ -2540,7 +2576,7 @@ const airportsData = [
         distanceCenter: "13 km to Center",
         nearbyAirports: "BSL: 80km",
         phone: "+41 43 816 22 11",
-        website: "https://zurich-airport.com",
-        locationUrl: "https://goo.gl/maps/zrh"
+        website: "https://www.zurich-airport.com",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Zurich+Airport"
     }
 ];
