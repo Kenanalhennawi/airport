@@ -4,6 +4,7 @@ const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
+// === FIXED: Comprehensive Country Code List ===
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae",
     "Ghana": "gh", "Ethiopia": "et", "Australia": "au", "Russia": "ru",
@@ -25,7 +26,8 @@ const countryCodes = {
     "Canada": "ca", "Oman": "om", "Bangladesh": "bd", "Sri Lanka": "lk",
     "Maldives": "mv", "Mauritius": "mu", "Seychelles": "sc", "Singapore": "sg",
     "Bosnia": "ba", "Austria": "at", "Kuwait": "kw", "Ukraine": "ua",
-    "Czech Republic": "cz", "Tajikistan": "tj", "Somalia": "so", "Djibouti": "dj"
+    "Czech Republic": "cz", "Tajikistan": "tj", "Somalia": "so", "Djibouti": "dj",
+    "Zambia": "zm", "Portugal": "pt", "Yemen": "ye"
 };
 
 function getLocalTime(timezone) {
@@ -38,12 +40,13 @@ function getLocalTime(timezone) {
 }
 
 function getFlagUrl(countryName) {
+    // Splits "Switzerland / France" to just "Switzerland" and trims whitespace
     let cleanName = countryName.split('/')[0].trim();
-    let code = countryCodes[cleanName] || "un"; 
+    let code = countryCodes[cleanName] || "un"; // 'un' is the UN flag placeholder
     return `https://flagcdn.com/w40/${code}.png`;
 }
 
-// === NEW: Time Difference Calculator ===
+// === Time Difference Calculator ===
 function getTimeDiff(timezone) {
     try {
         const now = new Date();
@@ -61,7 +64,7 @@ function getTimeDiff(timezone) {
     } catch (e) { return ""; }
 }
 
-// === NEW: Day/Night Icon Logic ===
+// === Day/Night Icon Logic ===
 function getDayNightIcon(timezone) {
     try {
         const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
@@ -168,11 +171,10 @@ clearBtn.addEventListener('click', () => {
 setInterval(() => {
     document.querySelectorAll('.time-badge').forEach(el => {
         const timezone = el.getAttribute('data-timezone');
-        // Re-inject icon + time to update dynamically
         const dayNightIcon = getDayNightIcon(timezone);
         el.innerHTML = `${dayNightIcon} ${getLocalTime(timezone)}`;
     });
-    lucide.createIcons(); // Refresh icons after update
+    lucide.createIcons(); 
 }, 1000);
 
 renderCards('');
