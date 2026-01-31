@@ -27,7 +27,9 @@
                 id="searchInput"
                 placeholder="Search IATA, City, or Country..."
                 autofocus
+                autocomplete="off"
             >
+            <i data-lucide="x" id="clearBtn" class="clear-icon hidden"></i>
         </div>
 
         <div id="cardsContainer" class="cards-grid">
@@ -36,7 +38,7 @@
 
     <div id="infoModal" class="modal-overlay hidden">
         <div class="modal-content">
-            <button id="closeModal" class="close-btn">&times;</button>
+            <button id="closeModal" class="close-btn">×</button>
             
             <div class="modal-header">
                 <h2 id="modalIata">DXB</h2>
