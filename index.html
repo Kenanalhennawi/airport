@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div class="overlay"></div>
+    <div class="background-overlay"></div>
 
     <div class="container">
         <header>
@@ -17,7 +17,7 @@
                 <i data-lucide="plane" class="logo-icon"></i>
                 <h1>FlyDubai <span class="highlight">Ops Guide</span></h1>
             </div>
-            <p class="subtitle">Memory Assistant for Super Agents</p>
+            <p class="subtitle">Global Network Terminal & Distance Data</p>
         </header>
 
         <div class="search-wrapper">
@@ -25,13 +25,57 @@
             <input 
                 type="text" 
                 id="searchInput"
-                placeholder="Search IATA, City, or Country (e.g. SAW, Moscow)..."
+                placeholder="Search IATA, City, or Country..."
                 autofocus
             >
         </div>
 
         <div id="cardsContainer" class="cards-grid">
             </div>
+    </div>
+
+    <div id="infoModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="closeModal" class="close-btn">&times;</button>
+            
+            <div class="modal-header">
+                <h2 id="modalIata">DXB</h2>
+                <p id="modalCity">Dubai, UAE</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="detail-row">
+                    <i data-lucide="map-pin"></i>
+                    <div>
+                        <strong>Distance to Center:</strong>
+                        <span id="modalDistance">5 km</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <i data-lucide="navigation"></i>
+                    <div>
+                        <strong>Other Airports:</strong>
+                        <span id="modalOtherAirports">--</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <i data-lucide="phone"></i>
+                    <div>
+                        <strong>Airport Contact:</strong>
+                        <span id="modalPhone">+971...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn">
+                    <i data-lucide="map"></i> Google Maps
+                </a>
+                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn">
+                    <i data-lucide="globe"></i> Official Website
+                </a>
+            </div>
+        </div>
     </div>
 
     <script src="data.js"></script>
