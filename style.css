@@ -25,7 +25,6 @@ body {
 
 .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
-/* Header & Search (Same as before) */
 header { text-align: center; margin-bottom: 30px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 .logo-area { display: flex; justify-content: center; gap: 10px; align-items: center; }
 .logo-icon { width: 35px; height: 35px; color: var(--fz-orange); }
@@ -34,14 +33,24 @@ h1 { font-size: 2.5rem; font-weight: 800; }
 .subtitle { opacity: 0.9; margin-top: 5px; }
 
 .search-wrapper { position: relative; max-width: 600px; margin: 0 auto 40px auto; }
-.search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--fz-blue); }
+
+.search-icon { 
+    position: absolute; left: 20px; top: 50%; transform: translateY(-50%); 
+    color: var(--fz-blue); pointer-events: none;
+}
+
+.clear-icon {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    color: #94a3b8; cursor: pointer; transition: color 0.2s;
+}
+.clear-icon:hover { color: var(--fz-orange); }
+
 input {
-    width: 100%; padding: 15px 20px 15px 50px; font-size: 1.1rem; border-radius: 50px;
+    width: 100%; padding: 15px 50px 15px 50px; font-size: 1.1rem; border-radius: 50px;
     border: none; outline: none; background: rgba(255,255,255,0.95);
     box-shadow: 0 5px 20px rgba(0,0,0,0.2); font-weight: bold; color: var(--fz-blue);
 }
 
-/* Grid & Cards */
 .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
 .card {
@@ -50,10 +59,13 @@ input {
     border-radius: 16px; padding: 20px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     border-left: 5px solid var(--fz-blue);
-    cursor: pointer; /* Makes it look clickable */
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
+    cursor: pointer; transition: all 0.2s ease;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .card:hover { transform: translateY(-5px); background: #ffffff; }
@@ -73,8 +85,8 @@ input {
     font-size: 0.75rem; text-align: center; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;
 }
 
-/* MODAL STYLES (New) */
 .hidden { display: none !important; }
+
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
@@ -110,6 +122,6 @@ input {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; transition: opacity 0.2s;
 }
-.map-btn { background: #34A853; color: white; } /* Google Maps Green */
+.map-btn { background: #34A853; color: white; }
 .web-btn { background: var(--fz-blue); color: white; }
 .action-btn:hover { opacity: 0.9; }
