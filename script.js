@@ -1,14 +1,15 @@
-// 1. تعريف العناصر من الصفحة
+// DOM Elements
 const container = document.getElementById('cardsContainer');
 const searchInput = document.getElementById('searchInput');
+const modal = document.getElementById('infoModal');
+const closeModalBtn = document.getElementById('closeModal');
 
-// 2. دالة حساب الوقت المحلي
+// Time Function
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', {
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
             timeZone: timezone,
             hour12: false
         }).format(new Date());
@@ -17,9 +18,9 @@ function getLocalTime(timezone) {
     }
 }
 
-// 3. دالة رسم الكروت (Rendering)
+// Render Cards
 function renderCards(filterText = '') {
-    container.innerHTML = ''; // مسح القديم
+    container.innerHTML = ''; 
 
     const filtered = airportsData.filter(airport => 
         airport.iata.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -28,58 +29,76 @@ function renderCards(filterText = '') {
     );
 
     if (filtered.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; color: white; margin-top: 50px;">
-                <h3 style="font-size: 1.5rem;">No destination found for "${filterText}"</h3>
-            </div>
-        `;
+        container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
         return;
     }
 
     filtered.forEach(airport => {
-        // تحديد هل يوجد تنبيه أم لا
-        const hasAlert = airport.alert ? 'alert-active' : '';
-        
-        // بناء كود HTML للكارت
-        const cardHTML = `
-            <div class="card ${hasAlert}">
-                <div class="card-header">
-                    <div>
-                        <div class="iata-code">${airport.iata}</div>
-                        <div class="city-name">${airport.city}, ${airport.country}</div>
-                    </div>
-                    <div class="time-badge" data-timezone="${airport.timezone}">
-                        ${getLocalTime(airport.timezone)}
-                    </div>
-                </div>
+        // Create Card Element
+        const card = document.createElement('div');
+        card.className = 'card';
+        // Add Click Event to Open Modal
+        card.onclick = () => openModal(airport);
 
-                <div class="terminal-info">
-                    <i data-lucide="map-pin" style="width:18px"></i>
-                    <span>${airport.terminal}</span>
+        card.innerHTML = `
+            <div class="card-header">
+                <div>
+                    <div class="iata-code">${airport.iata}</div>
+                    <div class="city-name">${airport.city}</div>
                 </div>
-
-                ${airport.alert ? `
-                <div class="alert-box">
-                    <i data-lucide="alert-triangle" style="width:20px; flex-shrink:0;"></i>
-                    <span>${airport.alert}</span>
+                <div class="time-badge" data-timezone="${airport.timezone}">
+                    ${getLocalTime(airport.timezone)}
                 </div>
-                ` : ''}
             </div>
+
+            <div class="terminal-info">
+                <i data-lucide="plane-landing" style="width:16px"></i>
+                <span>${airport.terminal}</span>
+            </div>
+
+            <div class="distance-preview">
+                <i data-lucide="car" style="width:16px"></i>
+                <span>${airport.distanceCenter}</span>
+            </div>
+            
+            <div class="click-hint">Click for Map & Contact</div>
         `;
         
-        container.innerHTML += cardHTML;
+        container.appendChild(card);
     });
 
-    // إعادة تفعيل الأيقونات
     lucide.createIcons();
 }
 
-// 4. تشغيل البحث
-searchInput.addEventListener('input', (e) => {
-    renderCards(e.target.value);
-});
+// Modal Functions
+function openModal(data) {
+    // Fill Data
+    document.getElementById('modalIata').textContent = data.iata;
+    document.getElementById('modalCity').textContent = `${data.city}, ${data.country}`;
+    document.getElementById('modalDistance').textContent = data.distanceCenter;
+    document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
+    document.getElementById('modalPhone').textContent = data.phone;
+    
+    // Set Links
+    document.getElementById('modalMapBtn').href = data.locationUrl;
+    document.getElementById('modalWebBtn').href = data.website;
 
-// 5. تحديث الساعة كل ثانية
+    // Show Modal
+    modal.classList.remove('hidden');
+    lucide.createIcons();
+}
+
+// Close Modal
+closeModalBtn.onclick = () => modal.classList.add('hidden');
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Live Search & Time Update
+searchInput.addEventListener('input', (e) => renderCards(e.target.value));
+
 setInterval(() => {
     document.querySelectorAll('.time-badge').forEach(el => {
         const timezone = el.getAttribute('data-timezone');
@@ -87,5 +106,5 @@ setInterval(() => {
     });
 }, 1000);
 
-// التشغيل الأولي عند فتح الصفحة
+// Initial Render
 renderCards();
