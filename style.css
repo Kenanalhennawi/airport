@@ -15,6 +15,10 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     color: var(--text-main);
+    
+    /* Flexbox settings to stick footer to bottom */
+    display: flex;
+    flex-direction: column;
 }
 
 .background-overlay {
@@ -23,7 +27,13 @@ body {
     z-index: -1;
 }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+.container { 
+    max-width: 1100px; 
+    margin: 0 auto; 
+    padding: 40px 20px;
+    flex: 1; /* This pushes the footer down */
+    width: 100%;
+}
 
 header { text-align: center; margin-bottom: 30px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 .logo-area { display: flex; justify-content: center; gap: 10px; align-items: center; }
@@ -39,13 +49,12 @@ h1 { font-size: 2.5rem; font-weight: 800; }
     color: var(--fz-blue); pointer-events: none; z-index: 10;
 }
 
-/* Clear Button Wrapper */
 .clear-btn {
     position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
     color: #94a3b8; cursor: pointer; 
-    z-index: 50; /* High priority to ensure clickability */
+    z-index: 50; 
     background: rgba(255,255,255,0.9);
     border-radius: 50%;
     transition: all 0.2s ease;
@@ -86,7 +95,6 @@ input {
     display: flex; align-items: center;
 }
 
-/* Flag Icon Style */
 .flag-icon {
     width: 24px; height: 18px; object-fit: cover;
     border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -105,7 +113,6 @@ input {
     display: flex; align-items: center; gap: 6px; 
 }
 
-/* Sun & Moon Icons */
 .icon-sun { color: #FDB813; width: 16px; height: 16px; fill: #FDB813; }
 .icon-moon { color: #94a3b8; width: 16px; height: 16px; fill: #94a3b8; }
 
@@ -160,3 +167,16 @@ input {
 .map-btn { background: #34A853; color: white; }
 .web-btn { background: var(--fz-blue); color: white; }
 .action-btn:hover { opacity: 0.9; }
+
+/* === Footer Style === */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: auto; /* يضمن بقاء الفوتر في الأسفل */
+}
+footer strong {
+    color: var(--fz-orange);
+}
