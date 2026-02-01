@@ -4,7 +4,6 @@ const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
-// === FINAL FIXED COUNTRY CODES ===
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
     "Kuwait": "kw", "Oman": "om", "Qatar": "qa", "Jordan": "jo", "Lebanon": "lb",
@@ -43,7 +42,6 @@ function getLocalTime(timezone) {
 
 function getFlagUrl(countryName) {
     let cleanName = countryName.split('/')[0].trim();
-    // Default to 'un' flag if code not found
     let code = countryCodes[cleanName] || "un"; 
     return `https://flagcdn.com/w40/${code}.png`;
 }
@@ -54,7 +52,7 @@ function updateLiveClock() {
     document.getElementById('dxbTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false });
 }
 
-function getTimeDiff(timezone) {
+function getTimeDiffHTML(timezone) {
     try {
         const now = new Date();
         const dubaiStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
@@ -64,9 +62,13 @@ function getTimeDiff(timezone) {
         if (diff > 12) diff -= 24;
         if (diff < -12) diff += 24;
 
-        if (diff === 0) return `<span style="color:#10b981; font-size:0.8rem;">(Same Time)</span>`;
-        const sign = diff > 0 ? "+" : "";
-        return `<span style="color:#f59e0b; font-size:0.8rem;">(${sign}${diff}h vs DXB)</span>`;
+        if (diff === 0) {
+            return `<span class="time-diff diff-same">(Same Time)</span>`;
+        } else if (diff > 0) {
+            return `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>`; // Green
+        } else {
+            return `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`; // Red
+        }
     } catch (e) { return ""; }
 }
 
@@ -103,7 +105,7 @@ function renderCards(filterText = '') {
         card.onclick = () => openModal(airport);
 
         const flagUrl = getFlagUrl(airport.country);
-        const timeDiff = getTimeDiff(airport.timezone);
+        const timeDiffHTML = getTimeDiffHTML(airport.timezone);
         const dayNightIcon = getDayNightIcon(airport.timezone);
 
         card.innerHTML = `
@@ -119,7 +121,7 @@ function renderCards(filterText = '') {
                     <div class="time-badge" data-timezone="${airport.timezone}">
                         ${dayNightIcon} ${getLocalTime(airport.timezone)}
                     </div>
-                    <div>${timeDiff}</div>
+                    <div>${timeDiffHTML}</div>
                 </div>
             </div>
 
@@ -148,8 +150,10 @@ function openModal(data) {
     document.getElementById('modalDistance').textContent = data.distanceCenter;
     document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
     document.getElementById('modalPhone').textContent = data.phone;
+    
     document.getElementById('modalMapBtn').href = data.locationUrl;
     document.getElementById('modalWebBtn').href = data.website;
+
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
