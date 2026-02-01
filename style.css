@@ -47,7 +47,7 @@ h1 { font-size: 2.5rem; font-weight: 800; }
     background: rgba(255,255,255,0.9); border-radius: 50%;
     transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-.clear-btn:hover { color: var(--fz-orange); transform: translateY(-50%) scale(1.1); }
+.clear-btn:hover { color: var(--fz-orange); transform: translateY(-50%) scale(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
 input {
     width: 100%; padding: 15px 55px 15px 50px; font-size: 1.1rem; border-radius: 50px;
