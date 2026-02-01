@@ -4,7 +4,6 @@ const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
-// === FIXED: Comprehensive Country Code List ===
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae",
     "Ghana": "gh", "Ethiopia": "et", "Australia": "au", "Russia": "ru",
@@ -40,38 +39,36 @@ function getLocalTime(timezone) {
 }
 
 function getFlagUrl(countryName) {
-    // Splits "Switzerland / France" to just "Switzerland" and trims whitespace
     let cleanName = countryName.split('/')[0].trim();
-    let code = countryCodes[cleanName] || "un"; // 'un' is the UN flag placeholder
+    let code = countryCodes[cleanName] || "un"; 
     return `https://flagcdn.com/w40/${code}.png`;
 }
 
-// === Time Difference Calculator ===
+function updateLiveClock() {
+    const now = new Date();
+    document.getElementById('utcTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
+    document.getElementById('dxbTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false });
+}
+
 function getTimeDiff(timezone) {
     try {
         const now = new Date();
         const dubaiStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
         const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
-        
         let diff = parseInt(targetStr) - parseInt(dubaiStr);
-        
         if (diff > 12) diff -= 24;
         if (diff < -12) diff += 24;
-
         if (diff === 0) return `<span style="color:#10b981; font-size:0.8rem;">(Same Time)</span>`;
         const sign = diff > 0 ? "+" : "";
         return `<span style="color:#f59e0b; font-size:0.8rem;">(${sign}${diff}h vs DXB)</span>`;
     } catch (e) { return ""; }
 }
 
-// === Day/Night Icon Logic ===
 function getDayNightIcon(timezone) {
     try {
         const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
             hour: 'numeric', hour12: false, timeZone: timezone
         }).format(new Date()));
-
-        // Day is roughly 6 AM to 6 PM (18:00)
         return (hour >= 6 && hour < 18) 
             ? `<i data-lucide="sun" class="icon-sun"></i>` 
             : `<i data-lucide="moon" class="icon-moon"></i>`;
@@ -80,11 +77,7 @@ function getDayNightIcon(timezone) {
 
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
-
-    if (!filterText.trim()) {
-        clearBtn.classList.add('hidden');
-        return; 
-    }
+    if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
     clearBtn.classList.remove('hidden');
 
     const filtered = airportsData.filter(airport => 
@@ -123,23 +116,18 @@ function renderCards(filterText = '') {
                     <div>${timeDiff}</div>
                 </div>
             </div>
-
             <div class="terminal-info">
                 <i data-lucide="plane-landing" style="width:16px"></i>
                 <span>${airport.terminal}</span>
             </div>
-
             <div class="distance-preview">
                 <i data-lucide="car" style="width:16px"></i>
                 <span>${airport.distanceCenter}</span>
             </div>
-            
             <div class="click-hint">Click for Map & Contact</div>
         `;
-        
         container.appendChild(card);
     });
-
     lucide.createIcons();
 }
 
@@ -149,10 +137,8 @@ function openModal(data) {
     document.getElementById('modalDistance').textContent = data.distanceCenter;
     document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
     document.getElementById('modalPhone').textContent = data.phone;
-    
     document.getElementById('modalMapBtn').href = data.locationUrl;
     document.getElementById('modalWebBtn').href = data.website;
-
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
@@ -161,14 +147,10 @@ closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
 
 searchInput.addEventListener('input', (e) => renderCards(e.target.value));
-
-clearBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    renderCards('');
-    searchInput.focus();
-});
+clearBtn.addEventListener('click', () => { searchInput.value = ''; renderCards(''); searchInput.focus(); });
 
 setInterval(() => {
+    updateLiveClock();
     document.querySelectorAll('.time-badge').forEach(el => {
         const timezone = el.getAttribute('data-timezone');
         const dayNightIcon = getDayNightIcon(timezone);
@@ -177,4 +159,5 @@ setInterval(() => {
     lucide.createIcons(); 
 }, 1000);
 
+updateLiveClock();
 renderCards('');
