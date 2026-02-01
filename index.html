@@ -8,9 +8,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-
     <div class="background-overlay"></div>
-
     <div class="container">
         <header>
             <div class="logo-area">
@@ -19,34 +17,36 @@
             </div>
             <p class="subtitle">Global Network Terminal & Distance Data</p>
         </header>
-
         <div class="search-wrapper">
             <i data-lucide="search" class="search-icon"></i>
-            <input 
-                type="text" 
-                id="searchInput"
-                placeholder="Search IATA, City, or Country (e.g. LUN, Russia)..."
-                autofocus
-                autocomplete="off"
-            >
+            <input type="text" id="searchInput" placeholder="Search IATA, City, or Country..." autofocus autocomplete="off">
             <div id="clearBtn" class="clear-btn hidden">
                 <i data-lucide="x"></i>
             </div>
         </div>
-
-        <div id="cardsContainer" class="cards-grid">
+        <div class="clock-widget">
+            <div class="clock-item">
+                <span class="clock-label">UTC (ZULU)</span>
+                <span id="utcTime" class="clock-time">00:00:00</span>
             </div>
+            <div class="clock-divider"></div>
+            <div class="clock-item">
+                <span class="clock-label">DUBAI (DXB)</span>
+                <span id="dxbTime" class="clock-time dxb-time">00:00:00</span>
+            </div>
+        </div>
+        <div id="cardsContainer" class="cards-grid"></div>
     </div>
-
+    <footer>
+        <p>© Created by <strong>Kenan Alhennawi</strong> 2026</p>
+    </footer>
     <div id="infoModal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="closeModal" class="close-btn">×</button>
-            
             <div class="modal-header">
                 <h2 id="modalIata">DXB</h2>
                 <p id="modalCity">Dubai, UAE</p>
             </div>
-
             <div class="modal-body">
                 <div class="detail-row">
                     <i data-lucide="map-pin"></i>
@@ -70,18 +70,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-actions">
-                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn">
-                    <i data-lucide="map"></i> Google Maps
-                </a>
-                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn">
-                    <i data-lucide="globe"></i> Website
-                </a>
+                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn"><i data-lucide="map"></i> Google Maps</a>
+                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn"><i data-lucide="globe"></i> Website</a>
             </div>
         </div>
     </div>
-
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
