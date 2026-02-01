@@ -3,7 +3,6 @@ const searchInput = document.getElementById('searchInput');
 const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
-
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae",
     "Ghana": "gh", "Ethiopia": "et", "Australia": "au", "Russia": "ru",
@@ -28,7 +27,6 @@ const countryCodes = {
     "Czech Republic": "cz", "Tajikistan": "tj", "Somalia": "so", "Djibouti": "dj",
     "Zambia": "zm", "Portugal": "pt", "Yemen": "ye"
 };
-
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', {
@@ -37,19 +35,16 @@ function getLocalTime(timezone) {
         }).format(new Date());
     } catch (e) { return "--:--"; }
 }
-
 function getFlagUrl(countryName) {
     let cleanName = countryName.split('/')[0].trim();
     let code = countryCodes[cleanName] || "un"; 
     return `https://flagcdn.com/w40/${code}.png`;
 }
-
 function updateLiveClock() {
     const now = new Date();
     document.getElementById('utcTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
     document.getElementById('dxbTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false });
 }
-
 function getTimeDiff(timezone) {
     try {
         const now = new Date();
@@ -63,7 +58,6 @@ function getTimeDiff(timezone) {
         return `<span style="color:#f59e0b; font-size:0.8rem;">(${sign}${diff}h vs DXB)</span>`;
     } catch (e) { return ""; }
 }
-
 function getDayNightIcon(timezone) {
     try {
         const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
@@ -74,32 +68,26 @@ function getDayNightIcon(timezone) {
             : `<i data-lucide="moon" class="icon-moon"></i>`;
     } catch (e) { return ''; }
 }
-
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
     if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
     clearBtn.classList.remove('hidden');
-
     const filtered = airportsData.filter(airport => 
         airport.iata.toLowerCase().includes(filterText.toLowerCase()) ||
         airport.city.toLowerCase().includes(filterText.toLowerCase()) ||
         airport.country.toLowerCase().includes(filterText.toLowerCase())
     );
-
     if (filtered.length === 0) {
         container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
         return;
     }
-
     filtered.forEach(airport => {
         const card = document.createElement('div');
         card.className = 'card';
         card.onclick = () => openModal(airport);
-
         const flagUrl = getFlagUrl(airport.country);
         const timeDiff = getTimeDiff(airport.timezone);
         const dayNightIcon = getDayNightIcon(airport.timezone);
-
         card.innerHTML = `
             <div class="card-header">
                 <div>
@@ -130,7 +118,6 @@ function renderCards(filterText = '') {
     });
     lucide.createIcons();
 }
-
 function openModal(data) {
     document.getElementById('modalIata').textContent = data.iata;
     document.getElementById('modalCity').textContent = `${data.city}, ${data.country}`;
@@ -142,13 +129,10 @@ function openModal(data) {
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
-
 closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
-
 searchInput.addEventListener('input', (e) => renderCards(e.target.value));
 clearBtn.addEventListener('click', () => { searchInput.value = ''; renderCards(''); searchInput.focus(); });
-
 setInterval(() => {
     updateLiveClock();
     document.querySelectorAll('.time-badge').forEach(el => {
@@ -158,6 +142,5 @@ setInterval(() => {
     });
     lucide.createIcons(); 
 }, 1000);
-
 updateLiveClock();
 renderCards('');
