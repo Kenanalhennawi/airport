@@ -4,14 +4,19 @@ const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
+// === EXPANDED COUNTRY LIST (Fixes Lusaka/Lagos Flags) ===
 const countryCodes = {
+    // Middle East
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
     "Kuwait": "kw", "Oman": "om", "Qatar": "qa", "Jordan": "jo", "Lebanon": "lb",
     "Iraq": "iq", "Iran": "ir", "Syria": "sy", "Israel": "il", "Yemen": "ye", "Turkey": "tr",
+    // Africa
     "Egypt": "eg", "Sudan": "sd", "Djibouti": "dj", "Eritrea": "er", "Somalia": "so",
     "Ethiopia": "et", "South Sudan": "ss", "Kenya": "ke", "Uganda": "ug", "Tanzania": "tz",
     "Zanzibar": "tz", "South Africa": "za", "Nigeria": "ng", "Ghana": "gh", "Senegal": "sn",
     "Ivory Coast": "ci", "Morocco": "ma", "Tunisia": "tn", "Algeria": "dz", "Zambia": "zm",
+    "Congo": "cg", "Democratic Republic of the Congo": "cd",
+    // Europe
     "Russia": "ru", "Ukraine": "ua", "Belarus": "by", "Poland": "pl", "Romania": "ro",
     "Bulgaria": "bg", "Serbia": "rs", "Bosnia": "ba", "Montenegro": "me", "Croatia": "hr",
     "Slovenia": "si", "Hungary": "hu", "Czech Republic": "cz", "Slovakia": "sk",
@@ -20,15 +25,17 @@ const countryCodes = {
     "Spain": "es", "Portugal": "pt", "Finland": "fi", "Sweden": "se", "Norway": "no",
     "Denmark": "dk", "Lithuania": "lt", "Latvia": "lv", "Estonia": "ee", "Georgia": "ge",
     "Azerbaijan": "az", "Armenia": "am",
+    // Asia
     "India": "in", "Pakistan": "pk", "Bangladesh": "bd", "Sri Lanka": "lk", "Nepal": "np",
     "Maldives": "mv", "Kazakhstan": "kz", "Kyrgyzstan": "kg", "Uzbekistan": "uz",
     "Turkmenistan": "tm", "Tajikistan": "tj", "Thailand": "th", "Malaysia": "my",
     "Singapore": "sg", "Indonesia": "id", "Philippines": "ph", "Vietnam": "vn",
     "China": "cn", "Hong Kong": "hk", "Taiwan": "tw", "South Korea": "kr", "Japan": "jp",
-    "Myanmar": "mm",
+    "Myanmar": "mm", "Afghanistan": "af",
+    // Americas & Oceania
     "USA": "us", "Canada": "ca", "Mexico": "mx", "Australia": "au", "New Zealand": "nz",
-    "Mauritius": "mu", "Seychelles": "sc", "Congo": "cg", "Democratic Republic of the Congo": "cd",
-    "Afghanistan": "af"
+    // Islands
+    "Mauritius": "mu", "Seychelles": "sc"
 };
 
 function getLocalTime(timezone) {
@@ -52,6 +59,7 @@ function updateLiveClock() {
     document.getElementById('dxbTime').textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false });
 }
 
+// === Logic to Apply Red/Green Colors ===
 function getTimeDiffHTML(timezone) {
     try {
         const now = new Date();
@@ -65,9 +73,9 @@ function getTimeDiffHTML(timezone) {
         if (diff === 0) {
             return `<span class="time-diff diff-same">(Same Time)</span>`;
         } else if (diff > 0) {
-            return `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>`; // Green
+            return `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>`;
         } else {
-            return `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`; // Red
+            return `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
         }
     } catch (e) { return ""; }
 }
