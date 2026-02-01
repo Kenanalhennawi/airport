@@ -25,7 +25,7 @@
             <input 
                 type="text" 
                 id="searchInput"
-                placeholder="Search IATA, City, or Country (e.g. LUN, Russia)..."
+                placeholder="Search IATA, City, or Country..."
                 autofocus
                 autocomplete="off"
             >
@@ -35,19 +35,17 @@
         </div>
 
         <div class="ops-clock-container">
-            <div class="clock-box zulu-box">
-                <div class="clock-title">UTC (ZULU)</div>
+            <div class="clock-card zulu">
+                <div class="clock-label">UTC (ZULU)</div>
                 <div id="utcTime" class="clock-digits">00:00:00</div>
             </div>
-            <div class="clock-separator"></div>
-            <div class="clock-box local-box">
-                <div class="clock-title">DUBAI (DXB)</div>
+            <div class="clock-card local">
+                <div class="clock-label">DUBAI (DXB)</div>
                 <div id="dxbTime" class="clock-digits">00:00:00</div>
             </div>
         </div>
 
-        <div id="cardsContainer" class="cards-grid">
-            </div>
+        <div id="cardsContainer" class="cards-grid"></div>
     </div>
 
     <footer>
@@ -57,12 +55,10 @@
     <div id="infoModal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="closeModal" class="close-btn">×</button>
-            
             <div class="modal-header">
                 <h2 id="modalIata">DXB</h2>
                 <p id="modalCity">Dubai, UAE</p>
             </div>
-
             <div class="modal-body">
                 <div class="detail-row">
                     <i data-lucide="map-pin"></i>
@@ -86,14 +82,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-actions">
-                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn">
-                    <i data-lucide="map"></i> Google Maps
-                </a>
-                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn">
-                    <i data-lucide="globe"></i> Website
-                </a>
+                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn"><i data-lucide="map"></i> Google Maps</a>
+                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn"><i data-lucide="globe"></i> Website</a>
             </div>
         </div>
     </div>
