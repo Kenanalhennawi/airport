@@ -93,15 +93,18 @@ function getDayNightIcon(timezone) {
 }
 
 function renderCards(filterText = '') {
-    container.innerHTML = ''; 
-    if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
-    clearBtn.classList.remove('hidden');
+    container.innerHTML = '';
+    const query = (filterText || '').trim();
+    if (query) clearBtn.classList.remove('hidden');
+    else clearBtn.classList.add('hidden');
 
-    const filtered = airportsData.filter(airport => 
-        airport.iata.toLowerCase().includes(filterText.toLowerCase()) ||
-        airport.city.toLowerCase().includes(filterText.toLowerCase()) ||
-        airport.country.toLowerCase().includes(filterText.toLowerCase())
-    );
+    const filtered = query
+        ? airportsData.filter(airport =>
+            airport.iata.toLowerCase().includes(query.toLowerCase()) ||
+            airport.city.toLowerCase().includes(query.toLowerCase()) ||
+            airport.country.toLowerCase().includes(query.toLowerCase())
+          )
+        : airportsData;
 
     if (filtered.length === 0) {
         container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
@@ -169,6 +172,17 @@ function openModal(data) {
 
 closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
+
+const carrierModal = document.getElementById('carrierModal');
+const openCarrierBtn = document.getElementById('openCarrierBtn');
+const closeCarrierModal = document.getElementById('closeCarrierModal');
+
+openCarrierBtn.addEventListener('click', () => {
+    carrierModal.classList.remove('hidden');
+    lucide.createIcons();
+});
+closeCarrierModal.onclick = () => carrierModal.classList.add('hidden');
+carrierModal.onclick = (e) => { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
 
 searchInput.addEventListener('input', (e) => renderCards(e.target.value));
 
