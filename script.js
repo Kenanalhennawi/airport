@@ -40,87 +40,6 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj"
 };
 
-// === IATCI PARTNER DATABASE (55 Carriers) ===
-const iatciPartners = [
-    { name: "Emirates", code: "EK", host: "MARS", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral/Codeshare" },
-    { name: "United Airlines", code: "UA", host: "Shares B", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral/Codeshare" },
-    { name: "Air Canada", code: "AC", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral/Codeshare" },
-    { name: "Access Rail", code: "9B", host: "Amadeus", tagging: "NO", bp: "N/A", remarks: "Onward via DB Rail" },
-    { name: "Aegean Airlines", code: "A3", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Batik Air", code: "OD", host: "Sabre", tagging: "YES", bp: "NOT REQUIRED", remarks: "IATCI Activation 27Jan'26" },
-    { name: "Royal Brunei", code: "BI", host: "Hitit", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Air France", code: "AF", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral" },
-    { name: "KLM", code: "KL", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral" },
-    { name: "China Southern", code: "CZ", host: "Travelsky", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Unilateral" },
-    { name: "Air China", code: "CA", host: "Travelsky", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "EL Israel", code: "LY", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "INVOL Only" },
-    { name: "Singapore", code: "SQ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Unilateral" },
-    { name: "Srilankan", code: "UL", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Condor", code: "DE", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Air Astana", code: "KC", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Philippine Airlines", code: "PR", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Korean Air", code: "KE", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Virgin Atlantic", code: "VS", host: "AIR4", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Gulf Air", code: "GF", host: "Sabre", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Saudia", code: "SV", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Kenya Air", code: "KQ", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "Cathay Pacific", code: "CX", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Pakistan Intl", code: "PK", host: "Hitit", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "Air Serbia", code: "JU", host: "Sabre", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
-    { name: "LOT Polish", code: "LO", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
-    { name: "ITA Airlines", code: "AZ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "15Jul25 Activation" },
-    { name: "Air India", code: "AI", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "11Dec 25 Activation" },
-    { name: "Royal Jordanian", code: "RJ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "11Dec 25 Activation" }
-];
-
-// === TAB SWITCHING LOGIC ===
-function switchTab(tab) {
-    const iatciContainer = document.getElementById('iatciContainer');
-    if (tab === 'airports') {
-        container.classList.remove('hidden');
-        iatciContainer.classList.add('hidden');
-        document.getElementById('btnAirports').classList.add('active');
-        document.getElementById('btnIatci').classList.remove('active');
-        renderCards(searchInput.value);
-    } else {
-        container.classList.add('hidden');
-        iatciContainer.classList.remove('hidden');
-        document.getElementById('btnAirports').classList.remove('active');
-        document.getElementById('btnIatci').classList.add('active');
-        renderIatciTable(searchInput.value);
-    }
-}
-
-// === IATCI TABLE RENDERING (With Color and Font Weight Fixes) ===
-function renderIatciTable(filterText = '') {
-    const iatciBody = document.getElementById('iatciBody');
-    iatciBody.innerHTML = '';
-    const filtered = iatciPartners.filter(p => 
-        p.name.toLowerCase().includes(filterText.toLowerCase()) || 
-        p.code.toLowerCase().includes(filterText.toLowerCase())
-    );
-
-    filtered.forEach(p => {
-        const tr = document.createElement('tr');
-        
-        // Dynamic Badge Colors based on status
-        const tagBadge = p.tagging === 'YES' ? 'bg-yes' : 'bg-no';
-        const bpBadge = p.bp === 'NOT REQUIRED' ? 'bg-yes' : (p.bp.includes('Desk') ? 'bg-warn' : 'bg-no');
-        
-        // High contrast colors: dark text for rows, Blue for Carrier Code
-        tr.innerHTML = `
-            <td style="color: #1e293b; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.name}</td>
-            <td style="color: #005EB8; font-weight: 900; text-align: center; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.code}</td>
-            <td style="color: #64748b; font-size: 0.8rem; text-align: center; font-weight: 500; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.host}</td>
-            <td style="text-align: center; border-bottom: 1px solid #e2e8f0; padding: 12px;"><span class="badge-iatci ${tagBadge}" style="font-weight: 800;">${p.tagging}</span></td>
-            <td style="border-bottom: 1px solid #e2e8f0; padding: 12px;"><span class="badge-iatci ${bpBadge}" style="font-weight: 800;">${p.bp}</span></td>
-            <td style="color: #475569; font-size: 0.85rem; font-style: italic; font-weight: 500; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.remarks}</td>
-        `;
-        iatciBody.appendChild(tr);
-    });
-}
-
-// === HELPER FUNCTIONS ===
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', {
@@ -173,7 +92,6 @@ function getDayNightIcon(timezone) {
     } catch (e) { return ''; }
 }
 
-// === DESTINATION RENDERING ===
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
     if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
@@ -252,17 +170,11 @@ function openModal(data) {
 closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
 
-searchInput.addEventListener('input', (e) => {
-    const isIatci = document.getElementById('btnIatci').classList.contains('active');
-    if (isIatci) renderIatciTable(e.target.value);
-    else renderCards(e.target.value);
-});
+searchInput.addEventListener('input', (e) => renderCards(e.target.value));
 
 clearBtn.addEventListener('click', () => {
     searchInput.value = '';
-    const isIatci = document.getElementById('btnIatci').classList.contains('active');
-    if (isIatci) renderIatciTable('');
-    else renderCards('');
+    renderCards('');
     searchInput.focus();
 });
 
