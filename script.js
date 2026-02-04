@@ -230,8 +230,19 @@ function init() {
     var carrierTableBody = document.getElementById('carrierTableBody');
     if (modalTable && modalTable.tBodies[0] && carrierTableBody) {
         carrierTableBody.innerHTML = '';
-        for (var i = 0; i < modalTable.tBodies[0].rows.length; i++) {
-            carrierTableBody.appendChild(modalTable.tBodies[0].rows[i].cloneNode(true));
+        var modalRows = modalTable.tBodies[0].rows;
+        var rows = [];
+        for (var i = 0; i < modalRows.length; i++) {
+            rows.push(modalRows[i].cloneNode(true));
+        }
+        rows.sort(function (a, b) {
+            var nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
+            var nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+        for (var j = 0; j < rows.length; j++) {
+            if (rows[j].cells[0]) rows[j].cells[0].textContent = j + 1;
+            carrierTableBody.appendChild(rows[j]);
         }
     }
 
