@@ -47,7 +47,25 @@
 
         <div id="section-airports" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
+<div class="nav-tabs">
+    <button id="btnAirports" onclick="switchTab('airports')" class="active">Destination Search</button>
+    <button id="btnIatci" onclick="switchTab('iatci')">IATCI Partner Database</button>
+</div>
 
+<div id="iatciContainer" class="table-card hidden">
+    <table id="iatciTable">
+        <thead>
+            <tr>
+                <th>Carrier</th>
+                <th>Code</th>
+                <th>Tagging</th>
+                <th>BP Collection</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody id="iatciBody"></tbody>
+    </table>
+</div>
         <div id="section-iatci" class="hidden animate-fade-in">
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
                 <table class="w-full text-left">
