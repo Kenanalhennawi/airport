@@ -150,6 +150,50 @@ input {
 .hidden { display: none !important; }
 
 /* === Carrier button (main page) === */
+.view-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.view-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.view-tab:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+}
+.view-tab.active {
+    background: var(--fz-orange);
+    border-color: var(--fz-orange);
+    color: white;
+}
+.view-tab svg { width: 22px; height: 22px; }
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+.carrier-inline {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-left: 5px solid var(--fz-orange);
+}
+.carrier-inline .carrier-explanation {
+    margin-bottom: 16px;
+}
+
 .carrier-btn-wrap { text-align: center; margin-bottom: 20px; }
 .carrier-btn {
     display: inline-flex;
