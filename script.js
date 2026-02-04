@@ -92,19 +92,26 @@ function getDayNightIcon(timezone) {
     } catch (e) { return ''; }
 }
 
+function getAirportsData() {
+    const data = typeof airportsData !== 'undefined' ? airportsData : (typeof window !== 'undefined' && window.airportsData);
+    return Array.isArray(data) ? data : [];
+}
+
 function renderCards(filterText = '') {
+    if (!container) return;
+    const data = getAirportsData();
     container.innerHTML = '';
     const query = (filterText || '').trim();
     if (query) clearBtn.classList.remove('hidden');
     else clearBtn.classList.add('hidden');
 
     const filtered = query
-        ? airportsData.filter(airport =>
+        ? data.filter(airport =>
             airport.iata.toLowerCase().includes(query.toLowerCase()) ||
             airport.city.toLowerCase().includes(query.toLowerCase()) ||
             airport.country.toLowerCase().includes(query.toLowerCase())
           )
-        : airportsData;
+        : data;
 
     if (filtered.length === 0) {
         container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
@@ -177,20 +184,24 @@ const carrierModal = document.getElementById('carrierModal');
 const openCarrierBtn = document.getElementById('openCarrierBtn');
 const closeCarrierModal = document.getElementById('closeCarrierModal');
 
-openCarrierBtn.addEventListener('click', () => {
-    carrierModal.classList.remove('hidden');
-    lucide.createIcons();
-});
-closeCarrierModal.onclick = () => carrierModal.classList.add('hidden');
-carrierModal.onclick = (e) => { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
+if (openCarrierBtn && carrierModal) {
+    openCarrierBtn.addEventListener('click', () => {
+        carrierModal.classList.remove('hidden');
+        lucide.createIcons();
+    });
+}
+if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = () => carrierModal.classList.add('hidden');
+if (carrierModal) carrierModal.onclick = (e) => { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
 
-searchInput.addEventListener('input', (e) => renderCards(e.target.value));
+if (searchInput) searchInput.addEventListener('input', (e) => renderCards(e.target.value));
 
-clearBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    renderCards('');
-    searchInput.focus();
-});
+if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        renderCards('');
+        searchInput.focus();
+    });
+}
 
 setInterval(() => {
     updateLiveClock();
@@ -199,7 +210,7 @@ setInterval(() => {
         const dayNightIcon = getDayNightIcon(timezone);
         el.innerHTML = `${dayNightIcon} ${getLocalTime(timezone)}`;
     });
-    lucide.createIcons(); 
+    lucide.createIcons();
 }, 1000);
 
 updateLiveClock();
