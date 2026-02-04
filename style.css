@@ -140,26 +140,73 @@ input {
 .click-hint { font-size: 0.75rem; text-align: center; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .hidden { display: none !important; }
 
-/* === Carrier IATCI Table === */
-.carrier-section {
-    margin-bottom: 40px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    border-left: 5px solid var(--fz-orange);
+/* === Carrier button (main page) === */
+.carrier-btn-wrap { text-align: center; margin-bottom: 30px; }
+.carrier-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--fz-orange);
+    border-radius: 50px;
+    color: var(--fz-blue);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
 }
-.section-title {
+.carrier-btn:hover {
+    background: var(--fz-orange);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(246, 136, 31, 0.4);
+}
+.carrier-btn svg { width: 22px; height: 22px; }
+.carrier-btn span { display: block; }
+
+/* === Carrier modal (separate window) === */
+.carrier-modal .modal-content.carrier-modal-content {
+    max-width: min(95vw, 1000px);
+}
+.carrier-modal-content {
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.carrier-modal-header {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+    padding-right: 40px;
+}
+.carrier-modal-header h2 {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 1.5rem;
     color: var(--fz-blue);
-    font-size: 1.35rem;
-    margin-bottom: 16px;
-    font-weight: 800;
+    margin-bottom: 12px;
 }
-.section-title svg { width: 28px; height: 28px; color: var(--fz-orange); }
+.carrier-modal-header h2 svg { width: 28px; height: 28px; color: var(--fz-orange); }
+.carrier-explanation {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+    background: #f1f5f9;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border-left: 4px solid var(--fz-orange);
+}
+.carrier-explanation strong { color: var(--text-main); }
+.carrier-modal .table-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
 .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -186,6 +233,7 @@ input {
     position: sticky;
     top: 0;
 }
+.carrier-table th small { font-weight: 500; opacity: 0.95; }
 .carrier-table tbody tr:hover {
     background: rgba(0, 94, 184, 0.06);
 }
