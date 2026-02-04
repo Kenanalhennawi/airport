@@ -23,10 +23,14 @@
             <p class="subtitle">Global Network Terminal & Distance Data</p>
         </header>
 
-        <div class="carrier-btn-wrap">
-            <button type="button" id="openCarrierBtn" class="carrier-btn" aria-label="Open Carrier IATCI / Interline">
+        <div class="view-tabs">
+            <button type="button" id="tabAirports" class="view-tab active" aria-pressed="true">
+                <i data-lucide="map-pin"></i>
+                <span>Airports / المطارات</span>
+            </button>
+            <button type="button" id="tabInterline" class="view-tab" aria-pressed="false">
                 <i data-lucide="layers"></i>
-                <span>Carrier IATCI / Interline</span>
+                <span>Interline / الانترلاين</span>
             </button>
         </div>
 
@@ -55,7 +59,39 @@
             </div>
         </div>
 
-        <div id="cardsContainer" class="cards-grid"></div>
+        <div id="airportsView" class="view-panel active">
+            <div id="cardsContainer" class="cards-grid"></div>
+        </div>
+
+        <div id="interlineView" class="view-panel">
+            <div class="carrier-inline">
+                <p class="carrier-explanation">
+                    <strong>What this is:</strong> Partner airlines we can check in through (IATCI) or tag bags for.
+                    <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
+                    <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
+                </p>
+                <div class="table-scroll">
+                    <table class="carrier-table" id="carrierTableMain">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Carrier</th>
+                                <th>Code</th>
+                                <th>Acct</th>
+                                <th>Host</th>
+                                <th>Type</th>
+                                <th>IATCI</th>
+                                <th>Through check-in<br><small>BP</small></th>
+                                <th>Through check-in<br><small>Bag</small></th>
+                                <th>BP at transfer</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carrierTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer>
