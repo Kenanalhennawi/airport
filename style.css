@@ -141,7 +141,7 @@ input {
 .hidden { display: none !important; }
 
 /* === Carrier button (main page) === */
-.carrier-btn-wrap { text-align: center; margin-bottom: 30px; }
+.carrier-btn-wrap { text-align: center; margin-bottom: 20px; }
 .carrier-btn {
     display: inline-flex;
     align-items: center;
