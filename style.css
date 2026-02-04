@@ -140,6 +140,62 @@ input {
 .click-hint { font-size: 0.75rem; text-align: center; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .hidden { display: none !important; }
 
+/* === Carrier IATCI Table === */
+.carrier-section {
+    margin-bottom: 40px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-left: 5px solid var(--fz-orange);
+}
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--fz-blue);
+    font-size: 1.35rem;
+    margin-bottom: 16px;
+    font-weight: 800;
+}
+.section-title svg { width: 28px; height: 28px; color: var(--fz-orange); }
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 94, 184, 0.15);
+}
+.carrier-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.carrier-table th,
+.carrier-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+.carrier-table th {
+    background: var(--fz-blue);
+    color: white;
+    font-weight: 700;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+}
+.carrier-table tbody tr:hover {
+    background: rgba(0, 94, 184, 0.06);
+}
+.carrier-table td:first-child { font-weight: 600; color: #64748b; }
+.carrier-table td:nth-child(2) { font-weight: 600; color: var(--text-main); }
+.carrier-table td:nth-child(3) { font-weight: 700; color: var(--fz-blue); }
+.carrier-table .yes { color: #16a34a; font-weight: 600; }
+.carrier-table .no { color: #dc2626; font-weight: 600; }
+.carrier-table .na { color: #94a3b8; }
+
 /* Modal */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -163,24 +219,7 @@ input {
 .map-btn { background: #34A853; color: white; }
 .web-btn { background: var(--fz-blue); color: white; }
 .action-btn:hover { opacity: 0.9; }
-.nav-tabs { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-.nav-tabs button {
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    color: white; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold;
-}
-.nav-tabs button.active { background: var(--fz-orange); border-color: var(--fz-orange); }
 
-.table-card { 
-    background: var(--glass-bg); backdrop-filter: blur(10px); 
-    border-radius: 16px; padding: 10px; overflow-x: auto; 
-}
-table { width: 100%; border-collapse: collapse; color: var(--text-main); font-size: 0.9rem; }
-th { background: var(--fz-blue); color: white; padding: 12px; text-align: left; }
-td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
-.badge-iatci { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
-.bg-yes { background: #dcfce7; color: #166534; }
-.bg-no { background: #fee2e2; color: #991b1b; }
-.bg-warn { background: #fef9c3; color: #854d0e; }
 footer {
     text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.6);
     font-size: 0.9rem; width: 100%; margin-top: auto;
