@@ -93,7 +93,7 @@ function getDayNightIcon(timezone) {
 }
 
 function getAirportsData() {
-    const data = typeof airportsData !== 'undefined' ? airportsData : (typeof window !== 'undefined' && window.airportsData);
+    var data = (typeof window !== 'undefined' && window.airportsData) || [];
     return Array.isArray(data) ? data : [];
 }
 
@@ -105,16 +105,19 @@ function renderCards(filterText = '') {
     if (query) clearBtn.classList.remove('hidden');
     else clearBtn.classList.add('hidden');
 
-    const filtered = query
-        ? data.filter(airport =>
-            airport.iata.toLowerCase().includes(query.toLowerCase()) ||
-            airport.city.toLowerCase().includes(query.toLowerCase()) ||
-            airport.country.toLowerCase().includes(query.toLowerCase())
-          )
-        : data;
+    if (!query) {
+        container.innerHTML = '<div class="search-hint">Search by IATA code, city, or country to see airports</div>';
+        return;
+    }
+
+    const filtered = data.filter(airport =>
+        airport.iata.toLowerCase().includes(query.toLowerCase()) ||
+        airport.city.toLowerCase().includes(query.toLowerCase()) ||
+        airport.country.toLowerCase().includes(query.toLowerCase())
+    );
 
     if (filtered.length === 0) {
-        container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
+        container.innerHTML = '<div class="search-hint search-hint-empty">No destination found.</div>';
         return;
     }
 
@@ -177,41 +180,48 @@ function openModal(data) {
     lucide.createIcons();
 }
 
-closeModalBtn.onclick = () => modal.classList.add('hidden');
-window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
+function init() {
+    var carrierModal = document.getElementById('carrierModal');
+    var openCarrierBtn = document.getElementById('openCarrierBtn');
+    var closeCarrierModal = document.getElementById('closeCarrierModal');
 
-const carrierModal = document.getElementById('carrierModal');
-const openCarrierBtn = document.getElementById('openCarrierBtn');
-const closeCarrierModal = document.getElementById('closeCarrierModal');
+    if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
+    window.onclick = function (event) { if (event.target === modal) modal.classList.add('hidden'); };
 
-if (openCarrierBtn && carrierModal) {
-    openCarrierBtn.addEventListener('click', () => {
-        carrierModal.classList.remove('hidden');
+    if (openCarrierBtn && carrierModal) {
+        openCarrierBtn.addEventListener('click', function () {
+            carrierModal.classList.remove('hidden');
+            lucide.createIcons();
+        });
+    }
+    if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
+    if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
+
+    if (searchInput) searchInput.addEventListener('input', function (e) { renderCards(e.target.value); });
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            renderCards('');
+            searchInput.focus();
+        });
+    }
+
+    setInterval(function () {
+        updateLiveClock();
+        document.querySelectorAll('.time-badge').forEach(function (el) {
+            var timezone = el.getAttribute('data-timezone');
+            var dayNightIcon = getDayNightIcon(timezone);
+            el.innerHTML = dayNightIcon + ' ' + getLocalTime(timezone);
+        });
         lucide.createIcons();
-    });
-}
-if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = () => carrierModal.classList.add('hidden');
-if (carrierModal) carrierModal.onclick = (e) => { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
+    }, 1000);
 
-if (searchInput) searchInput.addEventListener('input', (e) => renderCards(e.target.value));
-
-if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-        searchInput.value = '';
-        renderCards('');
-        searchInput.focus();
-    });
-}
-
-setInterval(() => {
     updateLiveClock();
-    document.querySelectorAll('.time-badge').forEach(el => {
-        const timezone = el.getAttribute('data-timezone');
-        const dayNightIcon = getDayNightIcon(timezone);
-        el.innerHTML = `${dayNightIcon} ${getLocalTime(timezone)}`;
-    });
-    lucide.createIcons();
-}, 1000);
+    renderCards('');
+}
 
-updateLiveClock();
-renderCards('');
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
