@@ -138,6 +138,15 @@ input {
     font-size: 0.9rem; margin-bottom: 8px; background: #f1f5f9; padding: 6px 10px; border-radius: 6px;
 }
 .click-hint { font-size: 0.75rem; text-align: center; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.search-hint {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    padding: 40px 20px;
+    font-weight: 500;
+}
+.search-hint-empty { color: rgba(255, 255, 255, 0.9); }
 .hidden { display: none !important; }
 
 /* === Carrier button (main page) === */
