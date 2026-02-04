@@ -180,28 +180,84 @@ function openModal(data) {
     lucide.createIcons();
 }
 
+var currentView = 'airports';
+
+function switchView(view) {
+    currentView = view;
+    var airportsView = document.getElementById('airportsView');
+    var interlineView = document.getElementById('interlineView');
+    var tabAirports = document.getElementById('tabAirports');
+    var tabInterline = document.getElementById('tabInterline');
+    if (!airportsView || !interlineView) return;
+
+    if (view === 'airports') {
+        airportsView.classList.add('active');
+        interlineView.classList.remove('active');
+        if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
+        if (tabInterline) { tabInterline.classList.remove('active'); tabInterline.setAttribute('aria-pressed', 'false'); }
+        searchInput.placeholder = 'Search IATA, City, or Country...';
+        renderCards(searchInput.value);
+    } else {
+        interlineView.classList.add('active');
+        airportsView.classList.remove('active');
+        if (tabInterline) { tabInterline.classList.add('active'); tabInterline.setAttribute('aria-pressed', 'true'); }
+        if (tabAirports) { tabAirports.classList.remove('active'); tabAirports.setAttribute('aria-pressed', 'false'); }
+        searchInput.placeholder = 'Search carrier name or code...';
+        if (searchInput.value.trim()) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+        filterCarriers(searchInput.value);
+    }
+    lucide.createIcons();
+}
+
+function filterCarriers(query) {
+    var tbody = document.getElementById('carrierTableBody');
+    if (!tbody) return;
+    var q = (query || '').trim().toLowerCase();
+    for (var i = 0; i < tbody.rows.length; i++) {
+        var row = tbody.rows[i];
+        var carrier = (row.cells[1] && row.cells[1].textContent) || '';
+        var code = (row.cells[2] && row.cells[2].textContent) || '';
+        var match = !q || carrier.toLowerCase().indexOf(q) !== -1 || code.toLowerCase().indexOf(q) !== -1;
+        row.style.display = match ? '' : 'none';
+    }
+}
+
 function init() {
     var carrierModal = document.getElementById('carrierModal');
-    var openCarrierBtn = document.getElementById('openCarrierBtn');
     var closeCarrierModal = document.getElementById('closeCarrierModal');
+    var modalTable = carrierModal && carrierModal.querySelector('.carrier-table');
+    var carrierTableBody = document.getElementById('carrierTableBody');
+    if (modalTable && modalTable.tBodies[0] && carrierTableBody) {
+        carrierTableBody.innerHTML = '';
+        for (var i = 0; i < modalTable.tBodies[0].rows.length; i++) {
+            carrierTableBody.appendChild(modalTable.tBodies[0].rows[i].cloneNode(true));
+        }
+    }
 
     if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
     window.onclick = function (event) { if (event.target === modal) modal.classList.add('hidden'); };
-
-    if (openCarrierBtn && carrierModal) {
-        openCarrierBtn.addEventListener('click', function () {
-            carrierModal.classList.remove('hidden');
-            lucide.createIcons();
-        });
-    }
     if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
     if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
 
-    if (searchInput) searchInput.addEventListener('input', function (e) { renderCards(e.target.value); });
+    var tabAirports = document.getElementById('tabAirports');
+    var tabInterline = document.getElementById('tabInterline');
+    if (tabAirports) tabAirports.addEventListener('click', function () { switchView('airports'); });
+    if (tabInterline) tabInterline.addEventListener('click', function () { switchView('interline'); });
+
+    if (searchInput) searchInput.addEventListener('input', function (e) {
+        var val = e.target.value;
+        if (val.trim()) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+        if (currentView === 'airports') renderCards(val);
+        else filterCarriers(val);
+    });
     if (clearBtn) {
         clearBtn.addEventListener('click', function () {
             searchInput.value = '';
-            renderCards('');
+            clearBtn.classList.add('hidden');
+            if (currentView === 'airports') renderCards('');
+            else filterCarriers('');
             searchInput.focus();
         });
     }
@@ -217,7 +273,7 @@ function init() {
     }, 1000);
 
     updateLiveClock();
-    renderCards('');
+    switchView('airports');
 }
 
 if (document.readyState === 'loading') {
