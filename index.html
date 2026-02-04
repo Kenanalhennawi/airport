@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Essential styles to maintain glassmorphism for the new table view */
+        /* Essential glassmorphism styles for the new table view */
         .nav-tabs { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .nav-tabs button {
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
@@ -101,43 +101,18 @@
     <div id="infoModal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="closeModal" class="close-btn">×</button>
-            
             <div class="modal-header">
                 <h2 id="modalIata">DXB</h2>
                 <p id="modalCity">Dubai, UAE</p>
             </div>
-
             <div class="modal-body">
-                <div class="detail-row">
-                    <i data-lucide="map-pin"></i>
-                    <div>
-                        <strong>Distance to Center:</strong>
-                        <span id="modalDistance">5 km</span>
-                    </div>
-                </div>
-                <div class="detail-row">
-                    <i data-lucide="navigation"></i>
-                    <div>
-                        <strong>Other Airports:</strong>
-                        <span id="modalOtherAirports">--</span>
-                    </div>
-                </div>
-                <div class="detail-row">
-                    <i data-lucide="phone"></i>
-                    <div>
-                        <strong>Airport Contact:</strong>
-                        <span id="modalPhone">+971...</span>
-                    </div>
-                </div>
+                <div class="detail-row"><i data-lucide="map-pin"></i><div><strong>Distance:</strong> <span id="modalDistance"></span></div></div>
+                <div class="detail-row"><i data-lucide="navigation"></i><div><strong>Others:</strong> <span id="modalOtherAirports"></span></div></div>
+                <div class="detail-row"><i data-lucide="phone"></i><div><strong>Contact:</strong> <span id="modalPhone"></span></div></div>
             </div>
-
             <div class="modal-actions">
-                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn">
-                    <i data-lucide="map"></i> Google Maps
-                </a>
-                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn">
-                    <i data-lucide="globe"></i> Website
-                </a>
+                <a href="#" id="modalMapBtn" target="_blank" class="action-btn map-btn"><i data-lucide="map"></i> Google Maps</a>
+                <a href="#" id="modalWebBtn" target="_blank" class="action-btn web-btn"><i data-lucide="globe"></i> Website</a>
             </div>
         </div>
     </div>
