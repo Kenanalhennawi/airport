@@ -272,7 +272,7 @@ input {
 }
 .carrier-table {
     width: 100%;
-    min-width: 900px;
+    min-width: 980px;
     border-collapse: collapse;
     font-size: 0.85rem;
 }
