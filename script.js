@@ -40,12 +40,104 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj"
 };
 
+// === IATCI PARTNER DATABASE (55 Carriers) ===
+const iatciPartners = [
+    { name: "Emirates", code: "EK", host: "MARS", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral/Codeshare" },
+    { name: "United Airlines", code: "UA", host: "Shares B", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral/Codeshare" },
+    { name: "Air Canada", code: "AC", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral/Codeshare" },
+    { name: "Access Rail", code: "9B", host: "Amadeus", tagging: "NO", bp: "N/A", remarks: "Onward via DB Rail" },
+    { name: "Aegean Airlines", code: "A3", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Batik Air", code: "OD", host: "Sabre", tagging: "YES", bp: "NOT REQUIRED", remarks: "IATCI Activation 27Jan'26" },
+    { name: "Royal Brunei", code: "BI", host: "Hitit", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Air France", code: "AF", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral" },
+    { name: "KLM", code: "KL", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Unilateral" },
+    { name: "China Southern", code: "CZ", host: "Travelsky", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Unilateral" },
+    { name: "Air China", code: "CA", host: "Travelsky", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "EL Israel", code: "LY", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "INVOL Only" },
+    { name: "Singapore", code: "SQ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Unilateral" },
+    { name: "Srilankan", code: "UL", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Condor", code: "DE", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Air Astana", code: "KC", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Philippine Airlines", code: "PR", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Korean Air", code: "KE", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Virgin Atlantic", code: "VS", host: "AIR4", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Gulf Air", code: "GF", host: "Sabre", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Saudia", code: "SV", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Kenya Air", code: "KQ", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "Cathay Pacific", code: "CX", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Pakistan Intl", code: "PK", host: "Hitit", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "Air Serbia", code: "JU", host: "Sabre", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "Bilateral" },
+    { name: "LOT Polish", code: "LO", host: "Amadeus", tagging: "YES", bp: "NOT REQUIRED", remarks: "Bilateral" },
+    { name: "ITA Airlines", code: "AZ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "15Jul25 Activation" },
+    { name: "Air India", code: "AI", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "11Dec 25 Activation" },
+    { name: "Royal Jordanian", code: "RJ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "11Dec 25 Activation" }
+];
+
+// === NAVIGATION & TIME CALCULATION LOGIC ===
+function switchTab(tab) {
+    const iatciContainer = document.getElementById('iatciContainer');
+    if (tab === 'airports') {
+        container.classList.remove('hidden');
+        iatciContainer.classList.add('hidden');
+        document.getElementById('btnAirports').classList.add('active');
+        document.getElementById('btnIatci').classList.remove('active');
+        renderCards(searchInput.value);
+    } else {
+        container.classList.add('hidden');
+        iatciContainer.classList.remove('hidden');
+        document.getElementById('btnAirports').classList.remove('active');
+        document.getElementById('btnIatci').classList.add('active');
+        renderIatciTable(searchInput.value);
+    }
+}
+
+function calculateTimeFromInput(iata) {
+    const inputEl = document.getElementById(`timeInput-${iata}`);
+    const resultEl = document.getElementById(`timeResult-${iata}`);
+    if (!inputEl.value) return;
+
+    const targetDate = new Date(inputEl.value);
+    const now = new Date();
+    const diffMs = targetDate - now;
+    const diffHrs = (diffMs / (1000 * 60 * 60)).toFixed(1);
+
+    if (diffMs > 0) {
+        resultEl.innerHTML = `<span style="color:#16a34a; font-weight:bold;">In ${diffHrs} hours</span>`;
+    } else {
+        resultEl.innerHTML = `<span style="color:#dc2626; font-weight:bold;">${Math.abs(diffHrs)} hours ago</span>`;
+    }
+}
+
+// === IATCI TABLE RENDERING ===
+function renderIatciTable(filterText = '') {
+    const iatciBody = document.getElementById('iatciBody');
+    iatciBody.innerHTML = '';
+    const filtered = iatciPartners.filter(p => 
+        p.name.toLowerCase().includes(filterText.toLowerCase()) || 
+        p.code.toLowerCase().includes(filterText.toLowerCase())
+    );
+
+    filtered.forEach(p => {
+        const tr = document.createElement('tr');
+        const tagBadge = p.tagging === 'YES' ? 'bg-yes' : 'bg-no';
+        const bpBadge = p.bp === 'NOT REQUIRED' ? 'bg-yes' : (p.bp.includes('Desk') ? 'bg-warn' : 'bg-no');
+        
+        tr.innerHTML = `
+            <td style="color: #1e293b; font-weight: 700; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.name}</td>
+            <td style="color: #005EB8; font-weight: 900; text-align: center; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.code}</td>
+            <td style="color: #64748b; font-size: 0.8rem; text-align: center; font-weight: 500; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.host}</td>
+            <td style="text-align: center; border-bottom: 1px solid #f1f5f9; padding: 12px;"><span class="badge-iatci ${tagBadge}" style="font-weight: 800;">${p.tagging}</span></td>
+            <td style="border-bottom: 1px solid #f1f5f9; padding: 12px;"><span class="badge-iatci ${bpBadge}" style="font-weight: 800;">${p.bp}</span></td>
+            <td style="color: #475569; font-size: 0.85rem; font-style: italic; font-weight: 500; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.remarks}</td>
+        `;
+        iatciBody.appendChild(tr);
+    });
+}
+
+// === HELPER FUNCTIONS ===
 function getLocalTime(timezone) {
     try {
-        return new Intl.DateTimeFormat('en-GB', {
-            hour: '2-digit', minute: '2-digit',
-            timeZone: timezone, hour12: false
-        }).format(new Date());
+        return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: false }).format(new Date());
     } catch (e) { return "--:--"; }
 }
 
@@ -66,103 +158,67 @@ function getTimeDiffHTML(timezone) {
         const now = new Date();
         const dubaiStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
         const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
-        
         let diff = parseInt(targetStr) - parseInt(dubaiStr);
-        if (diff > 12) diff -= 24;
-        if (diff < -12) diff += 24;
-
-        if (diff === 0) {
-            return `<span class="time-diff diff-same">(Same Time)</span>`;
-        } else if (diff > 0) {
-            return `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>`; // Green
-        } else {
-            return `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`; // Red
-        }
+        if (diff > 12) diff -= 24; if (diff < -12) diff += 24;
+        if (diff === 0) return `<span class="time-diff diff-same">(Same Time)</span>`;
+        return diff > 0 ? `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>` : `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
     } catch (e) { return ""; }
 }
 
 function getDayNightIcon(timezone) {
     try {
-        const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
-            hour: 'numeric', hour12: false, timeZone: timezone
-        }).format(new Date()));
-        return (hour >= 6 && hour < 18) 
-            ? `<i data-lucide="sun" class="icon-sun"></i>` 
-            : `<i data-lucide="moon" class="icon-moon"></i>`;
+        const hour = parseInt(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: timezone }).format(new Date()));
+        return (hour >= 6 && hour < 18) ? `<i data-lucide="sun" class="icon-sun"></i>` : `<i data-lucide="moon" class="icon-moon"></i>`;
     } catch (e) { return ''; }
 }
 
-function getAirportsData() {
-    var data = (typeof window !== 'undefined' && window.airportsData) || [];
-    return Array.isArray(data) ? data : [];
-}
-
+// === DESTINATION RENDERING ===
 function renderCards(filterText = '') {
-    if (!container) return;
-    const data = getAirportsData();
-    container.innerHTML = '';
-    const query = (filterText || '').trim();
-    if (query) clearBtn.classList.remove('hidden');
-    else clearBtn.classList.add('hidden');
+    container.innerHTML = ''; 
+    if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
+    clearBtn.classList.remove('hidden');
 
-    if (!query) {
-        container.innerHTML = '<div class="search-hint">Search by IATA code, city, or country to see airports</div>';
-        return;
-    }
-
-    const filtered = data.filter(airport =>
-        airport.iata.toLowerCase().includes(query.toLowerCase()) ||
-        airport.city.toLowerCase().includes(query.toLowerCase()) ||
-        airport.country.toLowerCase().includes(query.toLowerCase())
+    const filtered = airportsData.filter(airport => 
+        airport.iata.toLowerCase().includes(filterText.toLowerCase()) ||
+        airport.city.toLowerCase().includes(filterText.toLowerCase()) ||
+        airport.country.toLowerCase().includes(filterText.toLowerCase())
     );
 
     if (filtered.length === 0) {
-        container.innerHTML = '<div class="search-hint search-hint-empty">No destination found.</div>';
+        container.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:white;">No destination found.</div>`;
         return;
     }
 
     filtered.forEach(airport => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.onclick = () => openModal(airport);
-
-        const flagUrl = getFlagUrl(airport.country);
-        const timeDiffHTML = getTimeDiffHTML(airport.timezone);
-        const dayNightIcon = getDayNightIcon(airport.timezone);
-
         card.innerHTML = `
-            <div class="card-header">
-                <div>
-                    <div class="iata-code">${airport.iata}</div>
-                    <div class="city-name">
-                        <img src="${flagUrl}" class="flag-icon" alt="Flag">
-                        ${airport.city}
+            <div onclick="openModal(${JSON.stringify(airport).replace(/"/g, '&quot;')})">
+                <div class="card-header">
+                    <div>
+                        <div class="iata-code">${airport.iata}</div>
+                        <div class="city-name"><img src="${getFlagUrl(airport.country)}" class="flag-icon"> ${airport.city}</div>
+                    </div>
+                    <div class="time-container">
+                        <div class="time-badge" data-timezone="${airport.timezone}">${getDayNightIcon(airport.timezone)} ${getLocalTime(airport.timezone)}</div>
+                        <div>${getTimeDiffHTML(airport.timezone)}</div>
                     </div>
                 </div>
-                <div class="time-container">
-                    <div class="time-badge" data-timezone="${airport.timezone}">
-                        ${dayNightIcon} ${getLocalTime(airport.timezone)}
-                    </div>
-                    <div>${timeDiffHTML}</div>
-                </div>
-            </div>
-
-            <div class="terminal-info">
-                <i data-lucide="plane-landing" style="width:16px"></i>
-                <span>${airport.terminal}</span>
-            </div>
-
-            <div class="distance-preview">
-                <i data-lucide="car" style="width:16px"></i>
-                <span>${airport.distanceCenter}</span>
+                <div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>${airport.terminal}</span></div>
+                <div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>${airport.distanceCenter}</span></div>
             </div>
             
-            <div class="click-hint">Click for Map & Contact</div>
+            <div class="calc-section" style="margin-top:15px; padding-top:10px; border-top: 1px solid rgba(0,0,0,0.05);">
+                <label style="font-size:0.7rem; font-weight:bold; color:var(--fz-blue); text-transform:uppercase;">Check Hours Until:</label>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="datetime-local" id="timeInput-${airport.iata}" onchange="calculateTimeFromInput('${airport.iata}')" 
+                           style="flex:1; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd; background:white;">
+                </div>
+                <div id="timeResult-${airport.iata}" style="font-size:0.85rem; margin-top:5px; text-align:center;"></div>
+            </div>
         `;
-        
         container.appendChild(card);
     });
-
     lucide.createIcons();
 }
 
@@ -172,123 +228,38 @@ function openModal(data) {
     document.getElementById('modalDistance').textContent = data.distanceCenter;
     document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
     document.getElementById('modalPhone').textContent = data.phone;
-    
     document.getElementById('modalMapBtn').href = data.locationUrl;
     document.getElementById('modalWebBtn').href = data.website;
-
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
 
-var currentView = 'airports';
+// === EVENT HANDLERS ===
+closeModalBtn.onclick = () => modal.classList.add('hidden');
+window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
 
-function switchView(view) {
-    currentView = view;
-    var airportsView = document.getElementById('airportsView');
-    var interlineView = document.getElementById('interlineView');
-    var tabAirports = document.getElementById('tabAirports');
-    var tabInterline = document.getElementById('tabInterline');
-    if (!airportsView || !interlineView) return;
+searchInput.addEventListener('input', (e) => {
+    const isIatci = document.getElementById('btnIatci').classList.contains('active');
+    if (isIatci) renderIatciTable(e.target.value);
+    else renderCards(e.target.value);
+});
 
-    if (view === 'airports') {
-        airportsView.classList.add('active');
-        interlineView.classList.remove('active');
-        if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
-        if (tabInterline) { tabInterline.classList.remove('active'); tabInterline.setAttribute('aria-pressed', 'false'); }
-        searchInput.placeholder = 'Search IATA, City, or Country...';
-        renderCards(searchInput.value);
-    } else {
-        interlineView.classList.add('active');
-        airportsView.classList.remove('active');
-        if (tabInterline) { tabInterline.classList.add('active'); tabInterline.setAttribute('aria-pressed', 'true'); }
-        if (tabAirports) { tabAirports.classList.remove('active'); tabAirports.setAttribute('aria-pressed', 'false'); }
-        searchInput.placeholder = 'Search carrier name or code...';
-        if (searchInput.value.trim()) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-        filterCarriers(searchInput.value);
-    }
-    lucide.createIcons();
-}
+clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    const isIatci = document.getElementById('btnIatci').classList.contains('active');
+    if (isIatci) renderIatciTable('');
+    else renderCards('');
+    searchInput.focus();
+});
 
-function filterCarriers(query) {
-    var tbody = document.getElementById('carrierTableBody');
-    if (!tbody) return;
-    var q = (query || '').trim().toLowerCase();
-    for (var i = 0; i < tbody.rows.length; i++) {
-        var row = tbody.rows[i];
-        var carrier = (row.cells[1] && row.cells[1].textContent) || '';
-        var code = (row.cells[2] && row.cells[2].textContent) || '';
-        var match = !q || carrier.toLowerCase().indexOf(q) !== -1 || code.toLowerCase().indexOf(q) !== -1;
-        row.style.display = match ? '' : 'none';
-    }
-}
-
-function init() {
-    var carrierModal = document.getElementById('carrierModal');
-    var closeCarrierModal = document.getElementById('closeCarrierModal');
-    var modalTable = carrierModal && carrierModal.querySelector('.carrier-table');
-    var carrierTableBody = document.getElementById('carrierTableBody');
-    if (modalTable && modalTable.tBodies[0] && carrierTableBody) {
-        carrierTableBody.innerHTML = '';
-        var modalRows = modalTable.tBodies[0].rows;
-        var rows = [];
-        for (var i = 0; i < modalRows.length; i++) {
-            rows.push(modalRows[i].cloneNode(true));
-        }
-        rows.sort(function (a, b) {
-            var nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
-            var nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
-            return nameA.localeCompare(nameB);
-        });
-        for (var j = 0; j < rows.length; j++) {
-            if (rows[j].cells[0]) rows[j].cells[0].textContent = j + 1;
-            carrierTableBody.appendChild(rows[j]);
-        }
-    }
-
-    if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
-    window.onclick = function (event) { if (event.target === modal) modal.classList.add('hidden'); };
-    if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
-    if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
-
-    var tabAirports = document.getElementById('tabAirports');
-    var tabInterline = document.getElementById('tabInterline');
-    if (tabAirports) tabAirports.addEventListener('click', function () { switchView('airports'); });
-    if (tabInterline) tabInterline.addEventListener('click', function () { switchView('interline'); });
-
-    if (searchInput) searchInput.addEventListener('input', function (e) {
-        var val = e.target.value;
-        if (val.trim()) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-        if (currentView === 'airports') renderCards(val);
-        else filterCarriers(val);
-    });
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function () {
-            searchInput.value = '';
-            clearBtn.classList.add('hidden');
-            if (currentView === 'airports') renderCards('');
-            else filterCarriers('');
-            searchInput.focus();
-        });
-    }
-
-    setInterval(function () {
-        updateLiveClock();
-        document.querySelectorAll('.time-badge').forEach(function (el) {
-            var timezone = el.getAttribute('data-timezone');
-            var dayNightIcon = getDayNightIcon(timezone);
-            el.innerHTML = dayNightIcon + ' ' + getLocalTime(timezone);
-        });
-        lucide.createIcons();
-    }, 1000);
-
+setInterval(() => {
     updateLiveClock();
-    switchView('airports');
-}
+    document.querySelectorAll('.time-badge').forEach(el => {
+        const timezone = el.getAttribute('data-timezone');
+        el.innerHTML = `${getDayNightIcon(timezone)} ${getLocalTime(timezone)}`;
+    });
+    lucide.createIcons(); 
+}, 1000);
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
+updateLiveClock();
+renderCards('');
