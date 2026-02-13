@@ -12,7 +12,7 @@ const closeModalBtn = document.getElementById('closeModal');
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
     "Kuwait": "kw", "Oman": "om", "Qatar": "qa", "Jordan": "jo", "Lebanon": "lb",
-    "Iraq": "iq", "Iran": "ir", "Syria": "sy", "Israel": "il", "Yemen": "ye", "Turkey": "tr",
+    "Iraq": "iq", "Iran": "ir", "Syria": "sy", "Israel": "il", "Yemen": "ye", "Turkey": "tr", "Türkiye": "tr",
     "Egypt": "eg", "Sudan": "sd", "Djibouti": "dj", "Eritrea": "er", "Somalia": "so",
     "Ethiopia": "et", "South Sudan": "ss", "Kenya": "ke", "Uganda": "ug", "Tanzania": "tz",
     "Zanzibar": "tz", "South Africa": "za", "Nigeria": "ng", "Ghana": "gh", "Senegal": "sn",
@@ -342,8 +342,16 @@ function init() {
     populateInterlineTable();
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
+    const carrierModal = document.getElementById('carrierModal');
+    const closeCarrierModal = document.getElementById('closeCarrierModal');
     if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
     window.onclick = function (e) { if (e.target === modal) modal.classList.add('hidden'); };
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            if (modal && !modal.classList.contains('hidden')) modal.classList.add('hidden');
+            if (carrierModal && !carrierModal.classList.contains('hidden')) carrierModal.classList.add('hidden');
+        }
+    });
 
     if (container) {
         container.addEventListener('click', function (e) {
@@ -359,8 +367,6 @@ function init() {
         });
     }
 
-    const closeCarrierModal = document.getElementById('closeCarrierModal');
-    const carrierModal = document.getElementById('carrierModal');
     if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
     if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
 
