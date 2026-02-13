@@ -272,16 +272,22 @@ input {
 }
 .carrier-table {
     width: 100%;
-    min-width: 980px;
+    min-width: 1800px;
     border-collapse: collapse;
     font-size: 0.85rem;
+    table-layout: auto;
 }
 .carrier-table th,
 .carrier-table td {
     padding: 10px 12px;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
 }
+.carrier-table th:nth-child(2),
+.carrier-table td:nth-child(2) { min-width: 180px; }
+.carrier-table th:nth-child(12),
+.carrier-table td:nth-child(12) { min-width: 260px; }
 .carrier-table th {
     background: var(--fz-blue);
     color: white;
