@@ -332,6 +332,10 @@ function openModal(data) {
 
 // === INITIALIZATION ===
 function init() {
+    updateLiveClock();
+    populateInterlineTable();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
     if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
     window.onclick = function (e) { if (e.target === modal) modal.classList.add('hidden'); };
 
@@ -375,8 +379,6 @@ function init() {
         switchView(currentView);
     };
 
-    populateInterlineTable();
-    updateLiveClock();
     setInterval(function () {
         updateLiveClock();
         document.querySelectorAll('.time-badge').forEach(function (el) {
@@ -386,8 +388,10 @@ function init() {
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 1000);
 
-    lucide.createIcons();
     switchView('airports');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    setTimeout(function () { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+    document.documentElement.classList.remove('app-loading');
 }
 
 if (document.readyState === 'loading') {
