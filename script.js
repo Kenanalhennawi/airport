@@ -369,8 +369,6 @@ function init() {
 
     if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
     if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
-    const openCarrierModalBtn = document.getElementById('openCarrierModal');
-    if (openCarrierModalBtn && carrierModal) openCarrierModalBtn.onclick = function () { carrierModal.classList.remove('hidden'); };
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
