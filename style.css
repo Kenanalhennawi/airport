@@ -1,3 +1,4 @@
+html.app-loading .container { visibility: hidden; }
 :root {
     --fz-blue: #005EB8;
     --fz-orange: #F6881F;
