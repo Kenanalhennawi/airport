@@ -9,7 +9,8 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-image: url('background.jpg'); 
+    background: linear-gradient(135deg, #003d73 0%, #005EB8 30%, #0f172a 100%);
+    background-image: url('background.jpg'), linear-gradient(135deg, #003d73 0%, #005EB8 30%, #0f172a 100%);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
