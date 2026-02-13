@@ -266,10 +266,8 @@ function renderCards(filterText) {
             '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
             '<div style="flex:1;display:flex;gap:4px;">' +
             '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '<div class="cal-btn-wrap" style="position:relative;flex-shrink:0;">' +
-            '<input type="date" id="datePicker-' + airport.iata + '" title="Pick date" style="position:absolute;top:0;left:0;width:36px;height:34px;opacity:0;cursor:pointer;font-size:0;z-index:2;">' +
-            '<span class="cal-btn" style="position:relative;z-index:0;width:36px;height:34px;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);pointer-events:none;"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span>' +
-            '</div>' +
+            '<input type="date" id="datePicker-' + airport.iata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
+            '<button type="button" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;margin:0;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
             '</div>' +
             '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:80px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
             '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
@@ -293,7 +291,15 @@ function renderCards(filterText) {
         }
 
         var datePicker = card.querySelector('#datePicker-' + airport.iata);
-        if (datePicker) {
+        var calBtn = datePicker && datePicker.nextElementSibling;
+        if (datePicker && calBtn) {
+            calBtn.onclick = function (e) {
+                e.stopPropagation();
+                try {
+                    if (datePicker.showPicker) datePicker.showPicker();
+                    else datePicker.click();
+                } catch (err) { datePicker.click(); }
+            };
             datePicker.addEventListener('change', function () {
                 var v = datePicker.value;
                 if (v) {
