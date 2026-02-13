@@ -203,7 +203,10 @@ function switchView(view) {
     const interlinePanel = document.getElementById('interlineView');
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
+    const containerEl = document.querySelector('.container');
     if (!airportsPanel || !interlinePanel) return;
+
+    if (containerEl) containerEl.classList.toggle('interline-active', view === 'interline');
 
     if (view === 'airports') {
         airportsPanel.classList.add('active');
