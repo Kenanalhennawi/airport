@@ -4,7 +4,7 @@ const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
-// === MASTER COUNTRY LIST (Updated with Americas & All Missing Flags) ===
+// === MASTER COUNTRY LIST (Maintained exactly as provided) ===
 const countryCodes = {
     // Middle East
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -73,7 +73,7 @@ const iatciPartners = [
     { name: "Royal Jordanian", code: "RJ", host: "Amadeus", tagging: "YES", bp: "YES (Transfer Desk)", remarks: "11Dec 25 Activation" }
 ];
 
-// === NAVIGATION & TIME CALCULATION LOGIC ===
+// === TAB SWITCHING LOGIC ===
 function switchTab(tab) {
     const iatciContainer = document.getElementById('iatciContainer');
     if (tab === 'airports') {
@@ -91,6 +91,33 @@ function switchTab(tab) {
     }
 }
 
+// === IATCI TABLE RENDERING (With Color and Font Weight Fixes) ===
+function renderIatciTable(filterText = '') {
+    const iatciBody = document.getElementById('iatciBody');
+    iatciBody.innerHTML = '';
+    const filtered = iatciPartners.filter(p => 
+        p.name.toLowerCase().includes(filterText.toLowerCase()) || 
+        p.code.toLowerCase().includes(filterText.toLowerCase())
+    );
+
+    filtered.forEach(p => {
+        const tr = document.createElement('tr');
+        const tagBadge = p.tagging === 'YES' ? 'bg-yes' : 'bg-no';
+        const bpBadge = p.bp === 'NOT REQUIRED' ? 'bg-yes' : (p.bp.includes('Desk') ? 'bg-warn' : 'bg-no');
+        
+        tr.innerHTML = `
+            <td style="color: #1e293b; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.name}</td>
+            <td style="color: #005EB8; font-weight: 900; text-align: center; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.code}</td>
+            <td style="color: #64748b; font-size: 0.8rem; text-align: center; font-weight: 500; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.host}</td>
+            <td style="text-align: center; border-bottom: 1px solid #e2e8f0; padding: 12px;"><span class="badge-iatci ${tagBadge}" style="font-weight: 800;">${p.tagging}</span></td>
+            <td style="border-bottom: 1px solid #e2e8f0; padding: 12px;"><span class="badge-iatci ${bpBadge}" style="font-weight: 800;">${p.bp}</span></td>
+            <td style="color: #475569; font-size: 0.85rem; font-style: italic; font-weight: 500; border-bottom: 1px solid #e2e8f0; padding: 12px;">${p.remarks}</td>
+        `;
+        iatciBody.appendChild(tr);
+    });
+}
+
+// === NEW: HOURLY CALCULATOR LOGIC ===
 function calculateTimeFromInput(iata) {
     const inputEl = document.getElementById(`timeInput-${iata}`);
     const resultEl = document.getElementById(`timeResult-${iata}`);
@@ -108,36 +135,13 @@ function calculateTimeFromInput(iata) {
     }
 }
 
-// === IATCI TABLE RENDERING ===
-function renderIatciTable(filterText = '') {
-    const iatciBody = document.getElementById('iatciBody');
-    iatciBody.innerHTML = '';
-    const filtered = iatciPartners.filter(p => 
-        p.name.toLowerCase().includes(filterText.toLowerCase()) || 
-        p.code.toLowerCase().includes(filterText.toLowerCase())
-    );
-
-    filtered.forEach(p => {
-        const tr = document.createElement('tr');
-        const tagBadge = p.tagging === 'YES' ? 'bg-yes' : 'bg-no';
-        const bpBadge = p.bp === 'NOT REQUIRED' ? 'bg-yes' : (p.bp.includes('Desk') ? 'bg-warn' : 'bg-no');
-        
-        tr.innerHTML = `
-            <td style="color: #1e293b; font-weight: 700; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.name}</td>
-            <td style="color: #005EB8; font-weight: 900; text-align: center; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.code}</td>
-            <td style="color: #64748b; font-size: 0.8rem; text-align: center; font-weight: 500; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.host}</td>
-            <td style="text-align: center; border-bottom: 1px solid #f1f5f9; padding: 12px;"><span class="badge-iatci ${tagBadge}" style="font-weight: 800;">${p.tagging}</span></td>
-            <td style="border-bottom: 1px solid #f1f5f9; padding: 12px;"><span class="badge-iatci ${bpBadge}" style="font-weight: 800;">${p.bp}</span></td>
-            <td style="color: #475569; font-size: 0.85rem; font-style: italic; font-weight: 500; border-bottom: 1px solid #f1f5f9; padding: 12px;">${p.remarks}</td>
-        `;
-        iatciBody.appendChild(tr);
-    });
-}
-
 // === HELPER FUNCTIONS ===
 function getLocalTime(timezone) {
     try {
-        return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: false }).format(new Date());
+        return new Intl.DateTimeFormat('en-GB', {
+            hour: '2-digit', minute: '2-digit',
+            timeZone: timezone, hour12: false
+        }).format(new Date());
     } catch (e) { return "--:--"; }
 }
 
@@ -158,21 +162,33 @@ function getTimeDiffHTML(timezone) {
         const now = new Date();
         const dubaiStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
         const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
+        
         let diff = parseInt(targetStr) - parseInt(dubaiStr);
-        if (diff > 12) diff -= 24; if (diff < -12) diff += 24;
-        if (diff === 0) return `<span class="time-diff diff-same">(Same Time)</span>`;
-        return diff > 0 ? `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>` : `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
+        if (diff > 12) diff -= 24;
+        if (diff < -12) diff += 24;
+
+        if (diff === 0) {
+            return `<span class="time-diff diff-same">(Same Time)</span>`;
+        } else if (diff > 0) {
+            return `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>`;
+        } else {
+            return `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
+        }
     } catch (e) { return ""; }
 }
 
 function getDayNightIcon(timezone) {
     try {
-        const hour = parseInt(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: timezone }).format(new Date()));
-        return (hour >= 6 && hour < 18) ? `<i data-lucide="sun" class="icon-sun"></i>` : `<i data-lucide="moon" class="icon-moon"></i>`;
+        const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
+            hour: 'numeric', hour12: false, timeZone: timezone
+        }).format(new Date()));
+        return (hour >= 6 && hour < 18) 
+            ? `<i data-lucide="sun" class="icon-sun"></i>` 
+            : `<i data-lucide="moon" class="icon-moon"></i>`;
     } catch (e) { return ''; }
 }
 
-// === DESTINATION RENDERING ===
+// === DESTINATION RENDERING (Restored and Updated with Calculator) ===
 function renderCards(filterText = '') {
     container.innerHTML = ''; 
     if (!filterText.trim()) { clearBtn.classList.add('hidden'); return; }
@@ -192,15 +208,21 @@ function renderCards(filterText = '') {
     filtered.forEach(airport => {
         const card = document.createElement('div');
         card.className = 'card';
+        
         card.innerHTML = `
             <div onclick="openModal(${JSON.stringify(airport).replace(/"/g, '&quot;')})">
                 <div class="card-header">
                     <div>
                         <div class="iata-code">${airport.iata}</div>
-                        <div class="city-name"><img src="${getFlagUrl(airport.country)}" class="flag-icon"> ${airport.city}</div>
+                        <div class="city-name">
+                            <img src="${getFlagUrl(airport.country)}" class="flag-icon" alt="Flag">
+                            ${airport.city}
+                        </div>
                     </div>
                     <div class="time-container">
-                        <div class="time-badge" data-timezone="${airport.timezone}">${getDayNightIcon(airport.timezone)} ${getLocalTime(airport.timezone)}</div>
+                        <div class="time-badge" data-timezone="${airport.timezone}">
+                            ${getDayNightIcon(airport.timezone)} ${getLocalTime(airport.timezone)}
+                        </div>
                         <div>${getTimeDiffHTML(airport.timezone)}</div>
                     </div>
                 </div>
@@ -217,8 +239,10 @@ function renderCards(filterText = '') {
                 <div id="timeResult-${airport.iata}" style="font-size:0.85rem; margin-top:5px; text-align:center;"></div>
             </div>
         `;
+        
         container.appendChild(card);
     });
+
     lucide.createIcons();
 }
 
@@ -228,13 +252,14 @@ function openModal(data) {
     document.getElementById('modalDistance').textContent = data.distanceCenter;
     document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
     document.getElementById('modalPhone').textContent = data.phone;
+    
     document.getElementById('modalMapBtn').href = data.locationUrl;
     document.getElementById('modalWebBtn').href = data.website;
+
     modal.classList.remove('hidden');
     lucide.createIcons();
 }
 
-// === EVENT HANDLERS ===
 closeModalBtn.onclick = () => modal.classList.add('hidden');
 window.onclick = (event) => { if (event.target == modal) modal.classList.add('hidden'); }
 
@@ -256,7 +281,8 @@ setInterval(() => {
     updateLiveClock();
     document.querySelectorAll('.time-badge').forEach(el => {
         const timezone = el.getAttribute('data-timezone');
-        el.innerHTML = `${getDayNightIcon(timezone)} ${getLocalTime(timezone)}`;
+        const dayNightIcon = getDayNightIcon(timezone);
+        el.innerHTML = `${dayNightIcon} ${getLocalTime(timezone)}`;
     });
     lucide.createIcons(); 
 }, 1000);
