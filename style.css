@@ -196,7 +196,102 @@ input {
     border-left: 5px solid var(--fz-orange);
 }
 .carrier-inline .carrier-explanation {
+    margin-bottom: 12px;
+}
+.carrier-inline .carrier-note {
+    font-size: 0.85rem;
+    background: #f8fafc;
+    border-left: 4px solid var(--fz-blue);
+}
+.carrier-inline .carrier-note-warning {
+    background: #fff7ed;
+    border-left: 4px solid #ea580c;
+}
+.carrier-inline .carrier-details {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border-left: 4px solid #64748b;
+    background: #f1f5f9;
     margin-bottom: 16px;
+}
+.carrier-inline .carrier-details[open] {
+    border-left-color: var(--fz-blue);
+}
+.carrier-inline .carrier-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.carrier-inline .carrier-details ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+.carrier-inline .carrier-details li {
+    margin-bottom: 6px;
+}
+.carrier-inline .mct-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.carrier-inline .mct-table th,
+.carrier-inline .mct-table td {
+    padding: 6px 10px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+}
+.carrier-inline .mct-table th {
+    background: var(--fz-blue);
+    color: white;
+}
+.carrier-inline .mct-note {
+    margin: 10px 0 0 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+.carrier-inline .carrier-note-link {
+    text-align: center;
+}
+.carrier-inline .carrier-note-link a {
+    color: var(--fz-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+.carrier-inline .carrier-note-link a:hover {
+    text-decoration: underline;
+}
+.carrier-filter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.carrier-filter-label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+.carrier-filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 2px solid #cbd5e1;
+    background: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.carrier-filter-btn:hover {
+    border-color: var(--fz-blue);
+    color: var(--fz-blue);
+}
+.carrier-filter-btn.active {
+    background: var(--fz-blue);
+    border-color: var(--fz-blue);
+    color: white;
 }
 
 .carrier-btn-wrap { text-align: center; margin-bottom: 20px; }
