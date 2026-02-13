@@ -62,7 +62,7 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// === 24-HOUR CALCULATOR (strict HH:MM format) ===
+// === 24-HOUR CALCULATOR (time-only OR date+time) ===
 function calculateTimeDifference(iata) {
     const dIn = document.getElementById('dateIn-' + iata);
     const tIn = document.getElementById('timeIn-' + iata);
@@ -71,24 +71,33 @@ function calculateTimeDifference(iata) {
 
     const dStr = dIn.value.trim();
     const tStr = tIn.value.trim();
-    if (dStr.length < 10 || tStr.length < 5) {
-        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:#64748b;font-size:0.8rem;">Enter full date and time</span>' : '';
-        return;
-    }
-
-    const parts = dStr.split('/').map(Number);
-    const [d, m, y] = parts;
-    const [hr, min] = tStr.split(':').map(Number);
-
-    if (!isValidDate(d, m, y) || !isValidTime(hr, min)) {
-        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid date/time</span>';
-        return;
-    }
-
-    const targetDate = new Date(y, m - 1, d, hr, min);
     const now = new Date();
-    const absDiff = Math.abs(targetDate - now);
 
+    if (tStr.length < 5) {
+        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:#64748b;font-size:0.8rem;">Enter time (HH:MM)</span>' : '';
+        return;
+    }
+
+    const [hr, min] = tStr.split(':').map(Number);
+    if (!isValidTime(hr, min)) {
+        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid time</span>';
+        return;
+    }
+
+    var targetDate;
+    if (dStr.length >= 10) {
+        var parts = dStr.split('/').map(Number);
+        var d = parts[0], m = parts[1], y = parts[2];
+        if (!isValidDate(d, m, y)) {
+            resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid date</span>';
+            return;
+        }
+        targetDate = new Date(y, m - 1, d, hr, min);
+    } else {
+        targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hr, min);
+    }
+
+    const absDiff = Math.abs(targetDate - now);
     const hDisplay = Math.floor(absDiff / 3600000).toString().padStart(2, '0');
     const mDisplay = Math.floor((absDiff % 3600000) / 60000).toString().padStart(2, '0');
     const status = (targetDate - now) > 0 ? 'remaining' : 'passed';
@@ -246,9 +255,13 @@ function renderCards(filterText) {
             '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
             '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>' +
-            '<div style="display:flex;gap:5px;margin-top:5px;">' +
-            '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="width:60%;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:35%;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
+            '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
+            '<div style="flex:1;display:flex;gap:4px;">' +
+            '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
+            '<input type="date" id="datePicker-' + airport.iata + '" style="position:absolute;opacity:0;width:1px;height:1px;clip:rect(0,0,0,0);">' +
+            '<button type="button" id="calBtn-' + airport.iata + '" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
+            '</div>' +
+            '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:80px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
             '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
@@ -267,6 +280,20 @@ function renderCards(filterText) {
             timeIn.addEventListener('input', runCalc);
             timeIn.addEventListener('change', runCalc);
             timeIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
+        }
+
+        var datePicker = card.querySelector('#datePicker-' + airport.iata);
+        var calBtn = card.querySelector('#calBtn-' + airport.iata);
+        if (calBtn && datePicker) {
+            calBtn.onclick = function (e) { e.stopPropagation(); datePicker.click(); };
+            datePicker.addEventListener('change', function () {
+                var v = datePicker.value;
+                if (v) {
+                    var p = v.split('-');
+                    dateIn.value = p[2] + '/' + p[1] + '/' + p[0];
+                    runCalc();
+                }
+            });
         }
 
         container.appendChild(card);
@@ -302,7 +329,7 @@ function init() {
 
     if (container) {
         container.addEventListener('click', function (e) {
-            if (e.target.closest('input')) return;
+            if (e.target.closest('input') || e.target.closest('button')) return;
             const card = e.target.closest('.card');
             if (!card) return;
             const iata = card.dataset.iata || (card.querySelector('.iata-code') && card.querySelector('.iata-code').textContent);
