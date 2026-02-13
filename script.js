@@ -163,12 +163,19 @@ function populateInterlineTable() {
 
     carrierTableBody.innerHTML = '';
     const rows = Array.from(modalTable.tBodies[0].rows).map(r => r.cloneNode(true));
-    rows.sort((a, b) => {
+    const seen = new Set();
+    const unique = rows.filter(r => {
+        const code = (r.cells[2] && r.cells[2].textContent || '').trim();
+        if (!code || seen.has(code)) return false;
+        seen.add(code);
+        return true;
+    });
+    unique.sort((a, b) => {
         const nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
         const nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
         return nameA.localeCompare(nameB);
     });
-    rows.forEach((row, i) => {
+    unique.forEach((row, i) => {
         if (row.cells[0]) row.cells[0].textContent = i + 1;
         carrierTableBody.appendChild(row);
     });
