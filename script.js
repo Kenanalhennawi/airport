@@ -72,7 +72,7 @@ function calculateTimeDifference(iata) {
     const dStr = dIn.value.trim();
     const tStr = tIn.value.trim();
     if (dStr.length < 10 || tStr.length < 5) {
-        resultEl.innerHTML = '';
+        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:#64748b;font-size:0.8rem;">Enter full date and time</span>' : '';
         return;
     }
 
@@ -184,16 +184,20 @@ function switchView(view) {
     if (view === 'airports') {
         airportsPanel.classList.add('active');
         interlinePanel.classList.remove('active');
-        if (tabAirports) tabAirports.classList.add('active');
-        if (tabInterline) tabInterline.classList.remove('active');
+        if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
+        if (tabInterline) { tabInterline.classList.remove('active'); tabInterline.setAttribute('aria-pressed', 'false'); }
         if (searchInput) searchInput.placeholder = 'Search IATA, City, or Country...';
         renderCards(searchInput ? searchInput.value : '');
     } else {
         interlinePanel.classList.add('active');
         airportsPanel.classList.remove('active');
-        if (tabInterline) tabInterline.classList.add('active');
-        if (tabAirports) tabAirports.classList.remove('active');
+        if (tabInterline) { tabInterline.classList.add('active'); tabInterline.setAttribute('aria-pressed', 'true'); }
+        if (tabAirports) { tabAirports.classList.remove('active'); tabAirports.setAttribute('aria-pressed', 'false'); }
         if (searchInput) searchInput.placeholder = 'Search carrier name or code...';
+        if (clearBtn) {
+            if (searchInput && searchInput.value.trim()) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+        }
         filterCarriers(searchInput ? searchInput.value : '');
     }
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -207,8 +211,10 @@ function renderCards(filterText) {
     container.innerHTML = '';
 
     const query = (filterText || '').trim();
-    if (query) clearBtn.classList.remove('hidden');
-    else clearBtn.classList.add('hidden');
+    if (clearBtn) {
+        if (query) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+    }
 
     if (!query) {
         container.innerHTML = '<div class="search-hint">Search by IATA code, city, or country to see airports</div>';
@@ -231,34 +237,36 @@ function renderCards(filterText) {
     filtered.forEach(airport => {
         const card = document.createElement('div');
         card.className = 'card';
-        const cardClickable = document.createElement('div');
-        cardClickable.className = 'card-clickable';
-        cardClickable.innerHTML =
-            '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.country) + '" class="flag-icon" alt=""> ' + airport.city + '</div></div>' +
+        card.dataset.iata = airport.iata;
+        card.innerHTML =
+            '<div class="card-clickable">' +
+            '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt=""> ' + airport.city + '</div></div>' +
             '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
-            '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div>';
-        cardClickable.onclick = function () { openModal(airport); };
-        card.appendChild(cardClickable);
-
-        const calcSection = document.createElement('div');
-        calcSection.className = 'calc-section';
-        calcSection.style.cssText = 'margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);';
-        calcSection.innerHTML =
+            '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
+            '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
             '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>' +
             '<div style="display:flex;gap:5px;margin-top:5px;">' +
             '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="width:60%;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
             '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:35%;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;"></div>';
+            '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
 
-        card.appendChild(calcSection);
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
         const timeIn = card.querySelector('#timeIn-' + airport.iata);
+        const runCalc = function () {
+            if (dateIn) formatDateInput(dateIn);
+            if (timeIn) formatTimeInput(timeIn);
+            calculateTimeDifference(airport.iata);
+        };
         if (dateIn) {
-            dateIn.oninput = function () { formatDateInput(this); calculateTimeDifference(airport.iata); };
+            dateIn.addEventListener('input', runCalc);
+            dateIn.addEventListener('change', runCalc);
+            dateIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
         }
         if (timeIn) {
-            timeIn.oninput = function () { formatTimeInput(this); calculateTimeDifference(airport.iata); };
+            timeIn.addEventListener('input', runCalc);
+            timeIn.addEventListener('change', runCalc);
+            timeIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
         }
 
         container.appendChild(card);
@@ -268,13 +276,21 @@ function renderCards(filterText) {
 }
 
 function openModal(data) {
-    document.getElementById('modalIata').textContent = data.iata;
-    document.getElementById('modalCity').textContent = data.city + ', ' + data.country;
-    document.getElementById('modalDistance').textContent = data.distanceCenter;
-    document.getElementById('modalOtherAirports').textContent = data.nearbyAirports;
-    document.getElementById('modalPhone').textContent = data.phone;
-    document.getElementById('modalMapBtn').href = data.locationUrl;
-    document.getElementById('modalWebBtn').href = data.website;
+    if (!data || !modal) return;
+    const modalIata = document.getElementById('modalIata');
+    const modalCity = document.getElementById('modalCity');
+    const modalDistance = document.getElementById('modalDistance');
+    const modalOtherAirports = document.getElementById('modalOtherAirports');
+    const modalPhone = document.getElementById('modalPhone');
+    const modalMapBtn = document.getElementById('modalMapBtn');
+    const modalWebBtn = document.getElementById('modalWebBtn');
+    if (modalIata) modalIata.textContent = data.iata || '';
+    if (modalCity) modalCity.textContent = (data.city || '') + ', ' + (data.country || '');
+    if (modalDistance) modalDistance.textContent = data.distanceCenter || '';
+    if (modalOtherAirports) modalOtherAirports.textContent = data.nearbyAirports || '';
+    if (modalPhone) modalPhone.textContent = data.phone || '';
+    if (modalMapBtn) modalMapBtn.href = data.locationUrl || '#';
+    if (modalWebBtn) modalWebBtn.href = data.website || '#';
     modal.classList.remove('hidden');
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -283,6 +299,20 @@ function openModal(data) {
 function init() {
     if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
     window.onclick = function (e) { if (e.target === modal) modal.classList.add('hidden'); };
+
+    if (container) {
+        container.addEventListener('click', function (e) {
+            if (e.target.closest('input')) return;
+            const card = e.target.closest('.card');
+            if (!card) return;
+            const iata = card.dataset.iata || (card.querySelector('.iata-code') && card.querySelector('.iata-code').textContent);
+            if (!iata) return;
+            const data = (typeof window !== 'undefined' && window.airportsData) || [];
+            const airportsData = Array.isArray(data) ? data : [];
+            const airport = airportsData.find(function (a) { return a.iata === iata; });
+            if (airport) openModal(airport);
+        });
+    }
 
     const closeCarrierModal = document.getElementById('closeCarrierModal');
     const carrierModal = document.getElementById('carrierModal');
@@ -295,8 +325,13 @@ function init() {
     if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
 
     if (searchInput) searchInput.addEventListener('input', function () {
-        if (currentView === 'airports') renderCards(searchInput.value);
-        else filterCarriers(searchInput.value);
+        var val = searchInput.value;
+        if (clearBtn) {
+            if (val.trim()) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+        }
+        if (currentView === 'airports') renderCards(val);
+        else filterCarriers(val);
     });
     if (clearBtn) clearBtn.onclick = function () {
         searchInput.value = '';
