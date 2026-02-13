@@ -40,11 +40,11 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj"
 };
 
-// === CALCULATOR LOGIC (Hours & Minutes) ===
+// === CALCULATOR LOGIC (Updated to 24-hour result) ===
 function calculateTimeDifference(iata) {
     const inputEl = document.getElementById(`timeInput-${iata}`);
     const resultEl = document.getElementById(`timeResult-${iata}`);
-    if (!inputEl.value) return;
+    if (!inputEl || !inputEl.value) return;
 
     const targetDate = new Date(inputEl.value);
     const now = new Date();
@@ -54,10 +54,14 @@ function calculateTimeDifference(iata) {
     const diffHrs = Math.floor(absDiff / (1000 * 60 * 60));
     const diffMins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
 
+    // Format to HH:MM logic
+    const hh = diffHrs.toString().padStart(2, '0');
+    const mm = diffMins.toString().padStart(2, '0');
+
     const color = diffMs > 0 ? "#16a34a" : "#dc2626";
     const status = diffMs > 0 ? "remaining" : "ago";
 
-    resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${diffHrs}h ${diffMins}m ${status}</span>`;
+    resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${hh}:${mm} ${status}</span>`;
 }
 
 function getLocalTime(timezone) {
@@ -116,7 +120,7 @@ function renderCards(filterText = '') {
     container.innerHTML = ''; 
     const query = filterText.trim().toLowerCase();
     
-    // Only show results when searching
+    // Results ONLY appear when searching
     if (!query) {
         clearBtn.classList.add('hidden');
         return; 
@@ -183,7 +187,6 @@ function renderCards(filterText = '') {
         container.appendChild(card);
     });
 
-    // Force icons to load immediately for results
     lucide.createIcons();
 }
 
@@ -212,7 +215,7 @@ clearBtn.addEventListener('click', () => {
     searchInput.focus();
 });
 
-// Initialization
+// Initialization Logic
 function init() {
     updateLiveClock();
     lucide.createIcons(); 
@@ -229,4 +232,4 @@ function init() {
 }
 
 init();
-renderCards(''); // Empty start state
+renderCards('');
