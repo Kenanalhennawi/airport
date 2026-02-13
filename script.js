@@ -35,31 +35,28 @@ const countryCodes = {
 };
 
 /**
- * 24-HOUR CALCULATOR LOGIC
- * Shows remaining/passed time in HH:MM format
+ * FORCED DD/MM/YYYY CALCULATOR LOGIC
+ * Corrected HH:MM 24h format display
  */
 function calculateTimeDifference(iata) {
     const inputEl = document.getElementById(`timeInput-${iata}`);
     const resultEl = document.getElementById(`timeResult-${iata}`);
     if (!inputEl || !inputEl.value) return;
 
-    const targetDate = new Date(inputEl.value);
+    const parts = inputEl.value.split(/[-T:]/); 
+    const targetDate = new Date(parts[0], parts[1]-1, parts[2], parts[3], parts[4]);
     const now = new Date();
-    const diffMs = targetDate - now;
-    const absDiff = Math.abs(diffMs);
+    const absDiff = Math.abs(targetDate - now);
     
-    const diffHrs = Math.floor(absDiff / (1000 * 60 * 60));
-    const diffMins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
-
-    const hh = diffHrs.toString().padStart(2, '0');
-    const mm = diffMins.toString().padStart(2, '0');
-    const color = diffMs > 0 ? "#16a34a" : "#dc2626";
-    const status = diffMs > 0 ? "remaining" : "passed";
+    const hh = Math.floor(absDiff / 3600000).toString().padStart(2, '0');
+    const mm = Math.floor((absDiff % 3600000) / 60000).toString().padStart(2, '0');
+    const color = (targetDate - now) > 0 ? "#16a34a" : "#dc2626";
+    const status = (targetDate - now) > 0 ? "remaining" : "passed";
 
     resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${hh}:${mm} ${status}</span>`;
 }
 
-// === VIEW SWITCHING LOGIC (Restored Interline) ===
+// === VIEW SWITCHING LOGIC ===
 var currentView = 'airports';
 function switchView(view) {
     currentView = view;
@@ -79,15 +76,28 @@ function switchView(view) {
         airportsPanel.classList.remove('active');
         tabInterline.classList.add('active');
         tabAirports.classList.remove('active');
-        filterCarriers(searchInput.value);
+        filterCarriers(searchInput.value); 
     }
     lucide.createIcons();
 }
 
+/**
+ * INTERLINE DATA LOADER
+ * Restores visibility of Carrier names and Codes in the table
+ */
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
-    if (!tbody) return;
     const q = (query || '').trim().toLowerCase();
+    
+    // Logic to populate table from the Hidden Carrier Modal in HTML
+    const sourceTable = document.querySelector('#carrierModal .carrier-table');
+    if (tbody.rows.length === 0 && sourceTable) {
+        const rows = sourceTable.tBodies[0].rows;
+        for (let i = 0; i < rows.length; i++) {
+            tbody.appendChild(rows[i].cloneNode(true));
+        }
+    }
+
     for (let row of tbody.rows) {
         const carrier = row.cells[1].textContent.toLowerCase();
         const code = row.cells[2].textContent.toLowerCase();
@@ -119,8 +129,8 @@ function getTimeDiffHTML(timezone) {
     try {
         const now = new Date();
         const dxbStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
-        const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
-        let diff = parseInt(targetStr) - parseInt(dxbStr);
+        const tStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
+        let diff = parseInt(tStr) - parseInt(dxbStr);
         if (diff > 12) diff -= 24; if (diff < -12) diff += 24;
         if (diff === 0) return `<span class="time-diff diff-same">(Same Time)</span>`;
         return diff > 0 ? `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>` : `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
