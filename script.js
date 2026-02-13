@@ -35,12 +35,12 @@ const countryCodes = {
 };
 
 /**
- * FORCED DD/MM/YYYY CALCULATOR LOGIC
- * Manually parses patterns to ignore browser regional settings
+ * PRODUCTION-READY CALCULATOR LOGIC
+ * Manually parses patterns to bypass browser regional settings
  */
 function calculateTimeDifference(iata) {
-    const dIn = document.getElementById(`dateIn-${iata}`).value; // DD/MM/YYYY
-    const tIn = document.getElementById(`timeIn-${iata}`).value; // HH:MM
+    const dIn = document.getElementById(`dateIn-${iata}`).value; 
+    const tIn = document.getElementById(`timeIn-${iata}`).value; 
     const resultEl = document.getElementById(`timeResult-${iata}`);
     
     if (dIn.length < 10 || tIn.length < 5) return;
@@ -60,7 +60,7 @@ function calculateTimeDifference(iata) {
     resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${hDisplay}:${mDisplay} ${status}</span>`;
 }
 
-// === VIEW SWITCHING LOGIC ===
+// === VIEW SWITCHING LOGIC (Fixed Interline Table) ===
 var currentView = 'airports';
 function switchView(view) {
     currentView = view;
@@ -85,6 +85,7 @@ function switchView(view) {
     lucide.createIcons();
 }
 
+// === INTERLINE DATA FILTERING ===
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
     if (!tbody) return;
@@ -96,7 +97,7 @@ function filterCarriers(query) {
     }
 }
 
-// === TIME & UI HELPERS ===
+// === TIME & FLAG HELPERS ===
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', {
@@ -120,8 +121,8 @@ function getTimeDiffHTML(timezone) {
     try {
         const now = new Date();
         const dxbStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
-        const tStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
-        let diff = parseInt(tStr) - parseInt(dxbStr);
+        const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
+        let diff = parseInt(targetStr) - parseInt(dxbStr);
         if (diff > 12) diff -= 24; if (diff < -12) diff += 24;
         if (diff === 0) return `<span class="time-diff diff-same">(Same Time)</span>`;
         return diff > 0 ? `<span class="time-diff diff-plus">(+${diff}h vs DXB)</span>` : `<span class="time-diff diff-minus">(${diff}h vs DXB)</span>`;
@@ -160,8 +161,8 @@ function renderCards(filterText = '') {
             <div class="calc-section" style="margin-top:15px; padding-top:10px; border-top: 1px solid rgba(0,0,0,0.05);">
                 <label style="font-size:0.7rem; font-weight:bold; color:var(--fz-blue); text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>
                 <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input type="text" id="dateIn-${airport.iata}" placeholder="DD/MM/YYYY" maxlength="10" oninput="calculateTimeDifference('${airport.iata}')" style="width:60%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
-                    <input type="text" id="timeIn-${airport.iata}" placeholder="HH:MM" maxlength="5" oninput="calculateTimeDifference('${airport.iata}')" style="width:35%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
+                    <input type="text" id="dateIn-${airport.iata}" placeholder="DD/MM/YYYY" maxlength="10" oninput="this.value=this.value.replace(/[^\\d/]/g,'').replace(/^(\\d{2})(\\d{2})/, '$1/$2/'); calculateTimeDifference('${airport.iata}')" style="width:60%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
+                    <input type="text" id="timeIn-${airport.iata}" placeholder="HH:MM" maxlength="5" oninput="this.value=this.value.replace(/[^\\d:]/g,'').replace(/^(\\d{2})(\\d{2})/, '$1:$2'); calculateTimeDifference('${airport.iata}')" style="width:35%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
                 </div>
                 <div id="timeResult-${airport.iata}" style="text-align:center; font-size:0.85rem; min-height:1.5em;"></div>
             </div>
