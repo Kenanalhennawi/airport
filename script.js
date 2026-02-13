@@ -20,7 +20,7 @@ const countryCodes = {
     "Congo": "cg", "Democratic Republic of the Congo": "cd", "Zimbabwe": "zw", "Namibia": "na",
     "Rwanda": "rw", "Libya": "ly", "Mauritius": "mu", "Seychelles": "sc",
     "Russia": "ru", "Ukraine": "ua", "Belarus": "by", "Poland": "pl", "Romania": "ro",
-    "Bulgaria": "bg", "Serbia": "rs", "Bosnia": "ba", "Montenegro": "me", "Croatia": "hr",
+    "Bulgaria": "bg", "Serbia": "rs", "Bosnia": "ba", "Bosnia and Herzegovina": "ba", "Montenegro": "me", "Croatia": "hr",
     "Slovenia": "si", "Hungary": "hu", "Czech Republic": "cz", "Slovakia": "sk",
     "Greece": "gr", "Italy": "it", "France": "fr", "Switzerland": "ch", "Austria": "at",
     "Germany": "de", "Netherlands": "nl", "Belgium": "be", "UK": "gb", "Ireland": "ie",
@@ -32,7 +32,7 @@ const countryCodes = {
     "Turkmenistan": "tm", "Tajikistan": "tj", "Thailand": "th", "Malaysia": "my",
     "Singapore": "sg", "Indonesia": "id", "Philippines": "ph", "Vietnam": "vn",
     "China": "cn", "Hong Kong": "hk", "Taiwan": "tw", "South Korea": "kr", "Japan": "jp",
-    "Myanmar": "mm", "Afghanistan": "af", "Eritrea": "er", "Myanmar": "mm",
+    "Myanmar": "mm", "Afghanistan": "af", "Eritrea": "er",
     "USA": "us", "Canada": "ca", "Mexico": "mx", "Brazil": "br", "Argentina": "ar",
     "Chile": "cl", "Colombia": "co", "Peru": "pe", "Venezuela": "ve", "Panama": "pa",
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj"
@@ -369,6 +369,8 @@ function init() {
 
     if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
     if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
+    const openCarrierModalBtn = document.getElementById('openCarrierModal');
+    if (openCarrierModalBtn && carrierModal) openCarrierModalBtn.onclick = function () { carrierModal.classList.remove('hidden'); };
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
