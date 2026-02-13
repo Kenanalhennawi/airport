@@ -8,7 +8,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23F6881F'/><text x='50' y='50' font-size='60' text-anchor='middle' dy='.35em' fill='white'>✈️</text></svg>">
     
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
 </head>
 <body>
 
@@ -70,6 +70,12 @@
                     <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
                     <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
                 </p>
+                <div class="carrier-btn-wrap">
+                    <button type="button" id="openCarrierModal" class="carrier-btn" aria-label="Open carrier table in full screen">
+                        <i data-lucide="maximize-2"></i>
+                        <span>Expand table</span>
+                    </button>
+                </div>
                 <div class="table-scroll">
                     <table class="carrier-table" id="carrierTableMain">
                         <thead>
