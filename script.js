@@ -98,12 +98,20 @@ function calculateTimeDifference(iata) {
     }
 
     const absDiff = Math.abs(targetDate - now);
-    const hDisplay = Math.floor(absDiff / 3600000).toString().padStart(2, '0');
-    const mDisplay = Math.floor((absDiff % 3600000) / 60000).toString().padStart(2, '0');
+    const totalMs = absDiff;
+    const days = Math.floor(totalMs / 86400000);
+    const hours = Math.floor((totalMs % 86400000) / 3600000);
+    const minutes = Math.floor((totalMs % 3600000) / 60000);
     const status = (targetDate - now) > 0 ? 'remaining' : 'passed';
     const color = (targetDate - now) > 0 ? '#16a34a' : '#dc2626';
 
-    resultEl.innerHTML = '<span style="color:' + color + ';font-weight:bold;display:block;margin-top:5px;">' + hDisplay + ':' + mDisplay + ' ' + status + '</span>';
+    var parts = [];
+    if (days > 0) parts.push(days + ' day' + (days !== 1 ? 's' : ''));
+    parts.push(hours + 'h');
+    parts.push(minutes + 'm');
+    const display = parts.join(' ') + ' ' + status;
+
+    resultEl.innerHTML = '<span style="color:' + color + ';font-weight:bold;display:block;margin-top:5px;">' + display + '</span>';
 }
 
 // === HELPER FUNCTIONS ===
