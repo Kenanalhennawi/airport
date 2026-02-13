@@ -111,6 +111,8 @@ input {
     cursor: pointer; transition: all 0.2s ease; animation: fadeIn 0.3s ease-out;
 }
 .card:hover { transform: translateY(-5px); background: #ffffff; }
+.card { cursor: pointer; }
+.card-clickable { cursor: pointer; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
@@ -138,6 +140,7 @@ input {
     font-size: 0.9rem; margin-bottom: 8px; background: #f1f5f9; padding: 6px 10px; border-radius: 6px;
 }
 .click-hint { font-size: 0.75rem; text-align: center; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.cal-btn:hover { background: #e2e8f0 !important; color: var(--fz-blue) !important; }
 .search-hint {
     grid-column: 1 / -1;
     text-align: center;
