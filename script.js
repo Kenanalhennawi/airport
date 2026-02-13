@@ -181,6 +181,7 @@ function populateInterlineTable() {
     });
 }
 
+let carrierFilterMode = 'all';
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
     if (!tbody) return;
@@ -190,8 +191,13 @@ function filterCarriers(query) {
         const carrier = (row.cells[1] && row.cells[1].textContent) || '';
         const code = (row.cells[2] && row.cells[2].textContent) || '';
         const host = (row.cells[4] && row.cells[4].textContent) || '';
-        const match = !q || carrier.toLowerCase().includes(q) || code.toLowerCase().includes(q) || host.toLowerCase().includes(q);
-        row.style.display = match ? '' : 'none';
+        const iatci = (row.cells[6] && row.cells[6].textContent || '').trim().toUpperCase();
+        const bag = (row.cells[9] && row.cells[9].textContent || '').trim().toUpperCase();
+        const searchMatch = !q || carrier.toLowerCase().includes(q) || code.toLowerCase().includes(q) || host.toLowerCase().includes(q);
+        let filterMatch = true;
+        if (carrierFilterMode === 'iatci') filterMatch = iatci === 'YES';
+        else if (carrierFilterMode === 'iet') filterMatch = bag === 'YES';
+        row.style.display = (searchMatch && filterMatch) ? '' : 'none';
     }
 }
 
@@ -384,6 +390,15 @@ function init() {
     const tabInterline = document.getElementById('tabInterline');
     if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
     if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
+
+    document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
+        btn.onclick = function () {
+            document.querySelectorAll('.carrier-filter-btn').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            carrierFilterMode = btn.dataset.filter || 'all';
+            filterCarriers(searchInput ? searchInput.value : '');
+        };
+    });
 
     if (searchInput) searchInput.addEventListener('input', function () {
         var val = searchInput.value;
