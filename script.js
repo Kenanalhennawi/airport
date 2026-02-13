@@ -266,8 +266,10 @@ function renderCards(filterText) {
             '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
             '<div style="flex:1;display:flex;gap:4px;">' +
             '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '<input type="date" id="datePicker-' + airport.iata + '" style="position:absolute;opacity:0;width:1px;height:1px;clip:rect(0,0,0,0);">' +
-            '<button type="button" id="calBtn-' + airport.iata + '" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
+            '<div class="cal-btn-wrap" style="position:relative;flex-shrink:0;">' +
+            '<input type="date" id="datePicker-' + airport.iata + '" title="Pick date" style="position:absolute;top:0;left:0;width:36px;height:34px;opacity:0;cursor:pointer;font-size:0;z-index:2;">' +
+            '<span class="cal-btn" style="position:relative;z-index:0;width:36px;height:34px;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);pointer-events:none;"><i data-lucide="calendar" style="width:18px;height:18px;"></i></span>' +
+            '</div>' +
             '</div>' +
             '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:80px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
             '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
@@ -291,9 +293,7 @@ function renderCards(filterText) {
         }
 
         var datePicker = card.querySelector('#datePicker-' + airport.iata);
-        var calBtn = card.querySelector('#calBtn-' + airport.iata);
-        if (calBtn && datePicker) {
-            calBtn.onclick = function (e) { e.stopPropagation(); datePicker.click(); };
+        if (datePicker) {
             datePicker.addEventListener('change', function () {
                 var v = datePicker.value;
                 if (v) {
@@ -391,7 +391,6 @@ function init() {
     switchView('airports');
     if (typeof lucide !== 'undefined') lucide.createIcons();
     setTimeout(function () { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
-    document.documentElement.classList.remove('app-loading');
 }
 
 if (document.readyState === 'loading') {
