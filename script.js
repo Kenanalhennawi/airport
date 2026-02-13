@@ -40,12 +40,13 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj"
 };
 
-// === CALCULATOR LOGIC (Updated to 24-hour result) ===
+// === CALCULATOR LOGIC (24h Format & dd/mm/yyyy Logic) ===
 function calculateTimeDifference(iata) {
     const inputEl = document.getElementById(`timeInput-${iata}`);
     const resultEl = document.getElementById(`timeResult-${iata}`);
     if (!inputEl || !inputEl.value) return;
 
+    // inputEl.value is "YYYY-MM-DDTHH:MM" from browser
     const targetDate = new Date(inputEl.value);
     const now = new Date();
     const diffMs = targetDate - now;
@@ -54,7 +55,7 @@ function calculateTimeDifference(iata) {
     const diffHrs = Math.floor(absDiff / (1000 * 60 * 60));
     const diffMins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
 
-    // Format to HH:MM logic
+    // Display result in 24h format (Total hours may exceed 24)
     const hh = diffHrs.toString().padStart(2, '0');
     const mm = diffMins.toString().padStart(2, '0');
 
@@ -120,7 +121,7 @@ function renderCards(filterText = '') {
     container.innerHTML = ''; 
     const query = filterText.trim().toLowerCase();
     
-    // Results ONLY appear when searching
+    // Only show results when user starts searching
     if (!query) {
         clearBtn.classList.add('hidden');
         return; 
@@ -187,6 +188,7 @@ function renderCards(filterText = '') {
         container.appendChild(card);
     });
 
+    // Initialize icons immediately after searching
     lucide.createIcons();
 }
 
@@ -215,9 +217,10 @@ clearBtn.addEventListener('click', () => {
     searchInput.focus();
 });
 
-// Initialization Logic
+// Initialization
 function init() {
     updateLiveClock();
+    // Fix: render icons on first load
     lucide.createIcons(); 
     
     setInterval(() => {
@@ -232,4 +235,4 @@ function init() {
 }
 
 init();
-renderCards('');
+renderCards(''); // Starts empty as requested
