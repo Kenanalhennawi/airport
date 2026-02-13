@@ -36,24 +36,28 @@ const countryCodes = {
 
 /**
  * FORCED DD/MM/YYYY CALCULATOR LOGIC
- * Corrected HH:MM 24h format display
+ * Manually parses patterns to ignore browser regional settings
  */
 function calculateTimeDifference(iata) {
-    const inputEl = document.getElementById(`timeInput-${iata}`);
+    const dIn = document.getElementById(`dateIn-${iata}`).value; // DD/MM/YYYY
+    const tIn = document.getElementById(`timeIn-${iata}`).value; // HH:MM
     const resultEl = document.getElementById(`timeResult-${iata}`);
-    if (!inputEl || !inputEl.value) return;
+    
+    if (dIn.length < 10 || tIn.length < 5) return;
 
-    const parts = inputEl.value.split(/[-T:]/); 
-    const targetDate = new Date(parts[0], parts[1]-1, parts[2], parts[3], parts[4]);
+    const [d, m, y] = dIn.split('/').map(Number);
+    const [hr, min] = tIn.split(':').map(Number);
+    
+    const targetDate = new Date(y, m - 1, d, hr, min);
     const now = new Date();
     const absDiff = Math.abs(targetDate - now);
     
-    const hh = Math.floor(absDiff / 3600000).toString().padStart(2, '0');
-    const mm = Math.floor((absDiff % 3600000) / 60000).toString().padStart(2, '0');
-    const color = (targetDate - now) > 0 ? "#16a34a" : "#dc2626";
+    const hDisplay = Math.floor(absDiff / 3600000).toString().padStart(2, '0');
+    const mDisplay = Math.floor((absDiff % 3600000) / 60000).toString().padStart(2, '0');
     const status = (targetDate - now) > 0 ? "remaining" : "passed";
+    const color = (targetDate - now) > 0 ? "#16a34a" : "#dc2626";
 
-    resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${hh}:${mm} ${status}</span>`;
+    resultEl.innerHTML = `<span style="color:${color}; font-weight:bold; display:block; margin-top:5px;">${hDisplay}:${mDisplay} ${status}</span>`;
 }
 
 // === VIEW SWITCHING LOGIC ===
@@ -76,28 +80,15 @@ function switchView(view) {
         airportsPanel.classList.remove('active');
         tabInterline.classList.add('active');
         tabAirports.classList.remove('active');
-        filterCarriers(searchInput.value); 
+        filterCarriers(searchInput.value);
     }
     lucide.createIcons();
 }
 
-/**
- * INTERLINE DATA LOADER
- * Restores visibility of Carrier names and Codes in the table
- */
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
+    if (!tbody) return;
     const q = (query || '').trim().toLowerCase();
-    
-    // Logic to populate table from the Hidden Carrier Modal in HTML
-    const sourceTable = document.querySelector('#carrierModal .carrier-table');
-    if (tbody.rows.length === 0 && sourceTable) {
-        const rows = sourceTable.tBodies[0].rows;
-        for (let i = 0; i < rows.length; i++) {
-            tbody.appendChild(rows[i].cloneNode(true));
-        }
-    }
-
     for (let row of tbody.rows) {
         const carrier = row.cells[1].textContent.toLowerCase();
         const code = row.cells[2].textContent.toLowerCase();
@@ -167,9 +158,11 @@ function renderCards(filterText = '') {
                 <div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>${airport.distanceCenter}</span></div>
             </div>
             <div class="calc-section" style="margin-top:15px; padding-top:10px; border-top: 1px solid rgba(0,0,0,0.05);">
-                <label style="font-size:0.7rem; font-weight:bold; color:var(--fz-blue); text-transform:uppercase;">Check Hours (DD/MM/YYYY):</label>
-                <input type="datetime-local" id="timeInput-${airport.iata}" onchange="calculateTimeDifference('${airport.iata}')" 
-                       style="width:100%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd; background:white; margin-top:5px;">
+                <label style="font-size:0.7rem; font-weight:bold; color:var(--fz-blue); text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="text" id="dateIn-${airport.iata}" placeholder="DD/MM/YYYY" maxlength="10" oninput="calculateTimeDifference('${airport.iata}')" style="width:60%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
+                    <input type="text" id="timeIn-${airport.iata}" placeholder="HH:MM" maxlength="5" oninput="calculateTimeDifference('${airport.iata}')" style="width:35%; font-size:0.8rem; padding:5px; border-radius:5px; border:1px solid #ddd;">
+                </div>
                 <div id="timeResult-${airport.iata}" style="text-align:center; font-size:0.85rem; min-height:1.5em;"></div>
             </div>
         `;
@@ -198,7 +191,6 @@ function init() {
     document.getElementById('tabInterline').onclick = () => switchView('interline');
     searchInput.addEventListener('input', (e) => { if(currentView === 'airports') renderCards(e.target.value); else filterCarriers(e.target.value); });
     clearBtn.onclick = () => { searchInput.value = ''; renderCards(''); switchView(currentView); };
-
     setInterval(() => {
         updateLiveClock();
         document.querySelectorAll('.time-badge').forEach(el => {
@@ -207,10 +199,6 @@ function init() {
         });
         lucide.createIcons(); 
     }, 1000);
-
-    updateLiveClock();
-    lucide.createIcons();
-    renderCards('');
+    updateLiveClock(); lucide.createIcons(); renderCards('');
 }
-
 document.addEventListener('DOMContentLoaded', init);
