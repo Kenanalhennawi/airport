@@ -62,13 +62,18 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// Converts (year, month, day, hour, min) in a given timezone to a UTC Date
+// Converts (year, month, day, hour, min) in a given timezone to a UTC Date (handles 30/45-min offsets)
 function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
     try {
         var utcNoon = new Date(Date.UTC(y, m - 1, d, 12, 0));
-        var hourInTZ = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: timezone, hour: 'numeric', hour12: false }).format(utcNoon), 10);
-        var hourUTC = hr + 12 - hourInTZ;
-        return new Date(Date.UTC(y, m - 1, d, hourUTC, min));
+        var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+        var tzParts = fmt.formatToParts(utcNoon);
+        var hourInTZ = parseInt(tzParts.find(function (p) { return p.type === 'hour'; }).value, 10);
+        var minInTZ = parseInt(tzParts.find(function (p) { return p.type === 'minute'; }).value, 10);
+        var offsetMinutes = (hourInTZ * 60 + minInTZ) - 720;
+        var targetMinutes = hr * 60 + min;
+        var utcMinutes = targetMinutes - offsetMinutes;
+        return new Date(Date.UTC(y, m - 1, d, 0, 0) + utcMinutes * 60000);
     } catch (e) { return null; }
 }
 
@@ -151,16 +156,32 @@ function getFlagUrl(countryName) {
     return 'https://flagcdn.com/w40/' + code + '.png';
 }
 
+function formatTimeDiffDisplay(diffMinutes) {
+    var sign = diffMinutes >= 0 ? '+' : '-';
+    var abs = Math.abs(diffMinutes);
+    var h = Math.floor(abs / 60);
+    var m = abs % 60;
+    if (m === 0) return sign + h + 'h';
+    if (h === 0) return sign + m + 'm';
+    return sign + h + 'h ' + m + 'm';
+}
+
 function getTimeDiffHTML(timezone) {
     try {
-        const now = new Date();
-        const dxbStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }).format(now);
-        const targetStr = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).format(now);
-        let diff = parseInt(targetStr) - parseInt(dxbStr);
-        if (diff > 12) diff -= 24;
-        if (diff < -12) diff += 24;
-        if (diff === 0) return '<span class="time-diff diff-same">(Same Time)</span>';
-        return diff > 0 ? '<span class="time-diff diff-plus">(+' + diff + 'h vs DXB)</span>' : '<span class="time-diff diff-minus">(' + diff + 'h vs DXB)</span>';
+        var now = new Date();
+        var utcNoon = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0));
+        var dxbFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
+        var tgtFmt = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+        var dxbParts = dxbFmt.formatToParts(utcNoon);
+        var tgtParts = tgtFmt.formatToParts(utcNoon);
+        var dxbMin = parseInt(dxbParts.find(function (p) { return p.type === 'hour'; }).value, 10) * 60 + parseInt(dxbParts.find(function (p) { return p.type === 'minute'; }).value, 10);
+        var tgtMin = parseInt(tgtParts.find(function (p) { return p.type === 'hour'; }).value, 10) * 60 + parseInt(tgtParts.find(function (p) { return p.type === 'minute'; }).value, 10);
+        var diffMinutes = tgtMin - dxbMin;
+        if (diffMinutes > 720) diffMinutes -= 1440;
+        if (diffMinutes < -720) diffMinutes += 1440;
+        if (diffMinutes === 0) return '<span class="time-diff diff-same">(Same Time)</span>';
+        var txt = formatTimeDiffDisplay(diffMinutes) + ' vs DXB';
+        return diffMinutes > 0 ? '<span class="time-diff diff-plus">(' + txt + ')</span>' : '<span class="time-diff diff-minus">(' + txt + ')</span>';
     } catch (e) { return ''; }
 }
 
