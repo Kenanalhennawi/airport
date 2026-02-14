@@ -62,12 +62,29 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// === 24-HOUR CALCULATOR (time-only OR date+time) ===
-function calculateTimeDifference(iata) {
+// Converts (year, month, day, hour, min) in a given timezone to a UTC Date
+function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
+    try {
+        var utcNoon = new Date(Date.UTC(y, m - 1, d, 12, 0));
+        var hourInTZ = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: timezone, hour: 'numeric', hour12: false }).format(utcNoon), 10);
+        var hourUTC = hr + 12 - hourInTZ;
+        return new Date(Date.UTC(y, m - 1, d, hourUTC, min));
+    } catch (e) { return null; }
+}
+
+// === 24-HOUR CALCULATOR (time-only OR date+time) - uses airport's timezone ===
+function calculateTimeDifference(iata, timezone) {
     const dIn = document.getElementById('dateIn-' + iata);
     const tIn = document.getElementById('timeIn-' + iata);
     const resultEl = document.getElementById('timeResult-' + iata);
     if (!dIn || !tIn || !resultEl) return;
+
+    var tz = timezone;
+    if (!tz) {
+        var data = (typeof window !== 'undefined' && window.airportsData) || [];
+        var apt = Array.isArray(data) ? data.find(function (a) { return a.iata === iata; }) : null;
+        tz = apt ? apt.timezone : 'Asia/Dubai';
+    }
 
     const dStr = dIn.value.trim();
     const tStr = tIn.value.trim();
@@ -92,9 +109,17 @@ function calculateTimeDifference(iata) {
             resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid date</span>';
             return;
         }
-        targetDate = new Date(y, m - 1, d, hr, min);
+        targetDate = localTimeInTimezoneToUTC(y, m, d, hr, min, tz);
     } else {
-        targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hr, min);
+        var pt = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(now);
+        var y = parseInt(pt.find(function (p) { return p.type === 'year'; }).value, 10);
+        var m = parseInt(pt.find(function (p) { return p.type === 'month'; }).value, 10);
+        var d = parseInt(pt.find(function (p) { return p.type === 'day'; }).value, 10);
+        targetDate = localTimeInTimezoneToUTC(y, m, d, hr, min, tz);
+    }
+    if (!targetDate) {
+        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid timezone</span>';
+        return;
     }
 
     const absDiff = Math.abs(targetDate - now);
@@ -293,7 +318,7 @@ function renderCards(filterText) {
         const runCalc = function () {
             if (dateIn) formatDateInput(dateIn);
             if (timeIn) formatTimeInput(timeIn);
-            calculateTimeDifference(airport.iata);
+            calculateTimeDifference(airport.iata, airport.timezone);
         };
         if (dateIn) {
             dateIn.addEventListener('input', runCalc);
