@@ -38,7 +38,7 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj",
     "Bermuda": "bm", "Cape Verde": "cv",
     "Papua New Guinea": "pg", "Solomon Islands": "sb", "New Caledonia": "nc",
-    "Samoa": "ws", "Tonga": "to",     "Réunion": "re", "Bhutan": "bt", "Ecuador": "ec"
+    "Samoa": "ws", "Tonga": "to", "Réunion": "re", "Bhutan": "bt", "Ecuador": "ec"
 };
 
 // === DD/MM/YYYY MASKED INPUT (bypasses browser regional MM/DD) ===
