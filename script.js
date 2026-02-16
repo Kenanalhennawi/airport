@@ -65,12 +65,13 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// Converts (year, month, day, hour, min) in a given timezone to a UTC Date (handles 30/45-min offsets)
+// Converts (year, month, day, hour, min) in a given timezone to a UTC Date.
+// Handles DST (summer/winter) via IANA timezones: offset is computed for the target date.
 function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
     try {
-        var utcNoon = new Date(Date.UTC(y, m - 1, d, 12, 0));
+        var refUtc = new Date(Date.UTC(y, m - 1, d, 12, 0));
         var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
-        var tzParts = fmt.formatToParts(utcNoon);
+        var tzParts = fmt.formatToParts(refUtc);
         var hourInTZ = parseInt(tzParts.find(function (p) { return p.type === 'hour'; }).value, 10);
         var minInTZ = parseInt(tzParts.find(function (p) { return p.type === 'minute'; }).value, 10);
         var offsetMinutes = (hourInTZ * 60 + minInTZ) - 720;
@@ -147,11 +148,19 @@ function calculateTimeDifference(iata, timezone) {
     resultEl.innerHTML = '<span style="color:' + color + ';font-weight:bold;display:block;margin-top:5px;">' + display + '</span>';
 }
 
-// === HELPER FUNCTIONS ===
+// === HELPER FUNCTIONS (DST handled via IANA timezones) ===
 function getLocalTime(timezone) {
     try {
         return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: false }).format(new Date());
     } catch (e) { return '--:--'; }
+}
+
+function getTimezoneAbbr(timezone) {
+    try {
+        var parts = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, timeZoneName: 'short' }).formatToParts(new Date());
+        var tz = parts.find(function (p) { return p.type === 'timeZoneName'; });
+        return tz ? tz.value : '';
+    } catch (e) { return ''; }
 }
 
 function getFlagUrl(countryName) {
@@ -199,8 +208,8 @@ function updateLiveClock() {
     const now = new Date();
     const utcEl = document.getElementById('utcTime');
     const dxbEl = document.getElementById('dxbTime');
-    if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
-    if (dxbEl) dxbEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false });
+    if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false }) + ' Z';
+    if (dxbEl) dxbEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false }) + ' GST';
 }
 
 // === INTERLINE: Populate from hidden carrier source (55 carriers) ===
@@ -323,11 +332,11 @@ function renderCards(filterText) {
         card.innerHTML =
             '<div class="card-clickable">' +
             '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt=""> ' + airport.city + '</div></div>' +
-            '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
+            '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + (getTimezoneAbbr(airport.timezone) ? ' ' + getTimezoneAbbr(airport.timezone) : '') + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
             '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
-            '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>' +
+            '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM) — date used for summer/winter time:</label>' +
             '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
             '<div style="flex:1;display:flex;gap:4px;">' +
             '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
@@ -469,7 +478,7 @@ function init() {
         updateLiveClock();
         document.querySelectorAll('.time-badge').forEach(function (el) {
             const tz = el.getAttribute('data-timezone');
-            el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz);
+            el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz) + (getTimezoneAbbr(tz) ? ' ' + getTimezoneAbbr(tz) : '');
         });
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 1000);
