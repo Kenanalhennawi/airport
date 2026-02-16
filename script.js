@@ -67,19 +67,17 @@ function formatTimeInput(el) {
 }
 
 function parseTimeInput(str) {
+    return parseTimeFlexible(str);
+}
+function parseTimeFlexible(str) {
     var s = (str || '').trim();
     if (!s || s.length < 4) return null;
-    if (use12Hour()) {
-        var m = s.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
-        if (!m) return null;
-        var hr = parseInt(m[1], 10);
-        var min = parseInt(m[2], 10);
+    var m12 = s.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+    if (m12) {
+        var hr = parseInt(m12[1], 10);
+        var min = parseInt(m12[2], 10);
         if (min < 0 || min > 59) return null;
-        if ((m[3] || '').toLowerCase() === 'pm') {
-            if (hr !== 12) hr += 12;
-        } else {
-            if (hr === 12) hr = 0;
-        }
+        if ((m12[3] || '').toLowerCase() === 'pm') { if (hr !== 12) hr += 12; } else { if (hr === 12) hr = 0; }
         if (hr < 0 || hr > 23) return null;
         return { hr: hr, min: min };
     }
@@ -89,6 +87,14 @@ function parseTimeInput(str) {
     var min = parseInt(parts[1], 10);
     if (!isValidTime(hr, min)) return null;
     return { hr: hr, min: min };
+}
+function formatTimeDisplay(hr, min, use12h) {
+    if (use12h) {
+        var h = hr === 0 ? 12 : (hr > 12 ? hr - 12 : hr);
+        var suffix = hr < 12 ? ' AM' : ' PM';
+        return (h < 10 ? '0' : '') + h + ':' + (min < 10 ? '0' : '') + min + suffix;
+    }
+    return (hr < 10 ? '0' : '') + hr + ':' + (min < 10 ? '0' : '') + min;
 }
 
 function isValidDate(d, m, y) {
@@ -548,8 +554,20 @@ function init() {
             el.style.width = use12Hour() ? '110px' : '80px';
         });
     }
-    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); };
-    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); };
+    function convertAllTimeInputs() {
+        document.querySelectorAll('.calc-time-input').forEach(function (el) {
+            var val = (el.value || '').trim();
+            if (!val) return;
+            var p = parseTimeFlexible(val);
+            if (p) {
+                el.value = formatTimeDisplay(p.hr, p.min, use12Hour());
+                var iata = (el.id || '').replace('timeIn-', '');
+                if (iata) calculateTimeDifference(iata, null);
+            }
+        });
+    }
+    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
+    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
 
     setInterval(refreshAllTimes, 1000);
 
