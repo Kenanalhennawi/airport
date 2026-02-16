@@ -506,7 +506,7 @@ function renderCards(filterText) {
         card.dataset.iata = airport.iata;
         card.innerHTML =
             '<div class="card-clickable">' +
-            '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt=""> ' + airport.city + '</div></div>' +
+            '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt="Flag of ' + (airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '"> ' + airport.city + '</div></div>' +
             '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
             '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
