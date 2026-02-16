@@ -32,6 +32,10 @@
                 <i data-lucide="layers"></i>
                 <span>Interline</span>
             </button>
+            <button type="button" id="tabDelayPolicy" class="view-tab" aria-pressed="false">
+                <i data-lucide="clock-alert"></i>
+                <span>Delay Policy</span>
+            </button>
         </div>
 
         <div class="search-wrapper">
@@ -137,6 +141,38 @@
                             </tr>
                         </thead>
                         <tbody id="carrierTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="delayPolicyView" class="view-panel">
+            <div class="delay-policy-content">
+                <p class="carrier-explanation">
+                    In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
+                </p>
+                <p class="carrier-explanation carrier-note">
+                    <strong>Departure from DXB/DWC:</strong> Passengers receive Email/SMS if delay is 30 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
+                </p>
+                <p class="carrier-explanation carrier-note">
+                    <strong>Outstation (STD-based):</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before original STD (STD-03h). Check-in closure: STD-60.
+                </p>
+                <p class="carrier-explanation carrier-note">
+                    <strong>All Other Outstations:</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
+                </p>
+                <div class="table-scroll">
+                    <table class="delay-policy-table" id="delayPolicyTable">
+                        <thead>
+                            <tr>
+                                <th>Airports</th>
+                                <th>Pax Email/SMS<br><small>STD-03h (delay 90+ mins)</small></th>
+                                <th>Pax Email/SMS<br><small>ETD-03h (delay 30+ mins)</small></th>
+                                <th>Check-in closure<br><small>90 mins delay</small></th>
+                                <th>Check-in closure<br><small>30 mins delay</small></th>
+                                <th>Closure time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="delayPolicyBody"></tbody>
                     </table>
                 </div>
             </div>
