@@ -50,7 +50,17 @@ function formatDateInput(el) {
 }
 
 function formatTimeInput(el) {
-    if (use12Hour()) return;
+    if (use12Hour()) {
+        var raw = el.value;
+        var digits = raw.replace(/\D/g, '').slice(0, 4);
+        var ampm = raw.match(/([ap]m?)$/i);
+        var suffix = ampm ? (ampm[1].toLowerCase().charAt(0) === 'p' ? ' PM' : ' AM') : '';
+        if (digits.length === 4) digits = digits.slice(0, 2) + ':' + digits.slice(2);
+        else if (digits.length === 3) digits = digits.slice(0, 1) + ':' + digits.slice(1);
+        else if (digits.length === 2) digits = digits.slice(0, 1) + ':' + digits.slice(1, 2);
+        el.value = digits + suffix;
+        return;
+    }
     let v = el.value.replace(/[^\d]/g, '');
     if (v.length >= 2) v = v.slice(0, 2) + ':' + v.slice(2);
     el.value = v.slice(0, 5);
@@ -127,7 +137,7 @@ function calculateTimeDifference(iata, timezone) {
 
     var parsed = parseTimeInput(tStr);
     if (!parsed) {
-        var msg = (tStr.length >= 3) ? 'Invalid time' : 'Enter time (' + (use12Hour() ? 'h:MM am/pm' : 'HH:MM') + ')';
+        var msg = (tStr.length >= 3) ? 'Invalid time' : 'Enter time (' + (use12Hour() ? 'h:MM AM/PM' : 'HH:MM') + ')';
         resultEl.innerHTML = (dStr || tStr) ? '<span style="color:' + (tStr.length >= 3 ? '#dc2626' : '#64748b') + ';font-size:0.8rem;font-weight:' + (tStr.length >= 3 ? 'bold' : 'normal') + ';">' + msg + '</span>' : '';
         return;
     }
@@ -179,12 +189,13 @@ function setTimeFormatPreference(val) {
     try { localStorage.setItem('timeFormat', val === '12' ? '12' : '24'); } catch (e) {}
 }
 function use12Hour() { return getTimeFormatPreference() === '12'; }
-function getTimePlaceholder() { return use12Hour() ? 'h:MM am/pm' : 'HH:MM'; }
+function getTimePlaceholder() { return use12Hour() ? 'h:MM AM/PM' : 'HH:MM'; }
 
 // === HELPER FUNCTIONS (DST handled via IANA timezones) ===
 function getLocalTime(timezone) {
     try {
-        return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: use12Hour() }).format(new Date());
+        var s = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: use12Hour() }).format(new Date());
+        return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM');
     } catch (e) { return '--:--'; }
 }
 
@@ -242,8 +253,12 @@ function updateLiveClock() {
     const utcEl = document.getElementById('utcTime');
     const dxbEl = document.getElementById('dxbTime');
     var opts = { hour12: use12Hour(), hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)) + ' Z';
-    if (dxbEl) dxbEl.textContent = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: 'Asia/Dubai' }, opts)) + ' GST';
+    var fmt = function (tz) {
+        var s = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: tz }, opts));
+        return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM');
+    };
+    if (utcEl) utcEl.textContent = fmt('UTC');
+    if (dxbEl) dxbEl.textContent = fmt('Asia/Dubai');
 }
 
 // === INTERLINE: Populate from hidden carrier source (55 carriers) ===
@@ -366,7 +381,7 @@ function renderCards(filterText) {
         card.innerHTML =
             '<div class="card-clickable">' +
             '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt=""> ' + airport.city + '</div></div>' +
-            '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + (getTimezoneAbbr(airport.timezone) ? ' ' + getTimezoneAbbr(airport.timezone) : '') + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
+            '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
             '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
@@ -522,7 +537,7 @@ function init() {
         updateLiveClock();
         document.querySelectorAll('.time-badge').forEach(function (el) {
             const tz = el.getAttribute('data-timezone');
-            el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz) + (getTimezoneAbbr(tz) ? ' ' + getTimezoneAbbr(tz) : '');
+            el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz);
         });
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
