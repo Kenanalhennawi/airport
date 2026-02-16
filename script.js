@@ -349,9 +349,37 @@ function populateDelayPolicyTable() {
     tbody.innerHTML = '';
     delayPolicyData.forEach(function (r) {
         var tr = document.createElement('tr');
+        tr.dataset.airports = r.airports.toLowerCase();
         tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td>' + r.closureTime + '</td>';
         tbody.appendChild(tr);
     });
+    filterDelayPolicy(document.getElementById('delayPolicySearch') ? document.getElementById('delayPolicySearch').value : '');
+}
+function filterDelayPolicy(query) {
+    var tbody = document.getElementById('delayPolicyBody');
+    if (!tbody) return;
+    var q = (query || '').trim().toLowerCase();
+    var allOtherRow = null;
+    var hasMatch = false;
+    for (var i = 0; i < tbody.rows.length; i++) {
+        var row = tbody.rows[i];
+        var airports = (row.dataset.airports || '').toLowerCase();
+        var isAllOther = airports.indexOf('all other') >= 0;
+        if (isAllOther) allOtherRow = row;
+        var match = !q || airports.indexOf(q) >= 0 || airports.split('/').some(function (a) { return a.trim().indexOf(q) >= 0; });
+        if (match) hasMatch = true;
+        row.style.display = match ? '' : 'none';
+        row.classList.remove('delay-result-highlight', 'delay-all-other');
+        if (match && q) row.classList.add('delay-result-highlight');
+    }
+    var hintEl = document.getElementById('delaySearchHint');
+    if (q && allOtherRow && !hasMatch) {
+        allOtherRow.style.display = '';
+        allOtherRow.classList.add('delay-result-highlight', 'delay-all-other');
+        if (hintEl) { hintEl.textContent = 'Airport not in list — applies: All Other'; hintEl.classList.remove('hidden'); }
+    } else {
+        if (hintEl) hintEl.classList.add('hidden');
+    }
 }
 
 let carrierFilterMode = 'all';
@@ -578,6 +606,26 @@ function init() {
             filterCarriers(searchInput ? searchInput.value : '');
         };
     });
+
+    var delaySearch = document.getElementById('delayPolicySearch');
+    var delayClearBtn = document.getElementById('delayClearBtn');
+    if (delaySearch) {
+        delaySearch.addEventListener('input', function () {
+            var val = delaySearch.value;
+            if (delayClearBtn) delayClearBtn.classList.toggle('hidden', !val.trim());
+            filterDelayPolicy(val);
+        });
+        delaySearch.addEventListener('keyup', function (e) {
+            if (e.key === 'Escape') { delaySearch.value = ''; if (delayClearBtn) delayClearBtn.classList.add('hidden'); filterDelayPolicy(''); }
+        });
+    }
+    if (delayClearBtn) delayClearBtn.onclick = function () {
+        if (delaySearch) { delaySearch.value = ''; delaySearch.focus(); }
+        delayClearBtn.classList.add('hidden');
+        var h = document.getElementById('delaySearchHint');
+        if (h) h.classList.add('hidden');
+        filterDelayPolicy('');
+    };
 
     if (searchInput) searchInput.addEventListener('input', function () {
         var val = searchInput.value;
