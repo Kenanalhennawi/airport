@@ -50,9 +50,35 @@ function formatDateInput(el) {
 }
 
 function formatTimeInput(el) {
+    if (use12Hour()) return;
     let v = el.value.replace(/[^\d]/g, '');
     if (v.length >= 2) v = v.slice(0, 2) + ':' + v.slice(2);
     el.value = v.slice(0, 5);
+}
+
+function parseTimeInput(str) {
+    var s = (str || '').trim();
+    if (!s || s.length < 4) return null;
+    if (use12Hour()) {
+        var m = s.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+        if (!m) return null;
+        var hr = parseInt(m[1], 10);
+        var min = parseInt(m[2], 10);
+        if (min < 0 || min > 59) return null;
+        if ((m[3] || '').toLowerCase() === 'pm') {
+            if (hr !== 12) hr += 12;
+        } else {
+            if (hr === 12) hr = 0;
+        }
+        if (hr < 0 || hr > 23) return null;
+        return { hr: hr, min: min };
+    }
+    var parts = s.split(':');
+    if (parts.length !== 2) return null;
+    var hr = parseInt(parts[0], 10);
+    var min = parseInt(parts[1], 10);
+    if (!isValidTime(hr, min)) return null;
+    return { hr: hr, min: min };
 }
 
 function isValidDate(d, m, y) {
@@ -99,16 +125,13 @@ function calculateTimeDifference(iata, timezone) {
     const tStr = tIn.value.trim();
     const now = new Date();
 
-    if (tStr.length < 5) {
-        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:#64748b;font-size:0.8rem;">Enter time (HH:MM)</span>' : '';
+    var parsed = parseTimeInput(tStr);
+    if (!parsed) {
+        var msg = (tStr.length >= 3) ? 'Invalid time' : 'Enter time (' + (use12Hour() ? 'h:MM am/pm' : 'HH:MM') + ')';
+        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:' + (tStr.length >= 3 ? '#dc2626' : '#64748b') + ';font-size:0.8rem;font-weight:' + (tStr.length >= 3 ? 'bold' : 'normal') + ';">' + msg + '</span>' : '';
         return;
     }
-
-    const [hr, min] = tStr.split(':').map(Number);
-    if (!isValidTime(hr, min)) {
-        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid time</span>';
-        return;
-    }
+    var hr = parsed.hr, min = parsed.min;
 
     var targetDate;
     if (dStr.length >= 10) {
@@ -156,6 +179,7 @@ function setTimeFormatPreference(val) {
     try { localStorage.setItem('timeFormat', val === '12' ? '12' : '24'); } catch (e) {}
 }
 function use12Hour() { return getTimeFormatPreference() === '12'; }
+function getTimePlaceholder() { return use12Hour() ? 'h:MM am/pm' : 'HH:MM'; }
 
 // === HELPER FUNCTIONS (DST handled via IANA timezones) ===
 function getLocalTime(timezone) {
@@ -346,14 +370,14 @@ function renderCards(filterText) {
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
             '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
-            '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY HH:MM):</label>' +
+            '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY ' + getTimePlaceholder() + '):</label>' +
             '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
             '<div style="flex:1;display:flex;gap:4px;">' +
             '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
             '<input type="date" id="datePicker-' + airport.iata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
             '<button type="button" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;margin:0;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
             '</div>' +
-            '<input type="text" id="timeIn-' + airport.iata + '" placeholder="HH:MM" maxlength="5" style="width:80px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
+            '<input type="text" id="timeIn-' + airport.iata + '" placeholder="' + getTimePlaceholder() + '" maxlength="' + (use12Hour() ? 10 : 5) + '" style="width:' + (use12Hour() ? 110 : 80) + 'px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;" class="calc-time-input">' +
             '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
@@ -502,8 +526,15 @@ function init() {
         });
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
-    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); };
-    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); };
+    function updateTimeInputPlaceholders() {
+        document.querySelectorAll('.calc-time-input').forEach(function (el) {
+            el.placeholder = getTimePlaceholder();
+            el.maxLength = use12Hour() ? 10 : 5;
+            el.style.width = use12Hour() ? '110px' : '80px';
+        });
+    }
+    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); };
+    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); };
 
     setInterval(refreshAllTimes, 1000);
 
