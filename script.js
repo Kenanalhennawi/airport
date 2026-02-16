@@ -352,6 +352,7 @@ function populateDelayPolicyTable() {
         tr.dataset.airports = r.airports.toLowerCase();
         var isStd = r.closureTime.indexOf('STD') >= 0;
         tr.dataset.closureType = isStd ? 'std' : 'etd';
+        tr.classList.add('delay-row-' + (isStd ? 'std' : 'etd'));
         var closureBadge = '<span class="closure-badge closure-' + (isStd ? 'std' : 'etd') + '">' + r.closureTime + '</span>';
         tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td class="closure-cell">' + closureBadge + '</td>';
         tbody.appendChild(tr);
