@@ -388,13 +388,15 @@ input {
 }
 .closure-badge.closure-std {
     background: linear-gradient(135deg, #005EB8 0%, #003d73 100%);
-    color: white;
-    box-shadow: 0 2px 8px rgba(0,94,184,0.4);
+    color: white !important;
+    box-shadow: 0 2px 10px rgba(0,94,184,0.5);
+    border: 2px solid #1e40af;
 }
 .closure-badge.closure-etd {
-    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-    color: white;
-    box-shadow: 0 2px 8px rgba(234,88,12,0.4);
+    background: linear-gradient(135deg, #F6881F 0%, #ea580c 100%);
+    color: white !important;
+    box-shadow: 0 2px 10px rgba(246,136,31,0.5);
+    border: 2px solid #c2410c;
 }
 .delay-result-summary {
     margin-top: 14px;
@@ -413,17 +415,23 @@ input {
     margin-right: 6px;
 }
 .delay-row-std.delay-result-highlight {
-    background: linear-gradient(90deg, #dbeafe 0%, #bfdbfe 100%) !important;
-    border-left: 5px solid #005EB8 !important;
+    background: linear-gradient(90deg, #1e40af 0%, #005EB8 100%) !important;
+    border-left: 5px solid #1e3a8a !important;
+    color: white !important;
 }
+.delay-row-std.delay-result-highlight td { color: white !important; }
 .delay-row-etd.delay-result-highlight {
-    background: linear-gradient(90deg, #ffedd5 0%, #fed7aa 100%) !important;
-    border-left: 5px solid #ea580c !important;
+    background: linear-gradient(90deg, #ea580c 0%, #F6881F 100%) !important;
+    border-left: 5px solid #c2410c !important;
+    color: white !important;
 }
+.delay-row-etd.delay-result-highlight td { color: white !important; }
 .delay-all-other.delay-row-etd {
-    background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 100%) !important;
-    border-left: 5px solid #ea580c !important;
+    background: linear-gradient(90deg, #c2410c 0%, #ea580c 100%) !important;
+    border-left: 5px solid #9a3412 !important;
+    color: white !important;
 }
+.delay-all-other.delay-row-etd td { color: white !important; }
 .delay-policy-content {
     backdrop-filter: blur(10px);
     border-radius: 16px;
@@ -463,13 +471,35 @@ input {
 .delay-policy-table td:first-child {
     text-align: left;
     font-weight: 700;
-    color: var(--fz-blue);
+}
+.delay-policy-table tbody tr {
+    background: #1e3a8a;
+    color: white;
+}
+.delay-policy-table tbody tr td {
+    color: white !important;
+    border-color: rgba(255,255,255,0.25);
 }
 .delay-policy-table tbody tr:nth-child(even) {
-    background: #f1f5f9;
+    background: #1e40af;
 }
-.delay-policy-table tbody tr:hover {
-    background: #e0f2fe;
+.delay-policy-table tbody tr.delay-row-etd {
+    background: linear-gradient(90deg, #9a3412 0%, #ea580c 100%) !important;
+}
+.delay-policy-table tbody tr.delay-row-etd:nth-child(even) {
+    background: linear-gradient(90deg, #c2410c 0%, #F6881F 100%) !important;
+}
+.delay-policy-table tbody tr.delay-row-std {
+    background: linear-gradient(90deg, #1e3a8a 0%, #005EB8 100%) !important;
+}
+.delay-policy-table tbody tr.delay-row-std:nth-child(even) {
+    background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%) !important;
+}
+.delay-policy-table tbody tr.delay-row-etd:hover {
+    background: linear-gradient(90deg, #ea580c 0%, #fb923c 100%) !important;
+}
+.delay-policy-table tbody tr.delay-row-std:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%) !important;
 }
 .carrier-filter-wrap {
     display: flex;
