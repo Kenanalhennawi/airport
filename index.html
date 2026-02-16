@@ -147,6 +147,14 @@
         </div>
 
         <div id="delayPolicyView" class="view-panel">
+            <div class="delay-policy-search-wrap">
+                <i data-lucide="search" class="delay-search-icon"></i>
+                <input type="text" id="delayPolicySearch" placeholder="Search airport (e.g. DXB, BEG)... Not found = All Other" autocomplete="off">
+                <div id="delayClearBtn" class="delay-clear-btn hidden">
+                    <i data-lucide="x"></i>
+                </div>
+                <p id="delaySearchHint" class="delay-search-hint hidden"></p>
+            </div>
             <div class="delay-policy-content">
                 <p class="carrier-explanation">
                     In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
