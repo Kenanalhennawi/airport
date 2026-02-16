@@ -154,8 +154,12 @@
                     <i data-lucide="x"></i>
                 </div>
                 <p id="delaySearchHint" class="delay-search-hint hidden"></p>
+                <div id="delayResultSummary" class="delay-result-summary hidden"></div>
             </div>
             <div class="delay-policy-content">
+                <div class="delay-legend">
+                    <strong>ETD</strong> = Estimated Time of Departure &nbsp;|&nbsp; <strong>STD</strong> = Scheduled Time of Departure
+                </div>
                 <p class="carrier-explanation">
                     In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
                 </p>
@@ -177,7 +181,7 @@
                                 <th>Pax Email/SMS<br><small>ETD-03h (delay 30+ mins)</small></th>
                                 <th>Check-in closure<br><small>90 mins delay</small></th>
                                 <th>Check-in closure<br><small>30 mins delay</small></th>
-                                <th>Closure time</th>
+                                <th>Closure time<br><small>STD or ETD based</small></th>
                             </tr>
                         </thead>
                         <tbody id="delayPolicyBody"></tbody>
