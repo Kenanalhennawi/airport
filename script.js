@@ -350,7 +350,10 @@ function populateDelayPolicyTable() {
     delayPolicyData.forEach(function (r) {
         var tr = document.createElement('tr');
         tr.dataset.airports = r.airports.toLowerCase();
-        tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td>' + r.closureTime + '</td>';
+        var isStd = r.closureTime.indexOf('STD') >= 0;
+        tr.dataset.closureType = isStd ? 'std' : 'etd';
+        var closureBadge = '<span class="closure-badge closure-' + (isStd ? 'std' : 'etd') + '">' + r.closureTime + '</span>';
+        tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td class="closure-cell">' + closureBadge + '</td>';
         tbody.appendChild(tr);
     });
     filterDelayPolicy(document.getElementById('delayPolicySearch') ? document.getElementById('delayPolicySearch').value : '');
@@ -361,24 +364,48 @@ function filterDelayPolicy(query) {
     var q = (query || '').trim().toLowerCase();
     var allOtherRow = null;
     var hasMatch = false;
+    var matchedRows = [];
     for (var i = 0; i < tbody.rows.length; i++) {
         var row = tbody.rows[i];
         var airports = (row.dataset.airports || '').toLowerCase();
         var isAllOther = airports.indexOf('all other') >= 0;
         if (isAllOther) allOtherRow = row;
         var match = !q || airports.indexOf(q) >= 0 || airports.split('/').some(function (a) { return a.trim().indexOf(q) >= 0; });
-        if (match) hasMatch = true;
+        if (match) { hasMatch = true; if (q && !isAllOther) matchedRows.push(row); }
         row.style.display = match ? '' : 'none';
-        row.classList.remove('delay-result-highlight', 'delay-all-other');
-        if (match && q) row.classList.add('delay-result-highlight');
+        row.classList.remove('delay-result-highlight', 'delay-all-other', 'delay-row-std', 'delay-row-etd');
+        if (match && q) {
+            row.classList.add('delay-result-highlight');
+            var ct = row.dataset.closureType || '';
+            if (ct === 'std') row.classList.add('delay-row-std');
+            else row.classList.add('delay-row-etd');
+        }
     }
     var hintEl = document.getElementById('delaySearchHint');
+    var summaryEl = document.getElementById('delayResultSummary');
     if (q && allOtherRow && !hasMatch) {
         allOtherRow.style.display = '';
-        allOtherRow.classList.add('delay-result-highlight', 'delay-all-other');
+        allOtherRow.classList.add('delay-result-highlight', 'delay-all-other', 'delay-row-etd');
         if (hintEl) { hintEl.textContent = 'Airport not in list — applies: All Other'; hintEl.classList.remove('hidden'); }
+        if (summaryEl) {
+            summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>All Other</strong> — <span class="closure-badge closure-etd">ETD-60</span> (ETD-based)';
+            summaryEl.classList.remove('hidden');
+        }
     } else {
         if (hintEl) hintEl.classList.add('hidden');
+        if (summaryEl) {
+            if (q && matchedRows.length > 0) {
+                var first = matchedRows[0];
+                var apt = first.cells[0] ? first.cells[0].textContent.trim() : '';
+                var closure = first.cells[5] ? first.cells[5].innerHTML : '';
+                var type = first.dataset.closureType === 'std' ? 'STD-based' : 'ETD-based';
+                summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>' + apt + '</strong> — ' + closure + ' (' + type + ')';
+                if (matchedRows.length > 1) summaryEl.innerHTML += ' <small>+' + (matchedRows.length - 1) + ' more</small>';
+                summaryEl.classList.remove('hidden');
+            } else {
+                summaryEl.classList.add('hidden');
+            }
+        }
     }
 }
 
@@ -623,7 +650,9 @@ function init() {
         if (delaySearch) { delaySearch.value = ''; delaySearch.focus(); }
         delayClearBtn.classList.add('hidden');
         var h = document.getElementById('delaySearchHint');
+        var s = document.getElementById('delayResultSummary');
         if (h) h.classList.add('hidden');
+        if (s) s.classList.add('hidden');
         filterDelayPolicy('');
     };
 
