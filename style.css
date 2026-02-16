@@ -272,6 +272,48 @@ input {
 .carrier-inline .carrier-note-link a:hover {
     text-decoration: underline;
 }
+
+/* === DELAY POLICY === */
+.delay-policy-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-left: 5px solid var(--fz-orange);
+}
+.delay-policy-content .carrier-explanation {
+    margin-bottom: 12px;
+}
+.delay-policy-table {
+    width: 100%;
+    margin-top: 16px;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.delay-policy-table th,
+.delay-policy-table td {
+    padding: 10px 12px;
+    text-align: center;
+    border: 1px solid #cbd5e1;
+}
+.delay-policy-table th {
+    background: var(--fz-blue);
+    color: white;
+    font-weight: 600;
+}
+.delay-policy-table th small {
+    font-weight: 400;
+    opacity: 0.9;
+    font-size: 0.75rem;
+}
+.delay-policy-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+}
+.delay-policy-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
 .carrier-filter-wrap {
     display: flex;
     align-items: center;
