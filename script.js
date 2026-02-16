@@ -148,10 +148,19 @@ function calculateTimeDifference(iata, timezone) {
     resultEl.innerHTML = '<span style="color:' + color + ';font-weight:bold;display:block;margin-top:5px;">' + display + '</span>';
 }
 
+// === TIME FORMAT PREFERENCE (12h / 24h) ===
+function getTimeFormatPreference() {
+    try { return (localStorage.getItem('timeFormat') || '24'); } catch (e) { return '24'; }
+}
+function setTimeFormatPreference(val) {
+    try { localStorage.setItem('timeFormat', val === '12' ? '12' : '24'); } catch (e) {}
+}
+function use12Hour() { return getTimeFormatPreference() === '12'; }
+
 // === HELPER FUNCTIONS (DST handled via IANA timezones) ===
 function getLocalTime(timezone) {
     try {
-        return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: false }).format(new Date());
+        return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: use12Hour() }).format(new Date());
     } catch (e) { return '--:--'; }
 }
 
@@ -208,8 +217,9 @@ function updateLiveClock() {
     const now = new Date();
     const utcEl = document.getElementById('utcTime');
     const dxbEl = document.getElementById('dxbTime');
-    if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false }) + ' Z';
-    if (dxbEl) dxbEl.textContent = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour12: false }) + ' GST';
+    var opts = { hour12: use12Hour(), hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    if (utcEl) utcEl.textContent = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)) + ' Z';
+    if (dxbEl) dxbEl.textContent = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: 'Asia/Dubai' }, opts)) + ' GST';
 }
 
 // === INTERLINE: Populate from hidden carrier source (55 carriers) ===
@@ -474,14 +484,28 @@ function init() {
         switchView(currentView);
     };
 
-    setInterval(function () {
+    function syncFormatButtons() {
+        var pref = getTimeFormatPreference();
+        var btn12 = document.getElementById('format12h');
+        var btn24 = document.getElementById('format24h');
+        if (btn12) btn12.classList.toggle('active', pref === '12');
+        if (btn24) btn24.classList.toggle('active', pref === '24');
+    }
+    syncFormatButtons();
+    var btn12 = document.getElementById('format12h');
+    var btn24 = document.getElementById('format24h');
+    function refreshAllTimes() {
         updateLiveClock();
         document.querySelectorAll('.time-badge').forEach(function (el) {
             const tz = el.getAttribute('data-timezone');
             el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz) + (getTimezoneAbbr(tz) ? ' ' + getTimezoneAbbr(tz) : '');
         });
         if (typeof lucide !== 'undefined') lucide.createIcons();
-    }, 1000);
+    }
+    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); };
+    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); };
+
+    setInterval(refreshAllTimes, 1000);
 
     switchView('airports');
     if (typeof lucide !== 'undefined') lucide.createIcons();
