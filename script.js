@@ -294,6 +294,66 @@ function populateInterlineTable() {
     });
 }
 
+// === DELAY POLICY (D-6 flight delay notification) ===
+var delayPolicyData = [
+    { airports: 'ALA', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
+    { airports: 'IST', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
+    { airports: 'DXB/DWC', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
+    { airports: 'BEG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGW', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BUD', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CTA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LJU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NAP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NJF', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PSA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SJJ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SZG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ZAG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CMB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CGP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAC', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'HGA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JIB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JUB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'KTM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LYP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MGQ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MUX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'UET', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'RUH', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JMK', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JTR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CFU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PRG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'OLB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DBV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'EBL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ISU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AMM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BEY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AYT', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TZX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BJV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'All Other', std03: '√', etd03: 'X', closure90: 'X', closure30: '√', closureTime: 'ETD-60' }
+];
+function populateDelayPolicyTable() {
+    var tbody = document.getElementById('delayPolicyBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    delayPolicyData.forEach(function (r) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td>' + r.closureTime + '</td>';
+        tbody.appendChild(tr);
+    });
+}
+
 let carrierFilterMode = 'all';
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
@@ -320,31 +380,35 @@ function switchView(view) {
     currentView = view;
     const airportsPanel = document.getElementById('airportsView');
     const interlinePanel = document.getElementById('interlineView');
+    const delayPanel = document.getElementById('delayPolicyView');
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
+    const tabDelay = document.getElementById('tabDelayPolicy');
     const containerEl = document.querySelector('.container');
     if (!airportsPanel || !interlinePanel) return;
 
-    if (containerEl) containerEl.classList.toggle('interline-active', view === 'interline');
+    if (containerEl) containerEl.classList.toggle('interline-active', view === 'interline' || view === 'delay');
+
+    [airportsPanel, interlinePanel, delayPanel].forEach(function (p) { if (p) p.classList.remove('active'); });
+    [tabAirports, tabInterline, tabDelay].forEach(function (t) { if (t) { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); } });
 
     if (view === 'airports') {
         airportsPanel.classList.add('active');
-        interlinePanel.classList.remove('active');
         if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
-        if (tabInterline) { tabInterline.classList.remove('active'); tabInterline.setAttribute('aria-pressed', 'false'); }
-        if (searchInput) searchInput.placeholder = 'Search IATA, City, or Country...';
+        if (searchInput) { searchInput.placeholder = 'Search IATA, City, or Country...'; searchInput.parentElement.style.display = ''; }
         renderCards(searchInput ? searchInput.value : '');
-    } else {
+    } else if (view === 'interline') {
         interlinePanel.classList.add('active');
-        airportsPanel.classList.remove('active');
         if (tabInterline) { tabInterline.classList.add('active'); tabInterline.setAttribute('aria-pressed', 'true'); }
-        if (tabAirports) { tabAirports.classList.remove('active'); tabAirports.setAttribute('aria-pressed', 'false'); }
-        if (searchInput) searchInput.placeholder = 'Search carrier name or code...';
-        if (clearBtn) {
-            if (searchInput && searchInput.value.trim()) clearBtn.classList.remove('hidden');
-            else clearBtn.classList.add('hidden');
-        }
+        if (searchInput) { searchInput.placeholder = 'Search carrier name or code...'; searchInput.parentElement.style.display = ''; }
+        if (clearBtn) { if (searchInput && searchInput.value.trim()) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
         filterCarriers(searchInput ? searchInput.value : '');
+    } else if (view === 'delay') {
+        if (delayPanel) delayPanel.classList.add('active');
+        if (tabDelay) { tabDelay.classList.add('active'); tabDelay.setAttribute('aria-pressed', 'true'); }
+        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
+        if (clearBtn) clearBtn.classList.add('hidden');
+        populateDelayPolicyTable();
     }
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -501,8 +565,10 @@ function init() {
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
+    const tabDelay = document.getElementById('tabDelayPolicy');
     if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
     if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
+    if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
         btn.onclick = function () {
@@ -520,7 +586,7 @@ function init() {
             else clearBtn.classList.add('hidden');
         }
         if (currentView === 'airports') renderCards(val);
-        else filterCarriers(val);
+        else if (currentView === 'interline') filterCarriers(val);
     });
     if (clearBtn) clearBtn.onclick = function () {
         searchInput.value = '';
