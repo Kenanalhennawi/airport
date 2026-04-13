@@ -725,3 +725,50 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+// === Currency Rates (Date-based like Flydubai) ===
+const currencyRates = {
+    "2026-04-12": {
+        "USD": { "AED": 3.67, "EUR": 0.92 },
+        "AED": { "USD": 0.27, "EUR": 0.25 },
+        "EUR": { "AED": 4.0, "USD": 1.08 }
+    }
+};
+
+// === Convert Function ===
+function convertCurrency() {
+    const amount = parseFloat(document.getElementById('amount').value);
+    const from = document.getElementById('fromCurrency').value;
+    const to = document.getElementById('toCurrency').value;
+    const date = document.getElementById('rateDate').value;
+
+    if (!amount || !date) return;
+
+    const rates = currencyRates[date];
+    if (!rates || !rates[from] || !rates[from][to]) {
+        document.getElementById('result').innerText = "No rate available";
+        return;
+    }
+
+    const rate = rates[from][to];
+    const result = (amount * rate).toFixed(2);
+
+    document.getElementById('result').innerText =
+        `Result: ${result} ${to} (Rate: ${rate})`;
+}
+
+// === Auto Convert ===
+['amount','fromCurrency','toCurrency','rateDate'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', convertCurrency);
+});
+
+// === Swap currencies ===
+document.getElementById('swapBtn')?.addEventListener('click', () => {
+    const from = document.getElementById('fromCurrency');
+    const to = document.getElementById('toCurrency');
+
+    const temp = from.value;
+    from.value = to.value;
+    to.value = temp;
+
+    convertCurrency();
+});
