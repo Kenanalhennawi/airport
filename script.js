@@ -564,7 +564,15 @@ function renderCards(filterText) {
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
 
+        if (btn.dataset.view === 'currency') {
+            document.getElementById('currencyView').style.display = 'block';
+        }
+    });
+});
 function openModal(data) {
     if (!data || !modal) return;
     const modalIata = document.getElementById('modalIata');
