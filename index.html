@@ -28,13 +28,17 @@
                 <i data-lucide="map-pin"></i>
                 <span>Airports</span>
             </button>
-            <button type="button" id="tabInterline" class="view-tab" aria-pressed="false">
+            <button type="button" id="tabInterline" class="view-tab hidden" aria-pressed="false">
                 <i data-lucide="layers"></i>
                 <span>Interline</span>
             </button>
             <button type="button" id="tabDelayPolicy" class="view-tab" aria-pressed="false">
                 <i data-lucide="clock-alert"></i>
                 <span>Delay Policy</span>
+            </button>
+            <button type="button" id="tabCurrency" class="view-tab" aria-pressed="false">
+                <i data-lucide="badge-dollar-sign"></i>
+                <span>Currency</span>
             </button>
         </div>
 
@@ -189,6 +193,65 @@
                 </div>
             </div>
         </div>
+
+        <div id="currencyView" class="view-panel">
+            <div class="currency-panel">
+                <div class="currency-panel-header">
+                    <h2><i data-lucide="badge-dollar-sign"></i> Monthly Currency Converter</h2>
+                    <p>Rates are loaded from <strong>currency-source.json</strong>. Update that file once every month and the website will use the selected month automatically.</p>
+                </div>
+
+                <div class="currency-grid">
+                    <div class="currency-field">
+                        <label for="currencyAmount">Amount</label>
+                        <input type="number" id="currencyAmount" placeholder="Enter amount" min="0" step="0.01">
+                    </div>
+
+                    <div class="currency-field">
+                        <label for="currencyDate">Rate Month</label>
+                        <input type="date" id="currencyDate">
+                    </div>
+
+                    <div class="currency-field">
+                        <label for="fromCurrency">From</label>
+                        <select id="fromCurrency"></select>
+                    </div>
+
+                    <div class="currency-field currency-swap-wrap">
+                        <button type="button" id="swapCurrencyBtn" class="currency-swap-btn" title="Swap currencies">
+                            <i data-lucide="arrow-left-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="currency-field">
+                        <label for="toCurrency">To</label>
+                        <select id="toCurrency"></select>
+                    </div>
+                </div>
+
+                <div id="currencyMeta" class="currency-meta hidden"></div>
+
+                <div class="currency-result-card">
+                    <div class="currency-result-label">Converted Amount</div>
+                    <div id="currencyResult" class="currency-result-value">--</div>
+                    <div id="currencyRateInfo" class="currency-rate-info">Select a date and currencies</div>
+                </div>
+
+                <div class="currency-reference-card">
+                    <h3>Monthly source file format</h3>
+                    <pre>{
+  "2026-04": {
+    "label": "April 2026",
+    "ratesAgainstAED": {
+      "AED": 1,
+      "USD": 3.673,
+      "EUR": 4.20
+    }
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -278,50 +341,52 @@
                         <tr><td>7</td><td>Royal Brunei Airlines</td><td>BI</td><td>672</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
                         <tr><td>8</td><td>Air France</td><td>AF</td><td>057</td><td>Amadeus</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
                         <tr><td>9</td><td>KLM</td><td>KL</td><td>074</td><td>Amadeus</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>10</td><td>China Southern</td><td>CZ</td><td>784</td><td>Travelsky</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>11</td><td>Air China</td><td>CA</td><td>999</td><td>Travelsky</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>12</td><td>EL Israel</td><td>LY</td><td>114</td><td>Amadeus</td><td>INVOL</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>Only INVOL enabled</td></tr>
-                        <tr><td>13</td><td>Bulgaria Airlines</td><td>FB</td><td>623</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>14</td><td>Tarom</td><td>RO</td><td>281</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>Bilateral Activated/08Sep'25</td></tr>
-                        <tr><td>15</td><td>Singapore</td><td>SQ</td><td>618</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>16</td><td>Srilankan</td><td>UL</td><td>603</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>17</td><td>Condor</td><td>DE</td><td>881</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>18</td><td>Air Astana</td><td>KC</td><td>465</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>19</td><td>Air Algerie</td><td>AH</td><td>124</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>20</td><td>Croatia Airlines</td><td>OU</td><td>831</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>21</td><td>Philippine Airlines</td><td>PR</td><td>079</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>22</td><td>Precision Air</td><td>PW</td><td>031</td><td>KIU</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>26th April2025 - Hitit to KIU</td></tr>
-                        <tr><td>23</td><td>Korean Air</td><td>KE</td><td>180</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>24</td><td>Virgin Atlantic</td><td>VS</td><td>932</td><td>AIR4</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>25</td><td>Gulf Air</td><td>GF</td><td>072</td><td>Sabre</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>26</td><td>Ethiopian Airlines</td><td>ET</td><td>071</td><td>Sabre</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>27</td><td>Saudia</td><td>SV</td><td>065</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>28</td><td>Kenya Air</td><td>KQ</td><td>706</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>29</td><td>RwandAir</td><td>WB</td><td>459</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>30</td><td>Cathay Pacific</td><td>CX</td><td>160</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>31</td><td>Pakistan International Airlines</td><td>PK</td><td>214</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>32</td><td>Air Serbia</td><td>JU</td><td>115</td><td>Sabre</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>33</td><td>LOT Polish</td><td>LO</td><td>080</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
-                        <tr><td>34</td><td>Qantas Airlines</td><td>QF</td><td>081</td><td>Amadeus</td><td>Unilateral/QF</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>35</td><td>Delta Airlines</td><td>DL</td><td>006</td><td>Deltamatics</td><td>Unilateral/DL</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>36</td><td>Azerbaijan Airlines</td><td>J2</td><td>771</td><td>Amadeus</td><td>Unilateral/J2</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>37</td><td>Jetblue Airlines</td><td>B6</td><td>279</td><td>Sabre</td><td>Unilateral/B6</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
-                        <tr><td>38</td><td>Hahn Air</td><td>HR</td><td>169</td><td>Amadeus</td><td>Unilateral/HR</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Only Ticketing/Not an Airline</td></tr>
-                        <tr><td>39</td><td>APG Airlines</td><td>GP</td><td>275</td><td>Hitit</td><td>Unilateral/GP</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Only Ticketing/Not an Airline</td></tr>
-                        <tr><td>40</td><td>World Ticket</td><td>W2</td><td>365</td><td>I-GO</td><td>Unilateral/W2</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Only Ticketing/Not an Airline. Rail &amp; Fly with Deutsche Bahn</td></tr>
-                        <tr><td>41</td><td>IRAN Airlines</td><td>IR</td><td>096</td><td>Amadeus</td><td>Unilateral/IR</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Inactive</td></tr>
-                        <tr><td>42</td><td>Nile Air</td><td>NP</td><td>325</td><td>Amadeus</td><td>Unilateral/NP</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Inactive</td></tr>
-                        <tr><td>43</td><td>Belavia Airlines</td><td>B2</td><td>628</td><td>Sabre</td><td>Unilateral/B2</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Inactive</td></tr>
-                        <tr><td>44</td><td>Air Moldova</td><td>9U</td><td>572</td><td>Sabre</td><td>Unilateral/9U</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>Inactive</td></tr>
-                        <tr><td>45</td><td>ITA Airlines</td><td>AZ</td><td>055</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation - 15Jul25</td></tr>
-                        <tr><td>46</td><td>China Eastern</td><td>MU</td><td>781</td><td>Travelsky</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation - 06Aug25</td></tr>
-                        <tr><td>47</td><td>Hainan Airlines</td><td>HU</td><td>880</td><td>Travelsky</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation - 15Aug25</td></tr>
-                        <tr><td>48</td><td>Sichuan Airlines</td><td>3U</td><td>876</td><td>Travelsky</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -12Sep25</td></tr>
-                        <tr><td>49</td><td>Myanmar Airlines International</td><td>8M</td><td>599</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -23Sep25</td></tr>
-                        <tr><td>50</td><td>Air Seychelles</td><td>HM</td><td>061</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -21Oct25</td></tr>
-                        <tr><td>51</td><td>Air Tanzania</td><td>TC</td><td>197</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -05Nov 25</td></tr>
-                        <tr><td>52</td><td>Air India</td><td>AI</td><td>098</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
-                        <tr><td>53</td><td>Royal Jordanian</td><td>RJ</td><td>512</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>10</td><td>China Southern</td><td>CZ</td><td>784</td><td>Travelsky</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>11</td><td>Air India</td><td>AI</td><td>098</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation - 11Dec25</td></tr>
+                        <tr><td>12</td><td>ITA Airways</td><td>AZ</td><td>055</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>13</td><td>Biman Bangladesh</td><td>BG</td><td>997</td><td>Sabre</td><td>Unilateral</td><td>YES</td><td>Inbound</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
+                        <tr><td>14</td><td>Royal Air Maroc</td><td>AT</td><td>147</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>15</td><td>British Airways</td><td>BA</td><td>125</td><td>Amadeus</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>16</td><td>Caribbean Airlines</td><td>BW</td><td>106</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>17</td><td>Condor</td><td>DE</td><td>881</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>18</td><td>Pobeda</td><td>DP</td><td>425</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>19</td><td>Egypt Air</td><td>MS</td><td>077</td><td>SITA</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline / GP stock only</td></tr>
+                        <tr><td>20</td><td>Flyadeal</td><td>F3</td><td>328</td><td>Radixx</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>21</td><td>Gulf Air</td><td>GF</td><td>072</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>22</td><td>IndiGo</td><td>6E</td><td>312</td><td>Navitaire</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>23</td><td>Kenya Airways</td><td>KQ</td><td>706</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>24</td><td>Korean Air</td><td>KE</td><td>180</td><td>Topas</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>25</td><td>Kuwait Airways</td><td>KU</td><td>229</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>26</td><td>Lion Air</td><td>JT</td><td>990</td><td>Navitaire</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>27</td><td>Maldivian</td><td>Q2</td><td>038</td><td>Hitit</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>28</td><td>Malaysia Airlines</td><td>MH</td><td>232</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>29</td><td>MEA</td><td>ME</td><td>076</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>30</td><td>Oman Air</td><td>WY</td><td>910</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>31</td><td>Pegasus</td><td>PC</td><td>624</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>32</td><td>Philippine Airlines</td><td>PR</td><td>079</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>33</td><td>Qantas</td><td>QF</td><td>081</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>34</td><td>Qatar Airways</td><td>QR</td><td>157</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>35</td><td>Saudia</td><td>SV</td><td>065</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>36</td><td>Singapore Airlines</td><td>SQ</td><td>618</td><td>Amadeus</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>37</td><td>SriLankan Airlines</td><td>UL</td><td>603</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>38</td><td>Thai Airways</td><td>TG</td><td>217</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>39</td><td>Turkish Airlines</td><td>TK</td><td>235</td><td>Troya</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>40</td><td>Vistara</td><td>UK</td><td>228</td><td>Navitaire</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>41</td><td>Vueling</td><td>VY</td><td>030</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>42</td><td>Wizz Air</td><td>W6</td><td>537</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>43</td><td>Air Arabia</td><td>G9</td><td>514</td><td>Radixx</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>44</td><td>Virgin Australia</td><td>VA</td><td>795</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>45</td><td>Air Mauritius</td><td>MK</td><td>239</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>46</td><td>Cambodia Angkor Air</td><td>K6</td><td>188</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>47</td><td>Air Seychelles</td><td>HM</td><td>061</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>48</td><td>Bangkok Airways</td><td>PG</td><td>829</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>GP stock ticketing / disruption handling</td></tr>
+                        <tr><td>49</td><td>Hahn Air</td><td>HR</td><td>169</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Ticket stock only</td></tr>
+                        <tr><td>50</td><td>FlexFlight</td><td>W2</td><td>502</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Ticket stock only</td></tr>
+                        <tr><td>51</td><td>Air Astana</td><td>KC</td><td>465</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>52</td><td>S7 Airlines</td><td>S7</td><td>421</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>53</td><td>Royal Jordanian</td><td>RJ</td><td>512</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>54</td><td>Drukair</td><td>KB</td><td>699</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>55</td><td>Bamboo Airways</td><td>QH</td><td>986</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
                     </tbody>
                 </table>
             </div>
