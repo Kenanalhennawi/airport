@@ -689,3 +689,33 @@ footer {
     font-size: 0.9rem; width: 100%; margin-top: auto;
 }
 footer strong { color: var(--fz-orange); }
+.currency-box {
+    background: var(--glass-bg);
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+.currency-box input,
+.currency-box select,
+.currency-box button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+#swapBtn {
+    width: 60px;
+    background: var(--fz-orange);
+    color: white;
+    cursor: pointer;
+}
