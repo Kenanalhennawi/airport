@@ -7,6 +7,14 @@ const searchInput = document.getElementById('searchInput');
 const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
+const currencyAmountInput = document.getElementById('currencyAmount');
+const currencyDateInput = document.getElementById('currencyDate');
+const fromCurrencySelect = document.getElementById('fromCurrency');
+const toCurrencySelect = document.getElementById('toCurrency');
+const currencyResultEl = document.getElementById('currencyResult');
+const currencyRateInfoEl = document.getElementById('currencyRateInfo');
+const currencyMetaEl = document.getElementById('currencyMeta');
+const swapCurrencyBtn = document.getElementById('swapCurrencyBtn');
 
 // === MASTER COUNTRY LIST (FlagCDN ISO codes) ===
 const countryCodes = {
@@ -437,16 +445,18 @@ function switchView(view) {
     const airportsPanel = document.getElementById('airportsView');
     const interlinePanel = document.getElementById('interlineView');
     const delayPanel = document.getElementById('delayPolicyView');
+    const currencyPanel = document.getElementById('currencyView');
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
+    const tabCurrency = document.getElementById('tabCurrency');
     const containerEl = document.querySelector('.container');
     if (!airportsPanel || !interlinePanel) return;
 
     if (containerEl) containerEl.classList.toggle('interline-active', view === 'interline' || view === 'delay');
 
-    [airportsPanel, interlinePanel, delayPanel].forEach(function (p) { if (p) p.classList.remove('active'); });
-    [tabAirports, tabInterline, tabDelay].forEach(function (t) { if (t) { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); } });
+    [airportsPanel, interlinePanel, delayPanel, currencyPanel].forEach(function (p) { if (p) p.classList.remove('active'); });
+    [tabAirports, tabInterline, tabDelay, tabCurrency].forEach(function (t) { if (t) { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); } });
 
     if (view === 'airports') {
         airportsPanel.classList.add('active');
@@ -465,6 +475,13 @@ function switchView(view) {
         if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
         if (clearBtn) clearBtn.classList.add('hidden');
         populateDelayPolicyTable();
+    } else if (view === 'currency') {
+        if (currencyPanel) currencyPanel.classList.add('active');
+        if (tabCurrency) { tabCurrency.classList.add('active'); tabCurrency.setAttribute('aria-pressed', 'true'); }
+        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
+        if (clearBtn) clearBtn.classList.add('hidden');
+        updateCurrencyMeta();
+        convertCurrency();
     }
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -564,7 +581,6 @@ function renderCards(filterText) {
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
-
 function openModal(data) {
     if (!data || !modal) return;
     const modalIata = document.getElementById('modalIata');
@@ -583,6 +599,175 @@ function openModal(data) {
     if (modalWebBtn) modalWebBtn.href = data.website || '#';
     modal.classList.remove('hidden');
     if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// === CURRENCY MODULE (monthly file source) ===
+var currencySourceData = {};
+var currencySourceLoaded = false;
+
+function setCurrencyMessage(resultText, rateText, isError) {
+    if (currencyResultEl) currencyResultEl.textContent = resultText || '--';
+    if (currencyRateInfoEl) currencyRateInfoEl.textContent = rateText || '';
+    if (currencyResultEl) currencyResultEl.classList.toggle('currency-error', !!isError);
+}
+
+function getCurrencyMonthKey(dateStr) {
+    if (!dateStr) return '';
+    var parts = dateStr.split('-');
+    if (parts.length < 2) return '';
+    return parts[0] + '-' + parts[1];
+}
+
+function formatCurrencyNumber(value) {
+    var num = Number(value);
+    if (!isFinite(num)) return '--';
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function loadCurrencySource() {
+    return fetch('currency-source.json', { cache: 'no-store' })
+        .then(function (res) {
+            if (!res.ok) throw new Error('Unable to load currency-source.json');
+            return res.json();
+        })
+        .then(function (data) {
+            currencySourceData = data || {};
+            currencySourceLoaded = true;
+            populateCurrencyDropdowns();
+            updateCurrencyMeta();
+            convertCurrency();
+        })
+        .catch(function () {
+            currencySourceLoaded = false;
+            setCurrencyMessage('Rates unavailable', 'Could not load currency-source.json', true);
+        });
+}
+
+function getAllCurrencies() {
+    var set = new Set(['AED']);
+    Object.keys(currencySourceData || {}).forEach(function (monthKey) {
+        var month = currencySourceData[monthKey];
+        var rates = month && month.ratesAgainstAED ? month.ratesAgainstAED : {};
+        Object.keys(rates).forEach(function (code) { set.add(code); });
+    });
+    return Array.from(set).sort();
+}
+
+function populateCurrencyDropdowns() {
+    if (!fromCurrencySelect || !toCurrencySelect) return;
+    var currencies = getAllCurrencies();
+    if (!currencies.length) return;
+
+    var currentFrom = fromCurrencySelect.value || 'USD';
+    var currentTo = toCurrencySelect.value || 'AED';
+
+    fromCurrencySelect.innerHTML = '';
+    toCurrencySelect.innerHTML = '';
+
+    currencies.forEach(function (code) {
+        var opt1 = document.createElement('option');
+        opt1.value = code;
+        opt1.textContent = code;
+        fromCurrencySelect.appendChild(opt1);
+
+        var opt2 = document.createElement('option');
+        opt2.value = code;
+        opt2.textContent = code;
+        toCurrencySelect.appendChild(opt2);
+    });
+
+    fromCurrencySelect.value = currencies.indexOf(currentFrom) >= 0 ? currentFrom : (currencies.indexOf('USD') >= 0 ? 'USD' : currencies[0]);
+    toCurrencySelect.value = currencies.indexOf(currentTo) >= 0 ? currentTo : (currencies.indexOf('AED') >= 0 ? 'AED' : currencies[0]);
+
+    if (fromCurrencySelect.value === toCurrencySelect.value && currencies.length > 1) {
+        toCurrencySelect.value = currencies[0] === fromCurrencySelect.value ? currencies[1] : currencies[0];
+    }
+}
+
+function updateCurrencyMeta() {
+    if (!currencyMetaEl || !currencyDateInput) return;
+    var monthKey = getCurrencyMonthKey(currencyDateInput.value);
+    if (!monthKey || !currencySourceData[monthKey]) {
+        currencyMetaEl.textContent = '';
+        currencyMetaEl.classList.add('hidden');
+        return;
+    }
+    var monthInfo = currencySourceData[monthKey];
+    var label = monthInfo.label || monthKey;
+    currencyMetaEl.textContent = 'Using monthly rates: ' + label;
+    currencyMetaEl.classList.remove('hidden');
+}
+
+function convertCurrency() {
+    if (!currencyResultEl || !currencyRateInfoEl) return;
+
+    if (!currencySourceLoaded) {
+        setCurrencyMessage('Rates unavailable', 'Waiting for currency-source.json', true);
+        return;
+    }
+
+    var amount = currencyAmountInput ? parseFloat(currencyAmountInput.value) : NaN;
+    var dateStr = currencyDateInput ? currencyDateInput.value : '';
+    var from = fromCurrencySelect ? fromCurrencySelect.value : '';
+    var to = toCurrencySelect ? toCurrencySelect.value : '';
+
+    if (!dateStr) {
+        updateCurrencyMeta();
+        setCurrencyMessage('--', 'Select a date to load the correct month', false);
+        return;
+    }
+
+    updateCurrencyMeta();
+
+    if (!isFinite(amount)) {
+        setCurrencyMessage('--', 'Enter an amount', false);
+        return;
+    }
+
+    var monthKey = getCurrencyMonthKey(dateStr);
+    var monthData = currencySourceData[monthKey];
+    if (!monthData || !monthData.ratesAgainstAED) {
+        setCurrencyMessage('No rates', 'No rates found for ' + monthKey, true);
+        return;
+    }
+
+    var rates = monthData.ratesAgainstAED;
+    if (!rates[from] || !rates[to]) {
+        setCurrencyMessage('Unsupported', 'Selected currency is missing from ' + monthKey, true);
+        return;
+    }
+
+    var amountInAED = amount * Number(rates[from]);
+    var converted = amountInAED / Number(rates[to]);
+    var directRate = Number(rates[from]) / Number(rates[to]);
+
+    setCurrencyMessage(formatCurrencyNumber(converted) + ' ' + to, '1 ' + from + ' = ' + formatCurrencyNumber(directRate) + ' ' + to, false);
+}
+
+function setDefaultCurrencyDate() {
+    if (!currencyDateInput || currencyDateInput.value) return;
+    var now = new Date();
+    var month = String(now.getMonth() + 1).padStart(2, '0');
+    var day = String(now.getDate()).padStart(2, '0');
+    currencyDateInput.value = now.getFullYear() + '-' + month + '-' + day;
+}
+
+function bindCurrencyEvents() {
+    [currencyAmountInput, currencyDateInput, fromCurrencySelect, toCurrencySelect].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener('input', convertCurrency);
+        el.addEventListener('change', convertCurrency);
+    });
+
+    if (swapCurrencyBtn) {
+        swapCurrencyBtn.addEventListener('click', function () {
+            if (!fromCurrencySelect || !toCurrencySelect) return;
+            var tmp = fromCurrencySelect.value;
+            fromCurrencySelect.value = toCurrencySelect.value;
+            toCurrencySelect.value = tmp;
+            convertCurrency();
+        });
+    }
 }
 
 // === INITIALIZATION ===
@@ -622,9 +807,11 @@ function init() {
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
+    const tabCurrency = document.getElementById('tabCurrency');
     if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
     if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
     if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
+    if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
         btn.onclick = function () {
@@ -712,6 +899,10 @@ function init() {
     }
     if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
     if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
+
+    bindCurrencyEvents();
+    setDefaultCurrencyDate();
+    loadCurrencySource();
 
     setInterval(refreshAllTimes, 1000);
 
