@@ -82,28 +82,104 @@
                     <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
                     <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Separate ticket:</strong> If connecting with a partner within 24 hours on a separate ticket, baggage can be tagged through for a handling fee at check-in.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Ticketing partners (HR, GP, W2):</strong> These hold ticketing stock only—not airlines. If a ticket is issued on their stock and FZ causes disruption, we can request GP (or the relevant partner) to rebook non-interline onward segments.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Egypt Air (MS):</strong> Not interline. If ticket issued on GP stock and FZ disrupts, request GP to rebook MS segment.
                 </p>
+
                 <p class="carrier-explanation carrier-note carrier-note-warning">
                     <strong>Non-interline – no baggage through-check:</strong> British Airways (BA), Flyadeal (F3), Pegasus (PC), Pobeda (DP), Wizz Air (W6). Passengers checked in only to Dubai; valid UAE visa required; must clear immigration, collect bags, and re-check in for onward flight.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Other non-interline:</strong> Baggage through-check to final destination allowed for a fee. BP at transfer desk required.
                 </p>
+
                 <details class="carrier-explanation carrier-details">
-                    <summary><strong>IRROPS / Rebooking (72hr window)</strong></summary>
-                    <ul>
-                        <li><strong>Within 72hrs:</strong> Non-interline → request GP to rebook. Interline with IRROPS enabled → rebook in our system. Interline without IRROPS → request GP.</li>
-                        <li><strong>Outside 72hrs:</strong> Rebooking by TA or that interline partner.</li>
-                    </ul>
+                    <summary><strong>IRROPS / Rebooking / Schedule Change (FDIS)</strong></summary>
+
+                    <div class="irrops-section">
+                        <h4>IRROPS / Rebooking Rules</h4>
+
+                        <table class="mct-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Action Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Within 72hrs</strong></td>
+                                    <td>
+                                        Non-interline → Request GP to rebook.<br>
+                                        Interline with IRROPS enabled → Rebook in our system.<br>
+                                        Interline without IRROPS → Request GP.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Outside 72hrs</strong></td>
+                                    <td>
+                                        Rebooking by TA or that interline partner.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 style="margin-top:20px;">Flight Schedule Change (FDIS Eligibility)</h4>
+
+                        <p class="carrier-note">
+                            <strong>If you see a pop-up for a time change:</strong><br>
+                            Please check the booking history to confirm if the passenger is eligible for FDIS options, as per the following:
+                        </p>
+
+                        <table class="mct-table">
+                            <thead>
+                                <tr>
+                                    <th>Timing Before Scheduled Departure</th>
+                                    <th>Passenger Eligible for FDIS Options If</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>More than 72 hours before scheduled departure</strong></td>
+                                    <td>
+                                        Flight departs earlier by <strong>1 hour or more</strong><br>
+                                        OR<br>
+                                        Flight departs later by <strong>3 hours or more</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Within 72 hours before scheduled departure</strong></td>
+                                    <td>
+                                        Flight departs earlier by <strong>20 minutes or more</strong><br>
+                                        OR<br>
+                                        Flight departs later by <strong>1 hour or more</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>If the flight is canceled</strong></td>
+                                    <td>
+                                        <strong>FDIS options must be provided.</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
+                            <strong>Important:</strong> Always check the booking history before offering FDIS options.
+                        </div>
+                    </div>
                 </details>
+
                 <details class="carrier-explanation carrier-details">
                     <summary><strong>MCT at DXB (min connecting time)</strong></summary>
                     <table class="mct-table">
@@ -117,15 +193,18 @@
                     </table>
                     <p class="mct-note">* FZ↔SQ and FZ↔KE: 120 min. FZ operates T2 &amp; T3.</p>
                 </details>
+
                 <p class="carrier-explanation carrier-note carrier-note-link">
                     <a href="https://www.flydubai.com/en/destinations/connections" target="_blank" rel="noopener noreferrer">flydubai.com – Connecting with Other Airlines</a>
                 </p>
+
                 <div class="carrier-filter-wrap">
                     <span class="carrier-filter-label">Filter:</span>
                     <button type="button" class="carrier-filter-btn active" data-filter="all">All</button>
                     <button type="button" class="carrier-filter-btn" data-filter="iatci">IATCI only</button>
                     <button type="button" class="carrier-filter-btn" data-filter="iet">IET only</button>
                 </div>
+
                 <div class="table-scroll">
                     <table class="carrier-table" id="carrierTableMain">
                         <thead>
@@ -160,22 +239,28 @@
                 <p id="delaySearchHint" class="delay-search-hint hidden"></p>
                 <div id="delayResultSummary" class="delay-result-summary hidden"></div>
             </div>
+
             <div class="delay-policy-content">
                 <div class="delay-legend">
                     <strong>ETD</strong> = Estimated Time of Departure &nbsp;|&nbsp; <strong>STD</strong> = Scheduled Time of Departure
                 </div>
+
                 <p class="carrier-explanation">
                     In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Departure from DXB/DWC:</strong> Passengers receive Email/SMS if delay is 30 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>Outstation (STD-based):</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before original STD (STD-03h). Check-in closure: STD-60.
                 </p>
+
                 <p class="carrier-explanation carrier-note">
                     <strong>All Other Outstations:</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
                 </p>
+
                 <div class="table-scroll">
                     <table class="delay-policy-table" id="delayPolicyTable">
                         <thead>
@@ -275,6 +360,7 @@
                         <span id="modalDistance">5 km</span>
                     </div>
                 </div>
+
                 <div class="detail-row">
                     <i data-lucide="navigation"></i>
                     <div>
@@ -282,6 +368,7 @@
                         <span id="modalOtherAirports">--</span>
                     </div>
                 </div>
+
                 <div class="detail-row">
                     <i data-lucide="phone"></i>
                     <div>
@@ -305,6 +392,7 @@
     <div id="carrierModal" class="modal-overlay carrier-modal hidden">
         <div class="modal-content carrier-modal-content">
             <button id="closeCarrierModal" class="close-btn" aria-label="Close">×</button>
+
             <div class="carrier-modal-header">
                 <h2><i data-lucide="layers"></i> Carrier IATCI / Interline</h2>
                 <p class="carrier-explanation">
@@ -313,6 +401,7 @@
                     <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
                 </p>
             </div>
+
             <div class="table-scroll">
                 <table class="carrier-table">
                     <thead>
