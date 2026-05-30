@@ -351,6 +351,20 @@ var delayPolicyData = [
     { airports: 'BJV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
     { airports: 'All Other', std03: '√', etd03: 'X', closure90: 'X', closure30: '√', closureTime: 'ETD-60' }
 ];
+function formatMark(value) {
+    if (value === '√') {
+        return '<span class="delay-yes">√</span>';
+    }
+    return '<span class="delay-no">X</span>';
+}
+
+tr.innerHTML =
+    '<td><strong>' + r.airports + '</strong></td>' +
+    '<td>' + formatMark(r.std03) + '</td>' +
+    '<td>' + formatMark(r.etd03) + '</td>' +
+    '<td>' + formatMark(r.closure90) + '</td>' +
+    '<td>' + formatMark(r.closure30) + '</td>' +
+    '<td class="closure-cell">' + closureBadge + '</td>';
 function populateDelayPolicyTable() {
     var tbody = document.getElementById('delayPolicyBody');
     if (!tbody) return;
@@ -362,8 +376,7 @@ function populateDelayPolicyTable() {
         tr.dataset.closureType = isStd ? 'std' : 'etd';
         tr.classList.add('delay-row-' + (isStd ? 'std' : 'etd'));
         var closureBadge = '<span class="closure-badge closure-' + (isStd ? 'std' : 'etd') + '">' + r.closureTime + '</span>';
-        tr.innerHTML = '<td><strong>' + r.airports + '</strong></td><td>' + r.std03 + '</td><td>' + r.etd03 + '</td><td>' + r.closure90 + '</td><td>' + r.closure30 + '</td><td class="closure-cell">' + closureBadge + '</td>';
-        tbody.appendChild(tr);
+        
     });
     filterDelayPolicy(document.getElementById('delayPolicySearch') ? document.getElementById('delayPolicySearch').value : '');
 }
