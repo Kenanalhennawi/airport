@@ -180,19 +180,53 @@
                     </div>
                 </details>
 
-                <details class="carrier-explanation carrier-details">
-                    <summary><strong>MCT at DXB (min connecting time)</strong></summary>
-                    <table class="mct-table">
-                        <thead><tr><th>Connection</th><th>T2</th><th>T3</th><th>T2↔T3</th></tr></thead>
-                        <tbody>
-                            <tr><td>FZ ↔ FZ</td><td>60 min</td><td>120 min</td><td>120 min</td></tr>
-                            <tr><td>FZ ↔ EK / UA / AC</td><td>—</td><td>120 min</td><td>90 min</td></tr>
-                            <tr><td>FZ ↔ OAL (IATCI)*</td><td>150 min</td><td>150 min</td><td>150 min</td></tr>
-                            <tr><td>FZ ↔ OAL (Non-IATCI) / Non-partners</td><td>180 min</td><td>180 min</td><td>180 min</td></tr>
-                        </tbody>
-                    </table>
-                    <p class="mct-note">* FZ↔SQ and FZ↔KE: 120 min. FZ operates T2 &amp; T3.</p>
-                </details>
+               <details class="carrier-explanation carrier-details">
+    <summary><strong>MCT at DXB (Minimum Connecting Time)</strong></summary>
+
+    <table class="mct-table">
+        <thead>
+            <tr>
+                <th>Terminal (Vice versa)</th>
+                <th>Operating Flight</th>
+                <th>MCT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>T2-T2</td><td>FZ-FZ</td><td>60 Mins</td></tr>
+            <tr><td>T2-T2</td><td>FZ-OA</td><td>120 Mins</td></tr>
+            <tr><td>T3-T3</td><td>FZ-FZ</td><td>90 Mins</td></tr>
+            <tr><td>T3-T3</td><td>FZ-OA</td><td>90 Mins</td></tr>
+            <tr><td>T2-T3</td><td>FZ-FZ</td><td>120 Mins</td></tr>
+            <tr><td>T2-T3</td><td>FZ-OA</td><td>120 Mins</td></tr>
+            <tr><td>T2-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+        </tbody>
+    </table>
+
+    <h4 style="margin-top:15px;background:#fff176;padding:4px 8px;display:inline-block;">
+        OA Exceptions - Minimum Connecting Time
+    </h4>
+
+    <table class="mct-table">
+        <thead>
+            <tr>
+                <th>Terminal (Vice versa)</th>
+                <th>Operating Flight</th>
+                <th>MCT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>T2-T1</td><td>FZ-SQ</td><td>120 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-SQ</td><td>150 Mins</td></tr>
+            <tr><td>T2-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+            <tr><td>T2 to T1</td><td>FZ-PR</td><td>180 Mins</td></tr>
+            <tr><td>T1 to T2</td><td>PR-FZ</td><td>150 Mins</td></tr>
+            <tr><td>T3 to T1</td><td>FZ-PR</td><td>150 Mins</td></tr>
+            <tr><td>T1 to T3</td><td>PR-FZ</td><td>150 Mins</td></tr>
+        </tbody>
+    </table>
+</details>
 
                 <p class="carrier-explanation carrier-note carrier-note-link">
                     <a href="https://www.flydubai.com/en/destinations/connections" target="_blank" rel="noopener noreferrer">flydubai.com – Connecting with Other Airlines</a>
