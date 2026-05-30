@@ -435,6 +435,17 @@ input {
 .delay-row-etd td {
     background: rgba(16,185,129,0.08);
 }
+.delay-yes {
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.delay-no {
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 18px;
+}
 .closure-cell {
     white-space: nowrap;
 }
@@ -729,14 +740,4 @@ footer strong { color: var(--fz-orange); }
         width: 100%;
     }
 }
-.delay-yes {
-    color: #16a34a;
-    font-weight: 700;
-    font-size: 18px;
-}
 
-.delay-no {
-    color: #dc2626;
-    font-weight: 700;
-    font-size: 18px;
-}
