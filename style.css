@@ -729,3 +729,14 @@ footer strong { color: var(--fz-orange); }
         width: 100%;
     }
 }
+.delay-yes {
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.delay-no {
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 18px;
+}
