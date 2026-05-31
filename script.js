@@ -115,19 +115,52 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// Converts (year, month, day, hour, min) in a given timezone to a UTC Date.
-// Handles DST (summer/winter) via IANA timezones: offset is computed for the target date.
+// Returns timezone offset in minutes for a specific instant.
+// Uses full date parts, so UTC+12/+13 zones and DST transition days stay accurate.
+function getTimezoneOffsetMinutes(timezone, date) {
+    var fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
+
+    var parts = fmt.formatToParts(date).reduce(function (acc, p) {
+        if (p.type !== 'literal') acc[p.type] = p.value;
+        return acc;
+    }, {});
+
+    var asUTC = Date.UTC(
+        parseInt(parts.year, 10),
+        parseInt(parts.month, 10) - 1,
+        parseInt(parts.day, 10),
+        parseInt(parts.hour, 10),
+        parseInt(parts.minute, 10),
+        parseInt(parts.second, 10)
+    );
+
+    return Math.round((asUTC - date.getTime()) / 60000);
+}
+
+// Converts local airport date/time to a UTC Date.
+// Handles DST (summer/winter), half-hour zones, +12/+13 zones, and transition days via IANA timezones.
 function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
     try {
-        var refUtc = new Date(Date.UTC(y, m - 1, d, 12, 0));
-        var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
-        var tzParts = fmt.formatToParts(refUtc);
-        var hourInTZ = parseInt(tzParts.find(function (p) { return p.type === 'hour'; }).value, 10);
-        var minInTZ = parseInt(tzParts.find(function (p) { return p.type === 'minute'; }).value, 10);
-        var offsetMinutes = (hourInTZ * 60 + minInTZ) - 720;
-        var targetMinutes = hr * 60 + min;
-        var utcMinutes = targetMinutes - offsetMinutes;
-        return new Date(Date.UTC(y, m - 1, d, 0, 0) + utcMinutes * 60000);
+        var utcGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0));
+
+        // Iterate because the correct offset may differ around DST transition moments.
+        for (var i = 0; i < 4; i++) {
+            var offsetMinutes = getTimezoneOffsetMinutes(timezone, utcGuess);
+            var nextGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0) - offsetMinutes * 60000);
+            if (Math.abs(nextGuess.getTime() - utcGuess.getTime()) < 1000) break;
+            utcGuess = nextGuess;
+        }
+
+        return utcGuess;
     } catch (e) { return null; }
 }
 
@@ -239,16 +272,8 @@ function formatTimeDiffDisplay(diffMinutes) {
 function getTimeDiffHTML(timezone) {
     try {
         var now = new Date();
-        var utcNoon = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0));
-        var dxbFmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
-        var tgtFmt = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
-        var dxbParts = dxbFmt.formatToParts(utcNoon);
-        var tgtParts = tgtFmt.formatToParts(utcNoon);
-        var dxbMin = parseInt(dxbParts.find(function (p) { return p.type === 'hour'; }).value, 10) * 60 + parseInt(dxbParts.find(function (p) { return p.type === 'minute'; }).value, 10);
-        var tgtMin = parseInt(tgtParts.find(function (p) { return p.type === 'hour'; }).value, 10) * 60 + parseInt(tgtParts.find(function (p) { return p.type === 'minute'; }).value, 10);
-        var diffMinutes = tgtMin - dxbMin;
-        if (diffMinutes > 720) diffMinutes -= 1440;
-        if (diffMinutes < -720) diffMinutes += 1440;
+        var diffMinutes = getTimezoneOffsetMinutes(timezone, now) - getTimezoneOffsetMinutes('Asia/Dubai', now);
+
         if (diffMinutes === 0) return '<span class="time-diff diff-same">(Same Time)</span>';
         var txt = formatTimeDiffDisplay(diffMinutes) + ' vs DXB';
         return diffMinutes > 0 ? '<span class="time-diff diff-plus">(' + txt + ')</span>' : '<span class="time-diff diff-minus">(' + txt + ')</span>';
