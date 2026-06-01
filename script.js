@@ -255,7 +255,8 @@ function getTimezoneAbbr(timezone) {
 }
 
 function getFlagUrl(countryName) {
-    const code = countryCodes[countryName.split('/')[0].trim()] || 'un';
+    const normalizedCountry = String(countryName || '').split('/')[0].trim();
+    const code = countryCodes[normalizedCountry] || 'un';
     return 'https://flagcdn.com/w40/' + code + '.png';
 }
 
@@ -615,9 +616,10 @@ function renderCards(filterText) {
         card.innerHTML =
             '<div class="card-clickable">' +
             '<div class="card-header"><div><div class="iata-code">' + safeIata + '</div>' +
-            '<div class="city-name"><img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '"> ' + safeCity + '</div>' +
+            '<div class="city-name"><img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '" onerror="this.style.display=\'none\';"> <span>' + safeCity + '</span></div>' +
+            '<div class="country-name"><span class="meta-label">Country:</span> ' + safeCountry + '</div>' +
+            (safeRegion ? '<div class="region-name"><span class="meta-label">Region:</span> ' + safeRegion + '</div>' : '') +
             (safeAirportName ? '<div class="airport-name">' + safeAirportName + '</div>' : '') +
-            (safeRegion ? '<div class="region-badge">' + safeRegion + '</div>' : '') +
             '</div>' +
             '<div class="time-container"><div class="time-badge" data-timezone="' + safeTimezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
             '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + safeTerminal + '</span></div>' +
