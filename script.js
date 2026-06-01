@@ -27,7 +27,7 @@ const countryCodes = {
     "Ivory Coast": "ci", "Morocco": "ma", "Tunisia": "tn", "Algeria": "dz", "Zambia": "zm",
     "Congo": "cg", "Democratic Republic of the Congo": "cd", "Zimbabwe": "zw", "Namibia": "na",
     "Rwanda": "rw", "Libya": "ly", "Mauritius": "mu", "Seychelles": "sc",
-    "Russia": "ru", "Ukraine": "ua", "Belarus": "by", "Poland": "pl", "Romania": "ro",
+    "Russia": "ru", "Russian Federation": "ru", "Ukraine": "ua", "Belarus": "by", "Poland": "pl", "Romania": "ro",
     "Bulgaria": "bg", "Serbia": "rs", "Bosnia": "ba", "Bosnia and Herzegovina": "ba", "Montenegro": "me", "Croatia": "hr",
     "Slovenia": "si", "Hungary": "hu", "Czech Republic": "cz", "Slovakia": "sk",
     "Greece": "gr", "Italy": "it", "France": "fr", "Switzerland": "ch", "Austria": "at",
@@ -41,7 +41,7 @@ const countryCodes = {
     "Singapore": "sg", "Indonesia": "id", "Philippines": "ph", "Vietnam": "vn",
     "China": "cn", "Hong Kong": "hk", "Taiwan": "tw", "South Korea": "kr", "Japan": "jp",
     "Myanmar": "mm", "Afghanistan": "af",
-    "USA": "us", "Canada": "ca", "Mexico": "mx", "Brazil": "br", "Argentina": "ar",
+    "USA": "us", "United States": "us", "Guam": "gu", "Canada": "ca", "Mexico": "mx", "Brazil": "br", "Argentina": "ar",
     "Chile": "cl", "Colombia": "co", "Peru": "pe", "Venezuela": "ve", "Panama": "pa",
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj",
     "Bermuda": "bm", "Cape Verde": "cv",
@@ -257,6 +257,19 @@ function getTimezoneAbbr(timezone) {
 function getFlagUrl(countryName) {
     const code = countryCodes[countryName.split('/')[0].trim()] || 'un';
     return 'https://flagcdn.com/w40/' + code + '.png';
+}
+
+function escapeHTML(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function hasValue(value) {
+    return typeof value === 'string' ? value.trim() !== '' : !!value;
 }
 
 function formatTimeDiffDisplay(diffMinutes) {
@@ -526,7 +539,7 @@ function switchView(view) {
     if (view === 'airports') {
         airportsPanel.classList.add('active');
         if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
-        if (searchInput) { searchInput.placeholder = 'Search IATA, City, or Country...'; searchInput.parentElement.style.display = ''; }
+        if (searchInput) { searchInput.placeholder = 'Search IATA, airport, city, country, or region...'; searchInput.parentElement.style.display = ''; }
         renderCards(searchInput ? searchInput.value : '');
     } else if (view === 'interline') {
         interlinePanel.classList.add('active');
@@ -565,16 +578,19 @@ function renderCards(filterText) {
     }
 
     if (!query) {
-        container.innerHTML = '<div class="search-hint">Search by IATA code, city, or country to see airports</div>';
+        container.innerHTML = '<div class="search-hint">Search by IATA code, airport, city, country, or region to see airports</div>';
         if (typeof lucide !== 'undefined') lucide.createIcons();
         return;
     }
 
-    const filtered = airportsData.filter(a =>
-        a.iata.toLowerCase().includes(query.toLowerCase()) ||
-        a.city.toLowerCase().includes(query.toLowerCase()) ||
-        a.country.toLowerCase().includes(query.toLowerCase())
-    );
+    const q = query.toLowerCase();
+    const filtered = airportsData.filter(function (a) {
+        return String(a.iata || '').toLowerCase().includes(q) ||
+            String(a.airport || '').toLowerCase().includes(q) ||
+            String(a.city || '').toLowerCase().includes(q) ||
+            String(a.country || '').toLowerCase().includes(q) ||
+            String(a.region || '').toLowerCase().includes(q);
+    });
 
     if (filtered.length === 0) {
         container.innerHTML = '<div class="search-hint search-hint-empty">No destination found.</div>';
@@ -586,22 +602,36 @@ function renderCards(filterText) {
         const card = document.createElement('div');
         card.className = 'card';
         card.dataset.iata = airport.iata;
+        const safeIata = escapeHTML(airport.iata || '');
+        const safeCity = escapeHTML(airport.city || '');
+        const safeCountry = escapeHTML(airport.country || '');
+        const safeRegion = escapeHTML(airport.region || '');
+        const safeAirportName = escapeHTML(airport.airport || '');
+        const safeTerminal = escapeHTML(airport.terminal || '');
+        const safeDistance = escapeHTML(airport.distanceCenter || '');
+        const safeTimezone = escapeHTML(airport.timezone || '');
+        const flagCountry = airport.iata === 'HKG' ? 'Hong Kong' : (airport.country || '');
+
         card.innerHTML =
             '<div class="card-clickable">' +
-            '<div class="card-header"><div><div class="iata-code">' + airport.iata + '</div><div class="city-name"><img src="' + getFlagUrl(airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '" class="flag-icon" alt="Flag of ' + (airport.iata === 'HKG' ? 'Hong Kong' : airport.country) + '"> ' + airport.city + '</div></div>' +
-            '<div class="time-container"><div class="time-badge" data-timezone="' + airport.timezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
-            '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + airport.terminal + '</span></div>' +
-            '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + airport.distanceCenter + '</span></div></div>' +
+            '<div class="card-header"><div><div class="iata-code">' + safeIata + '</div>' +
+            '<div class="city-name"><img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '"> ' + safeCity + '</div>' +
+            (safeAirportName ? '<div class="airport-name">' + safeAirportName + '</div>' : '') +
+            (safeRegion ? '<div class="region-badge">' + safeRegion + '</div>' : '') +
+            '</div>' +
+            '<div class="time-container"><div class="time-badge" data-timezone="' + safeTimezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
+            '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + safeTerminal + '</span></div>' +
+            '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + safeDistance + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
             '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY ' + getTimePlaceholder() + '):</label>' +
             '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
             '<div style="flex:1;display:flex;gap:4px;">' +
-            '<input type="text" id="dateIn-' + airport.iata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '<input type="date" id="datePicker-' + airport.iata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
+            '<input type="text" id="dateIn-' + safeIata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
+            '<input type="date" id="datePicker-' + safeIata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
             '<button type="button" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;margin:0;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
             '</div>' +
-            '<input type="text" id="timeIn-' + airport.iata + '" placeholder="' + getTimePlaceholder() + '" maxlength="' + (use12Hour() ? 10 : 5) + '" style="width:' + (use12Hour() ? 110 : 80) + 'px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;" class="calc-time-input">' +
-            '</div><div id="timeResult-' + airport.iata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
+            '<input type="text" id="timeIn-' + safeIata + '" placeholder="' + getTimePlaceholder() + '" maxlength="' + (use12Hour() ? 10 : 5) + '" style="width:' + (use12Hour() ? 110 : 80) + 'px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;" class="calc-time-input">' +
+            '</div><div id="timeResult-' + safeIata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
         const timeIn = card.querySelector('#timeIn-' + airport.iata);
@@ -656,12 +686,40 @@ function openModal(data) {
     const modalMapBtn = document.getElementById('modalMapBtn');
     const modalWebBtn = document.getElementById('modalWebBtn');
     if (modalIata) modalIata.textContent = data.iata || '';
-    if (modalCity) modalCity.textContent = (data.city || '') + ', ' + (data.country || '');
+    if (modalCity) modalCity.textContent = (data.airport ? data.airport + ' • ' : '') + (data.city || '') + ', ' + (data.country || '') + (data.region ? ' • ' + data.region : '');
     if (modalDistance) modalDistance.textContent = data.distanceCenter || '';
     if (modalOtherAirports) modalOtherAirports.textContent = data.nearbyAirports || '';
-    if (modalPhone) modalPhone.textContent = data.phone || '';
-    if (modalMapBtn) modalMapBtn.href = data.locationUrl || '#';
-    if (modalWebBtn) modalWebBtn.href = data.website || '#';
+
+    if (modalPhone) {
+        const phoneRow = modalPhone.closest ? modalPhone.closest('.detail-row') : null;
+        if (hasValue(data.phone)) {
+            modalPhone.textContent = data.phone;
+            if (phoneRow) phoneRow.style.display = '';
+        } else {
+            modalPhone.textContent = '';
+            if (phoneRow) phoneRow.style.display = 'none';
+        }
+    }
+
+    if (modalMapBtn) {
+        if (hasValue(data.locationUrl)) {
+            modalMapBtn.href = data.locationUrl;
+            modalMapBtn.style.display = '';
+        } else {
+            modalMapBtn.removeAttribute('href');
+            modalMapBtn.style.display = 'none';
+        }
+    }
+
+    if (modalWebBtn) {
+        if (hasValue(data.website)) {
+            modalWebBtn.href = data.website;
+            modalWebBtn.style.display = '';
+        } else {
+            modalWebBtn.removeAttribute('href');
+            modalWebBtn.style.display = 'none';
+        }
+    }
     modal.classList.remove('hidden');
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
