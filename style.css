@@ -144,6 +144,30 @@ input {
 .city-name { color: #64748b; font-weight: 600; font-size: 1rem; display: flex; align-items: center; }
 .flag-icon { width: 26px; height: 19px; object-fit: cover; border-radius: 3px; margin-right: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 
+.country-name,
+.region-name {
+    margin-top: 5px;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 650;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.region-name {
+    color: var(--fz-blue);
+}
+
+.meta-label {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+
 .airport-name {
     margin-top: 4px;
     color: #334155;
