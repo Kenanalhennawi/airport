@@ -1227,15 +1227,24 @@ function renderCards(filterText) {
     const q = normalizeSearchText(query);
     const countryAliasMatches = getCountryAliasMatches(q);
 
+    const exactCountrySearch = airportsData.some(function (a) {
+        return normalizeSearchText(a.country) === q;
+    });
+
     const strictCountryOnlyAliases = [
         "usa",
         "uae",
         "ksa"
     ];
 
-    const shouldAlsoSearchText =
-        q.length <= 2 ||
-        !strictCountryOnlyAliases.includes(q);
+    const isShortCodeSearch = q.length <= 2;
+
+    const shouldSearchText =
+        !exactCountrySearch &&
+        (
+            isShortCodeSearch ||
+            !strictCountryOnlyAliases.includes(q)
+        );
 
     const filtered = airportsData.filter(function (a) {
         const iata = normalizeSearchText(a.iata);
@@ -1250,6 +1259,14 @@ function renderCards(filterText) {
             })
             : false;
 
+        if (exactCountrySearch) {
+            return country === q;
+        }
+
+        if (countryAliasMatches && !shouldSearchText) {
+            return aliasMatch;
+        }
+
         const textMatch =
             iata.includes(q) ||
             airport.includes(q) ||
@@ -1258,7 +1275,7 @@ function renderCards(filterText) {
             region.includes(q);
 
         if (countryAliasMatches) {
-            return aliasMatch || (shouldAlsoSearchText && textMatch);
+            return aliasMatch || textMatch;
         }
 
         return textMatch;
@@ -1345,8 +1362,8 @@ function renderCards(filterText) {
             });
         }
 
-        var datePicker = card.querySelector('#datePicker-' + airport.iata);
-        var calBtn = datePicker && datePicker.nextElementSibling;
+        const datePicker = card.querySelector('#datePicker-' + airport.iata);
+        const calBtn = datePicker && datePicker.nextElementSibling;
 
         if (datePicker && calBtn) {
             calBtn.onclick = function (e) {
@@ -1361,10 +1378,10 @@ function renderCards(filterText) {
             };
 
             datePicker.addEventListener('change', function () {
-                var v = datePicker.value;
+                const v = datePicker.value;
 
                 if (v) {
-                    var p = v.split('-');
+                    const p = v.split('-');
 
                     dateIn.value = p[2] + '/' + p[1] + '/' + p[0];
 
