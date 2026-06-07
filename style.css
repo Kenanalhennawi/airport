@@ -723,3 +723,17 @@ footer strong { color: var(--fz-orange); }
     background: #e0f2fe !important;
     color: #005EB8 !important;
 }
+.app-disclaimer {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.4;
+    backdrop-filter: blur(8px);
+    text-align: center;
+}
