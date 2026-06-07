@@ -793,3 +793,27 @@ footer strong { color: var(--fz-orange); }
 .ops-info-card li {
     margin-bottom: 10px;
 }
+.ops-info-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.ops-info-links span,
+.ops-info-links a {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: var(--fz-blue);
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.ops-info-links a:hover {
+    background: #dbeafe;
+    text-decoration: underline;
+}
