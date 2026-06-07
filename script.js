@@ -1308,22 +1308,18 @@ async function convertCurrencyPayport(){
             }).replace(/ /g,"-");
 
         const url =
-            "https://payport.flydubai.com/en/CurrencyConverter/CurrencyCoverterCalculate" +
-            "?sourceCurrencyAmount=" + encodeURIComponent(amount) +
-            "&sourceCurrencyCode=" + encodeURIComponent(from) +
-            "&targetCurrencyCode=" + encodeURIComponent(to) +
-            "&period=" + encodeURIComponent(period) +
-            "&_=" + Date.now();
+    "https://payport-proxy.onrender.com/api/convert" +
+    "?amount=" + encodeURIComponent(amount) +
+    "&from=" + encodeURIComponent(from) +
+    "&to=" + encodeURIComponent(to) +
+    "&period=" + encodeURIComponent(period) +
+    "&_=" + Date.now();
 
-        const response = await fetch(url);
+const response = await fetch(url);
+const data = await response.json();
 
-        const data = await response.json();
-
-        document.getElementById("currencyResult")
-            .textContent = data.TargetValue;
-
-        document.getElementById("currencyRate")
-            .textContent = "Rate: " + data.rate;
+document.getElementById("currencyResult").textContent = data.targetValue;
+document.getElementById("currencyRate").textContent = "Rate: " + data.rate;
 
     }catch(error){
 
