@@ -89,193 +89,215 @@
             <div id="cardsContainer" class="cards-grid"></div>
         </div>
 
-        <div id="interlineView" class="view-panel">
-            <div class="carrier-inline">
-                <p class="carrier-explanation">
-                    <strong>What this is:</strong> Partner airlines we can check in through (IATCI) or tag bags for.
-                    <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
-                    <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
-                </p>
+       <div id="interlineView" class="view-panel">
+    <div class="carrier-inline">
 
-                <p class="carrier-explanation carrier-note">
-                    <strong>Separate ticket:</strong> If connecting with a partner within 24 hours on a separate ticket, baggage can be tagged through for a handling fee at check-in.
-                </p>
+        <div class="carrier-filter-wrap">
+            <span class="carrier-filter-label">Filter:</span>
+            <button type="button" class="carrier-filter-btn active" data-filter="all">All</button>
+            <button type="button" class="carrier-filter-btn" data-filter="iatci">IATCI only</button>
+            <button type="button" class="carrier-filter-btn" data-filter="iet">IET only</button>
+        </div>
 
-                <p class="carrier-explanation carrier-note">
-                    <strong>Ticketing partners (HR, GP, W2):</strong> These hold ticketing stock only—not airlines. If a ticket is issued on their stock and FZ causes disruption, we can request GP (or the relevant partner) to rebook non-interline onward segments.
-                </p>
+        <div class="table-scroll">
+            <table class="carrier-table" id="carrierTableMain">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Carrier</th>
+                        <th>Code</th>
+                        <th>Accnt</th>
+                        <th>Host</th>
+                        <th>Type</th>
+                        <th>IATCI</th>
+                        <th>IATCI Type</th>
+                        <th>Through check-in BP</th>
+                        <th>Through check-in Bag</th>
+                        <th>BP at transfer</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="carrierTableBody"></tbody>
+            </table>
+        </div>
 
-                <p class="carrier-explanation carrier-note">
-                    <strong>Egypt Air (MS):</strong> Not interline. If ticket issued on GP stock and FZ disrupts, request GP to rebook MS segment.
-                </p>
+        <div class="ops-info-card interline-info-footer">
+            <h3>Interline Reference Notes</h3>
 
-                <p class="carrier-explanation carrier-note carrier-note-warning">
-                    <strong>Non-interline – no baggage through-check:</strong> British Airways (BA), Flyadeal (F3), Pegasus (PC), Pobeda (DP), Wizz Air (W6). Passengers checked in only to Dubai; valid UAE visa required; must clear immigration, collect bags, and re-check in for onward flight.
-                </p>
+            <p>
+                <strong>What this is:</strong>
+                Partner airlines we can check in through (IATCI) or tag bags for.
+                <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
+                <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
+            </p>
 
-                <p class="carrier-explanation carrier-note">
-                    <strong>Other non-interline:</strong> Baggage through-check to final destination allowed for a fee. BP at transfer desk required.
-                </p>
+            <p>
+                <strong>Separate ticket:</strong>
+                If connecting with a partner within 24 hours on a separate ticket,
+                baggage can be tagged through for a handling fee at check-in.
+            </p>
 
-                <details class="carrier-explanation carrier-details">
-                    <summary><strong>IRROPS / Rebooking / Schedule Change (FDIS)</strong></summary>
+            <p>
+                <strong>Ticketing partners (HR, GP, W2):</strong>
+                These hold ticketing stock only — not airlines.
+                If a ticket is issued on their stock and FZ causes disruption,
+                we can request GP or the relevant partner to rebook non-interline onward segments.
+            </p>
 
-                    <div class="irrops-section">
-                        <h4>IRROPS / Rebooking Rules</h4>
+            <p>
+                <strong>Egypt Air (MS):</strong>
+                Not interline. If ticket issued on GP stock and FZ disrupts,
+                request GP to rebook MS segment.
+            </p>
 
-                        <table class="mct-table">
-                            <thead>
-                                <tr>
-                                    <th>Scenario</th>
-                                    <th>Action Required</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Within 72hrs</strong></td>
-                                    <td>
-                                        Non-interline → Request GP to rebook.<br>
-                                        Interline with IRROPS enabled → Rebook in our system.<br>
-                                        Interline without IRROPS → Request GP.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Outside 72hrs</strong></td>
-                                    <td>
-                                        Rebooking by TA or that interline partner.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <p>
+                <strong>Non-interline – no baggage through-check:</strong>
+                British Airways (BA), Flyadeal (F3), Pegasus (PC), Pobeda (DP), Wizz Air (W6).
+                Passengers checked in only to Dubai; valid UAE visa required;
+                must clear immigration, collect bags, and re-check in for onward flight.
+            </p>
 
-                        <h4 style="margin-top:20px;">Flight Schedule Change (FDIS Eligibility)</h4>
+            <p>
+                <strong>Other non-interline:</strong>
+                Baggage through-check to final destination allowed for a fee.
+                BP at transfer desk required.
+            </p>
 
-                        <p class="carrier-note">
-                            <strong>If you see a pop-up for a time change:</strong><br>
-                            Please check the booking history to confirm if the passenger is eligible for FDIS options, as per the following:
-                        </p>
+            <details class="carrier-details">
+                <summary><strong>IRROPS / Rebooking / Schedule Change (FDIS)</strong></summary>
 
-                        <table class="mct-table">
-                            <thead>
-                                <tr>
-                                    <th>Timing Before Scheduled Departure</th>
-                                    <th>Passenger Eligible for FDIS Options If</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>More than 72 hours before scheduled departure</strong></td>
-                                    <td>
-                                        Flight departs earlier by <strong>1 hour or more</strong><br>
-                                        OR<br>
-                                        Flight departs later by <strong>3 hours or more</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Within 72 hours before scheduled departure</strong></td>
-                                    <td>
-                                        Flight departs earlier by <strong>20 minutes or more</strong><br>
-                                        OR<br>
-                                        Flight departs later by <strong>1 hour or more</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>If the flight is canceled</strong></td>
-                                    <td>
-                                        <strong>FDIS options must be provided.</strong>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="irrops-section">
+                    <h4>IRROPS / Rebooking Rules</h4>
 
-                        <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
-                            <strong>Important:</strong> Always check the booking history before offering FDIS options.
-                        </div>
-                    </div>
-                </details>
-
-               <details class="carrier-explanation carrier-details">
-    <summary><strong>MCT at DXB (Minimum Connecting Time)</strong></summary>
-
-    <table class="mct-table">
-        <thead>
-            <tr>
-                <th>Terminal (Vice versa)</th>
-                <th>Operating Flight</th>
-                <th>MCT</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>T2-T2</td><td>FZ-FZ</td><td>60 Mins</td></tr>
-            <tr><td>T2-T2</td><td>FZ-OA</td><td>120 Mins</td></tr>
-            <tr><td>T3-T3</td><td>FZ-FZ</td><td>90 Mins</td></tr>
-            <tr><td>T3-T3</td><td>FZ-OA</td><td>90 Mins</td></tr>
-            <tr><td>T2-T3</td><td>FZ-FZ</td><td>120 Mins</td></tr>
-            <tr><td>T2-T3</td><td>FZ-OA</td><td>120 Mins</td></tr>
-            <tr><td>T2-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
-            <tr><td>T3-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
-        </tbody>
-    </table>
-
-    <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
-    <strong>OA Exceptions - Minimum Connecting Time</strong>
-</div>
-
-    <table class="mct-table">
-        <thead>
-            <tr>
-                <th>Terminal (Vice versa)</th>
-                <th>Operating Flight</th>
-                <th>MCT</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>T2-T1</td><td>FZ-SQ</td><td>120 Mins</td></tr>
-            <tr><td>T3-T1</td><td>FZ-SQ</td><td>150 Mins</td></tr>
-            <tr><td>T2-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
-            <tr><td>T3-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
-            <tr><td>T2 to T1</td><td>FZ-PR</td><td>180 Mins</td></tr>
-            <tr><td>T1 to T2</td><td>PR-FZ</td><td>150 Mins</td></tr>
-            <tr><td>T3 to T1</td><td>FZ-PR</td><td>150 Mins</td></tr>
-            <tr><td>T1 to T3</td><td>PR-FZ</td><td>150 Mins</td></tr>
-        </tbody>
-    </table>
-</details>
-
-                <p class="carrier-explanation carrier-note carrier-note-link">
-                    <a href="https://www.flydubai.com/en/destinations/connections" target="_blank" rel="noopener noreferrer">flydubai.com – Connecting with Other Airlines</a>
-                </p>
-
-                <div class="carrier-filter-wrap">
-                    <span class="carrier-filter-label">Filter:</span>
-                    <button type="button" class="carrier-filter-btn active" data-filter="all">All</button>
-                    <button type="button" class="carrier-filter-btn" data-filter="iatci">IATCI only</button>
-                    <button type="button" class="carrier-filter-btn" data-filter="iet">IET only</button>
-                </div>
-
-                <div class="table-scroll">
-                    <table class="carrier-table" id="carrierTableMain">
+                    <table class="mct-table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Carrier</th>
-                                <th>Code</th>
-                                <th>Accnt</th>
-                                <th>Host</th>
-                                <th>Type</th>
-                                <th>IATCI</th>
-                                <th>IATCI Type</th>
-                                <th>Through check-in BP</th>
-                                <th>Through check-in Bag</th>
-                                <th>BP at transfer</th>
-                                <th>Remarks</th>
+                                <th>Scenario</th>
+                                <th>Action Required</th>
                             </tr>
                         </thead>
-                        <tbody id="carrierTableBody"></tbody>
+                        <tbody>
+                            <tr>
+                                <td><strong>Within 72hrs</strong></td>
+                                <td>
+                                    Non-interline → Request GP to rebook.<br>
+                                    Interline with IRROPS enabled → Rebook in our system.<br>
+                                    Interline without IRROPS → Request GP.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Outside 72hrs</strong></td>
+                                <td>
+                                    Rebooking by TA or that interline partner.
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
+
+                    <h4 style="margin-top:20px;">Flight Schedule Change (FDIS Eligibility)</h4>
+
+                    <p class="carrier-note">
+                        <strong>If you see a pop-up for a time change:</strong><br>
+                        Please check the booking history to confirm if the passenger is eligible for FDIS options, as per the following:
+                    </p>
+
+                    <table class="mct-table">
+                        <thead>
+                            <tr>
+                                <th>Timing Before Scheduled Departure</th>
+                                <th>Passenger Eligible for FDIS Options If</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>More than 72 hours before scheduled departure</strong></td>
+                                <td>
+                                    Flight departs earlier by <strong>1 hour or more</strong><br>
+                                    OR<br>
+                                    Flight departs later by <strong>3 hours or more</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Within 72 hours before scheduled departure</strong></td>
+                                <td>
+                                    Flight departs earlier by <strong>20 minutes or more</strong><br>
+                                    OR<br>
+                                    Flight departs later by <strong>1 hour or more</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>If the flight is canceled</strong></td>
+                                <td>
+                                    <strong>FDIS options must be provided.</strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
+                        <strong>Important:</strong> Always check the booking history before offering FDIS options.
+                    </div>
                 </div>
+            </details>
+
+            <details class="carrier-details">
+                <summary><strong>MCT at DXB (Minimum Connecting Time)</strong></summary>
+
+                <table class="mct-table">
+                    <thead>
+                        <tr>
+                            <th>Terminal (Vice versa)</th>
+                            <th>Operating Flight</th>
+                            <th>MCT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>T2-T2</td><td>FZ-FZ</td><td>60 Mins</td></tr>
+                        <tr><td>T2-T2</td><td>FZ-OA</td><td>120 Mins</td></tr>
+                        <tr><td>T3-T3</td><td>FZ-FZ</td><td>90 Mins</td></tr>
+                        <tr><td>T3-T3</td><td>FZ-OA</td><td>90 Mins</td></tr>
+                        <tr><td>T2-T3</td><td>FZ-FZ</td><td>120 Mins</td></tr>
+                        <tr><td>T2-T3</td><td>FZ-OA</td><td>120 Mins</td></tr>
+                        <tr><td>T2-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+                        <tr><td>T3-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
+                    <strong>OA Exceptions - Minimum Connecting Time</strong>
+                </div>
+
+                <table class="mct-table">
+                    <thead>
+                        <tr>
+                            <th>Terminal (Vice versa)</th>
+                            <th>Operating Flight</th>
+                            <th>MCT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>T2-T1</td><td>FZ-SQ</td><td>120 Mins</td></tr>
+                        <tr><td>T3-T1</td><td>FZ-SQ</td><td>150 Mins</td></tr>
+                        <tr><td>T2-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+                        <tr><td>T3-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+                        <tr><td>T2 to T1</td><td>FZ-PR</td><td>180 Mins</td></tr>
+                        <tr><td>T1 to T2</td><td>PR-FZ</td><td>150 Mins</td></tr>
+                        <tr><td>T3 to T1</td><td>FZ-PR</td><td>150 Mins</td></tr>
+                        <tr><td>T1 to T3</td><td>PR-FZ</td><td>150 Mins</td></tr>
+                    </tbody>
+                </table>
+            </details>
+
+            <div class="ops-info-links">
+                <span>IRROPS / Rebooking / Schedule Change (FDIS)</span>
+                <span>MCT at DXB (Minimum Connecting Time)</span>
+                <a href="https://www.flydubai.com/en/destinations/connections" target="_blank" rel="noopener noreferrer">
+                    flydubai.com – Connecting with Other Airlines
+                </a>
             </div>
         </div>
+    </div>
+</div>
 
         <div id="delayPolicyView" class="view-panel">
     <div class="delay-policy-search-wrap">
