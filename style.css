@@ -737,3 +737,12 @@ footer strong { color: var(--fz-orange); }
     backdrop-filter: blur(8px);
     text-align: center;
 }
+
+.footer-disclaimer {
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+}
