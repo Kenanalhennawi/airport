@@ -1008,24 +1008,48 @@ const payportCurrencies = [
 function initialiseCurrencyConverter() {
     const from = document.getElementById("currencyFrom");
     const to = document.getElementById("currencyTo");
-    const dataList = document.getElementById("currencyList");
     const dateInput = document.getElementById("currencyDate");
     const swapBtn = document.getElementById("currencySwapBtn");
     const convertBtn = document.getElementById("currencyConvertBtn");
     const amountInput = document.getElementById("currencyAmount");
 
-    if (!from || !to || !dataList || !dateInput || !swapBtn || !convertBtn || !amountInput) return;
+    if (!from || !to || !dateInput || !swapBtn || !convertBtn || !amountInput) return;
 
-    dataList.innerHTML = "";
+    from.innerHTML = "";
+    to.innerHTML = "";
 
     payportCurrencies.forEach(function (currency) {
-        const option = document.createElement("option");
-        option.value = currency;
-        dataList.appendChild(option);
+        from.add(new Option(currency, currency));
+        to.add(new Option(currency, currency));
     });
 
-    from.value = "United States Dollar (USD)";
-    to.value = "United Arab Emirates Dirham (AED)";
+    if (window.currencyFromTom) window.currencyFromTom.destroy();
+    if (window.currencyToTom) window.currencyToTom.destroy();
+
+    window.currencyFromTom = new TomSelect("#currencyFrom", {
+        create: false,
+        maxOptions: 100,
+        searchField: ["text", "value"],
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        placeholder: "Search currency..."
+    });
+
+    window.currencyToTom = new TomSelect("#currencyTo", {
+        create: false,
+        maxOptions: 100,
+        searchField: ["text", "value"],
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        placeholder: "Search currency..."
+    });
+
+    window.currencyFromTom.setValue("United States Dollar (USD)");
+    window.currencyToTom.setValue("United Arab Emirates Dirham (AED)");
 
     const today = new Date();
 
@@ -1034,35 +1058,42 @@ function initialiseCurrencyConverter() {
         String(today.getMonth() + 1).padStart(2, "0") + "-" +
         String(today.getDate()).padStart(2, "0");
 
-    function prepareCurrencyInput(input) {
-        input.addEventListener("focus", function () {
-            setTimeout(function () {
-                input.select();
-            }, 0);
-        });
+    swapBtn.onclick = function () {
+        const temp = window.currencyFromTom.getValue();
 
-        input.addEventListener("click", function () {
-            setTimeout(function () {
-                input.select();
-            }, 0);
-        });
+        window.currencyFromTom.setValue(window.currencyToTom.getValue());
+        window.currencyToTom.setValue(temp);
 
-        input.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                convertCurrencyPayport();
-                return;
-            }
+        convertCurrencyPayport();
+    };
 
-            if (
-                input.selectionStart === 0 &&
-                input.selectionEnd === input.value.length &&
-                e.key.length === 1
-            ) {
-                input.value = "";
-            }
-        });
-    }
+    convertBtn.onclick = convertCurrencyPayport;
+
+    amountInput.onkeydown = function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            convertCurrencyPayport();
+        }
+    };
+
+    dateInput.onkeydown = function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            convertCurrencyPayport();
+        }
+    };
+
+    document.addEventListener("keydown", function (e) {
+        if (
+            e.key === "Enter" &&
+            document.activeElement &&
+            document.activeElement.closest(".ts-control")
+        ) {
+            e.preventDefault();
+            convertCurrencyPayport();
+        }
+    });
+}
 
     prepareCurrencyInput(from);
     prepareCurrencyInput(to);
