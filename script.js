@@ -1191,3 +1191,150 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+const payportCurrencies = [
+"Afghanistan Afghani (AFN)",
+    "Australian Dollar (AUD)",
+    "Azerbaijan Manat (AZN)",
+    "Bahraini Dinar (BHD)",
+    "Bangladesh Taka (BDT)",
+    "Belarusian Ruble (BYN)",
+    "Canadian Dollar (CAD)",
+    "Caribbean Guilder (XCG)",
+    "Czech Koruna (CZK)",
+    "Danish Krone (DKK)",
+    "Djibouti Franc (DJF)",
+    "Egyptian Pound (EGP)",
+    "Eritrean Nakfa (ERN)",
+    "Ethiopian Birr (ETB)",
+    "Euro (EUR)",
+    "Fiji Dollar (FJD)",
+    "Hong Kong Dollar (HKD)",
+    "Hungarian Forint (HUF)",
+    "Indian Rupee (INR)",
+    "Indonesian Rupiah (IDR)",
+    "Iranian Rial (IRR)",
+    "Jordanian Dinar (JOD)",
+    "Kazakhstan Tenge (KZT)",
+    "Kenyan Shilling (KES)",
+    "Kuwaiti Dinar (KWD)",
+    "Libyan Dinar (LYD)",
+    "Malaysian Ringgit (MYR)",
+    "Nepalese Rupee (NPR)",
+    "New Israeli Sheqel (ILS)",
+    "New Zealand Dollar (NZD)",
+    "Norwegian Krone (NOK)",
+    "Omani Rial (OMR)",
+    "Pakistan Rupee (PKR)",
+    "Polish Zloty (PLN)",
+    "Qatari Rial (QAR)",
+    "Russian Ruble (RUB)",
+    "Saudi Riyal (SAR)",
+    "Serbian Dinar (RSD)",
+    "Singapore Dollar (SGD)",
+    "South Sudanese Pound (SSP)",
+    "Sri Lanka Rupee (LKR)",
+    "Sudanese Pound (SDG)",
+    "Swedish Krona (SEK)",
+    "Swiss Franc (CHF)",
+    "Syrian Pound (SYP)",
+    "Tanzanian Shilling (TZS)",
+    "Thai Baht (THB)",
+    "Turkish Yeni Lira (TRY)",
+    "UK Pound Sterling (GBP)",
+    "Ukraine Hryvnia (UAH)",
+    "United Arab Emirates Dirham (AED)",
+    "United States Dollar (USD)",
+    "Uzbekistan Sum (UZS)",
+    "Zimbabwe's ZWG (ZWG)"
+];
+
+function initialiseCurrencyConverter(){
+
+    const from = document.getElementById("currencyFrom");
+    const to = document.getElementById("currencyTo");
+
+    if(!from || !to) return;
+
+    payportCurrencies.forEach(currency=>{
+        from.add(new Option(currency,currency));
+        to.add(new Option(currency,currency));
+    });
+
+    from.value = "United States Dollar (USD)";
+    to.value = "United Arab Emirates Dirham (AED)";
+
+    const today = new Date();
+
+    const dateString =
+        today.getFullYear() + "-" +
+        String(today.getMonth()+1).padStart(2,"0") + "-" +
+        String(today.getDate()).padStart(2,"0");
+
+    document.getElementById("currencyDate").value = dateString;
+
+    document.getElementById("currencySwapBtn").addEventListener("click",()=>{
+        const tmp = from.value;
+        from.value = to.value;
+        to.value = tmp;
+    });
+
+    document.getElementById("currencyConvertBtn")
+        .addEventListener("click",convertCurrencyPayport);
+}
+
+async function convertCurrencyPayport(){
+
+    try{
+
+        const amount =
+            document.getElementById("currencyAmount").value;
+
+        const from =
+            document.getElementById("currencyFrom").value;
+
+        const to =
+            document.getElementById("currencyTo").value;
+
+        const selectedDate =
+            document.getElementById("currencyDate").value;
+
+        const d = new Date(selectedDate);
+
+        const period =
+            d.toLocaleDateString("en-GB",{
+                day:"2-digit",
+                month:"short",
+                year:"numeric"
+            }).replace(/ /g,"-");
+
+        const url =
+            "https://payport.flydubai.com/en/CurrencyConverter/CurrencyCoverterCalculate" +
+            "?sourceCurrencyAmount=" + encodeURIComponent(amount) +
+            "&sourceCurrencyCode=" + encodeURIComponent(from) +
+            "&targetCurrencyCode=" + encodeURIComponent(to) +
+            "&period=" + encodeURIComponent(period) +
+            "&_=" + Date.now();
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        document.getElementById("currencyResult")
+            .textContent = data.TargetValue;
+
+        document.getElementById("currencyRate")
+            .textContent = "Rate: " + data.rate;
+
+    }catch(error){
+
+        document.getElementById("currencyResult")
+            .textContent = "Error";
+
+        document.getElementById("currencyRate")
+            .textContent = error.message;
+    }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+    initialiseCurrencyConverter();
+});
