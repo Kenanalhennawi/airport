@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlyDubai Ops Guide</title>
-
+    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23F6881F'/><text x='50' y='50' font-size='60' text-anchor='middle' dy='.35em' fill='white'>✈️</text></svg>">
-
+    
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@0.460.0"></script>
 </head>
@@ -20,7 +20,7 @@
                 <i data-lucide="plane" class="logo-icon"></i>
                 <h1>FlyDubai <span class="highlight">Ops Guide</span></h1>
             </div>
-            <p class="subtitle">Contact Centre Operational Reference Platform</p>
+            <p class="subtitle">Airport, Interline & Operations Reference</p>
         </header>
 
         <div class="view-tabs">
@@ -28,17 +28,14 @@
                 <i data-lucide="map-pin"></i>
                 <span>Airports</span>
             </button>
-
             <button type="button" id="tabInterline" class="view-tab" aria-pressed="false">
                 <i data-lucide="layers"></i>
                 <span>Interline</span>
             </button>
-
             <button type="button" id="tabDelayPolicy" class="view-tab" aria-pressed="false">
                 <i data-lucide="clock-alert"></i>
                 <span>Flight Delay Check-In Timing</span>
             </button>
-
             <button type="button" id="tabCurrency" class="view-tab" aria-pressed="false">
                 <i data-lucide="badge-dollar-sign"></i>
                 <span>Currency</span>
@@ -47,8 +44,8 @@
 
         <div class="search-wrapper">
             <i data-lucide="search" class="search-icon"></i>
-            <input
-                type="text"
+            <input 
+                type="text" 
                 id="searchInput"
                 placeholder="Search IATA, airport, city, country, or region..."
                 autofocus
@@ -64,12 +61,10 @@
                 <div class="clock-label">UTC (ZULU)</div>
                 <div id="utcTime" class="clock-digits">00:00:00</div>
             </div>
-
             <div class="clock-card local">
                 <div class="clock-label">DUBAI (DXB)</div>
                 <div id="dxbTime" class="clock-digits">00:00:00</div>
             </div>
-
             <div class="time-format-toggle">
                 <button type="button" id="format12h" class="format-btn" title="12-hour format">12h</button>
                 <button type="button" id="format24h" class="format-btn active" title="24-hour format">24h</button>
@@ -82,7 +77,6 @@
 
         <div id="interlineView" class="view-panel">
             <div class="carrier-inline">
-
                 <p class="carrier-explanation">
                     <strong>What this is:</strong> Partner airlines we can check in through (IATCI) or tag bags for.
                     <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
@@ -133,7 +127,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Outside 72hrs</strong></td>
-                                    <td>Rebooking by TA or that interline partner.</td>
+                                    <td>
+                                        Rebooking by TA or that interline partner.
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -171,7 +167,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>If the flight is canceled</strong></td>
-                                    <td><strong>FDIS options must be provided.</strong></td>
+                                    <td>
+                                        <strong>FDIS options must be provided.</strong>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -182,53 +180,53 @@
                     </div>
                 </details>
 
-                <details class="carrier-explanation carrier-details">
-                    <summary><strong>MCT at DXB (Minimum Connecting Time)</strong></summary>
+               <details class="carrier-explanation carrier-details">
+    <summary><strong>MCT at DXB (Minimum Connecting Time)</strong></summary>
 
-                    <table class="mct-table">
-                        <thead>
-                            <tr>
-                                <th>Terminal (Vice versa)</th>
-                                <th>Operating Flight</th>
-                                <th>MCT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>T2-T2</td><td>FZ-FZ</td><td>60 Mins</td></tr>
-                            <tr><td>T2-T2</td><td>FZ-OA</td><td>120 Mins</td></tr>
-                            <tr><td>T3-T3</td><td>FZ-FZ</td><td>90 Mins</td></tr>
-                            <tr><td>T3-T3</td><td>FZ-OA</td><td>90 Mins</td></tr>
-                            <tr><td>T2-T3</td><td>FZ-FZ</td><td>120 Mins</td></tr>
-                            <tr><td>T2-T3</td><td>FZ-OA</td><td>120 Mins</td></tr>
-                            <tr><td>T2-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
-                            <tr><td>T3-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
-                        </tbody>
-                    </table>
+    <table class="mct-table">
+        <thead>
+            <tr>
+                <th>Terminal (Vice versa)</th>
+                <th>Operating Flight</th>
+                <th>MCT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>T2-T2</td><td>FZ-FZ</td><td>60 Mins</td></tr>
+            <tr><td>T2-T2</td><td>FZ-OA</td><td>120 Mins</td></tr>
+            <tr><td>T3-T3</td><td>FZ-FZ</td><td>90 Mins</td></tr>
+            <tr><td>T3-T3</td><td>FZ-OA</td><td>90 Mins</td></tr>
+            <tr><td>T2-T3</td><td>FZ-FZ</td><td>120 Mins</td></tr>
+            <tr><td>T2-T3</td><td>FZ-OA</td><td>120 Mins</td></tr>
+            <tr><td>T2-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-OA*</td><td>180 Mins</td></tr>
+        </tbody>
+    </table>
 
-                    <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
-                        <strong>OA Exceptions - Minimum Connecting Time</strong>
-                    </div>
+    <div class="carrier-note carrier-note-warning" style="margin-top:15px;">
+    <strong>OA Exceptions - Minimum Connecting Time</strong>
+</div>
 
-                    <table class="mct-table">
-                        <thead>
-                            <tr>
-                                <th>Terminal (Vice versa)</th>
-                                <th>Operating Flight</th>
-                                <th>MCT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>T2-T1</td><td>FZ-SQ</td><td>120 Mins</td></tr>
-                            <tr><td>T3-T1</td><td>FZ-SQ</td><td>150 Mins</td></tr>
-                            <tr><td>T2-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
-                            <tr><td>T3-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
-                            <tr><td>T2 to T1</td><td>FZ-PR</td><td>180 Mins</td></tr>
-                            <tr><td>T1 to T2</td><td>PR-FZ</td><td>150 Mins</td></tr>
-                            <tr><td>T3 to T1</td><td>FZ-PR</td><td>150 Mins</td></tr>
-                            <tr><td>T1 to T3</td><td>PR-FZ</td><td>150 Mins</td></tr>
-                        </tbody>
-                    </table>
-                </details>
+    <table class="mct-table">
+        <thead>
+            <tr>
+                <th>Terminal (Vice versa)</th>
+                <th>Operating Flight</th>
+                <th>MCT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>T2-T1</td><td>FZ-SQ</td><td>120 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-SQ</td><td>150 Mins</td></tr>
+            <tr><td>T2-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+            <tr><td>T3-T1</td><td>FZ-KE</td><td>120 Mins</td></tr>
+            <tr><td>T2 to T1</td><td>FZ-PR</td><td>180 Mins</td></tr>
+            <tr><td>T1 to T2</td><td>PR-FZ</td><td>150 Mins</td></tr>
+            <tr><td>T3 to T1</td><td>FZ-PR</td><td>150 Mins</td></tr>
+            <tr><td>T1 to T3</td><td>PR-FZ</td><td>150 Mins</td></tr>
+        </tbody>
+    </table>
+</details>
 
                 <p class="carrier-explanation carrier-note carrier-note-link">
                     <a href="https://www.flydubai.com/en/destinations/connections" target="_blank" rel="noopener noreferrer">flydubai.com – Connecting with Other Airlines</a>
@@ -278,8 +276,7 @@
 
             <div class="delay-policy-content">
                 <div class="delay-legend">
-                    <strong>ETD</strong> = Estimated Time of Departure &nbsp;|&nbsp;
-                    <strong>STD</strong> = Scheduled Time of Departure
+                    <strong>ETD</strong> = Estimated Time of Departure &nbsp;|&nbsp; <strong>STD</strong> = Scheduled Time of Departure
                 </div>
 
                 <p class="carrier-explanation">
@@ -317,36 +314,36 @@
         </div>
 
         <div id="currencyView" class="view-panel">
-            <div class="currency-container">
-                <div class="currency-header">
-                    <h2>
-                        <i data-lucide="badge-dollar-sign"></i>
-                        Flydubai Currency Converter
-                    </h2>
+    <div class="currency-container">
+        <div class="currency-header">
+            <h2>
+                <i data-lucide="badge-dollar-sign"></i>
+                Flydubai Currency Converter
+            </h2>
 
-                    <a
-                        href="https://payport.flydubai.com/en/CurrencyConverter/Index"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="currency-open-btn"
-                    >
-                        Open Official Converter
-                    </a>
-                </div>
-
-                <div class="currency-warning">
-                    This converter is hosted on the official Flydubai PayPort website. If it does not load inside this tab, use the Open Official Converter button.
-                </div>
-
-                <iframe
-                    src="https://payport.flydubai.com/en/CurrencyConverter/Index"
-                    class="currency-frame"
-                    title="Flydubai PayPort Currency Converter"
-                    loading="lazy"
-                    referrerpolicy="no-referrer"
-                ></iframe>
-            </div>
+            <a
+                href="https://payport.flydubai.com/en/CurrencyConverter/Index"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="currency-open-btn"
+            >
+                Open Official Converter
+            </a>
         </div>
+
+        <div class="currency-warning">
+            This converter is hosted on the official Flydubai PayPort website. If it does not load inside this tab, use the Open Official Converter button.
+        </div>
+
+        <iframe
+            src="https://payport.flydubai.com/en/CurrencyConverter/Index"
+            class="currency-frame"
+            title="Flydubai PayPort Currency Converter"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+        ></iframe>
+    </div>
+</div>
     </div>
 
     <footer>
@@ -356,7 +353,7 @@
     <div id="infoModal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="closeModal" class="close-btn" aria-label="Close">×</button>
-
+            
             <div class="modal-header">
                 <h2 id="modalIata">DXB</h2>
                 <p id="modalCity">Dubai, UAE</p>
@@ -406,10 +403,88 @@
             <div class="carrier-modal-header">
                 <h2><i data-lucide="layers"></i> Carrier IATCI / Interline</h2>
                 <p class="carrier-explanation">
-                    <strong>What this is:</strong> Partner airlines we can check in through (IATCI) or tag bags for.
-                    <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight.
+                    <strong>What this is:</strong> Partner airlines we can check in through (IATCI) or tag bags for. 
+                    <strong>Through check-in</strong> = issue BP/bag tag at our counter for their flight. 
                     <strong>BP at transfer</strong> = collect boarding pass at transfer desk when required.
                 </p>
+            </div>
+
+            <div class="table-scroll">
+                <table class="carrier-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Carrier</th>
+                            <th>Code</th>
+                            <th>Accnt</th>
+                            <th>Host</th>
+                            <th>Type</th>
+                            <th>IATCI</th>
+                            <th>IATCI Type</th>
+                            <th>Through check-in BP</th>
+                            <th>Through check-in Bag</th>
+                            <th>BP at transfer</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>Emirates</td><td>EK</td><td>176</td><td>MARS</td><td>Bilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>2</td><td>United Airlines</td><td>UA</td><td>016</td><td>Shares B</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>3</td><td>Air Canada</td><td>AC</td><td>014</td><td>Amadeus</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>4</td><td>Access Rail</td><td>9B</td><td>450</td><td>Amadeus</td><td>Unilateral/FZ</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>N/A</td><td>Onward via DB Rail</td></tr>
+                        <tr><td>5</td><td>Aegean Airlines</td><td>A3</td><td>390</td><td>Amadeus</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>6</td><td>Batik Air</td><td>OD</td><td>816</td><td>Sabre</td><td>Bilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td>IATCI activation/27Jan'26</td></tr>
+                        <tr><td>7</td><td>Royal Brunei Airlines</td><td>BI</td><td>672</td><td>Hitit</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
+                        <tr><td>8</td><td>Air France</td><td>AF</td><td>057</td><td>Amadeus</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>9</td><td>KLM</td><td>KL</td><td>074</td><td>Amadeus</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>10</td><td>China Southern</td><td>CZ</td><td>784</td><td>Travelsky</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>11</td><td>Air India</td><td>AI</td><td>098</td><td>Amadeus</td><td>Bilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation - 11Dec25</td></tr>
+                        <tr><td>12</td><td>ITA Airways</td><td>AZ</td><td>055</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>13</td><td>Biman Bangladesh</td><td>BG</td><td>997</td><td>Sabre</td><td>Unilateral</td><td>YES</td><td>Inbound</td><td>NO</td><td>YES</td><td>YES</td><td></td></tr>
+                        <tr><td>14</td><td>Royal Air Maroc</td><td>AT</td><td>147</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>15</td><td>British Airways</td><td>BA</td><td>125</td><td>Amadeus</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>16</td><td>Caribbean Airlines</td><td>BW</td><td>106</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>17</td><td>Condor</td><td>DE</td><td>881</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>18</td><td>Pobeda</td><td>DP</td><td>425</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>19</td><td>Egypt Air</td><td>MS</td><td>077</td><td>SITA</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline / GP stock only</td></tr>
+                        <tr><td>20</td><td>Flyadeal</td><td>F3</td><td>328</td><td>Radixx</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>21</td><td>Gulf Air</td><td>GF</td><td>072</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>22</td><td>IndiGo</td><td>6E</td><td>312</td><td>Navitaire</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>23</td><td>Kenya Airways</td><td>KQ</td><td>706</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>24</td><td>Korean Air</td><td>KE</td><td>180</td><td>Topas</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>25</td><td>Kuwait Airways</td><td>KU</td><td>229</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>26</td><td>Lion Air</td><td>JT</td><td>990</td><td>Navitaire</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>27</td><td>Maldivian</td><td>Q2</td><td>038</td><td>Hitit</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>28</td><td>Malaysia Airlines</td><td>MH</td><td>232</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>29</td><td>MEA</td><td>ME</td><td>076</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>30</td><td>Oman Air</td><td>WY</td><td>910</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>31</td><td>Pegasus</td><td>PC</td><td>624</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>32</td><td>Philippine Airlines</td><td>PR</td><td>079</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>33</td><td>Qantas</td><td>QF</td><td>081</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>34</td><td>Qatar Airways</td><td>QR</td><td>157</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>35</td><td>Saudia</td><td>SV</td><td>065</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>36</td><td>Singapore Airlines</td><td>SQ</td><td>618</td><td>Amadeus</td><td>Unilateral/Codeshare</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>37</td><td>SriLankan Airlines</td><td>UL</td><td>603</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>38</td><td>Thai Airways</td><td>TG</td><td>217</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>39</td><td>Turkish Airlines</td><td>TK</td><td>235</td><td>Troya</td><td>Unilateral</td><td>YES</td><td>Both IB/OB</td><td>YES</td><td>YES</td><td>Not Required</td><td></td></tr>
+                        <tr><td>40</td><td>Vistara</td><td>UK</td><td>228</td><td>Navitaire</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>41</td><td>Vueling</td><td>VY</td><td>030</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>42</td><td>Wizz Air</td><td>W6</td><td>537</td><td>Navitaire</td><td>Separate Ticket</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Not Interline</td></tr>
+                        <tr><td>43</td><td>Air Arabia</td><td>G9</td><td>514</td><td>Radixx</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>44</td><td>Virgin Australia</td><td>VA</td><td>795</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>45</td><td>Air Mauritius</td><td>MK</td><td>239</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>46</td><td>Cambodia Angkor Air</td><td>K6</td><td>188</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>47</td><td>Air Seychelles</td><td>HM</td><td>061</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>48</td><td>Bangkok Airways</td><td>PG</td><td>829</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>GP stock ticketing / disruption handling</td></tr>
+                        <tr><td>49</td><td>Hahn Air</td><td>HR</td><td>169</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Ticket stock only</td></tr>
+                        <tr><td>50</td><td>FlexFlight</td><td>W2</td><td>502</td><td>Amadeus</td><td>Ticketing Partner</td><td>NO</td><td>N/A</td><td>NO</td><td>NO</td><td>NO</td><td>Ticket stock only</td></tr>
+                        <tr><td>51</td><td>Air Astana</td><td>KC</td><td>465</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>52</td><td>S7 Airlines</td><td>S7</td><td>421</td><td>SITA</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>53</td><td>Royal Jordanian</td><td>RJ</td><td>512</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>54</td><td>Drukair</td><td>KB</td><td>699</td><td>Amadeus</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                        <tr><td>55</td><td>Bamboo Airways</td><td>QH</td><td>986</td><td>Sabre</td><td>Unilateral</td><td>NO</td><td>N/A</td><td>NO</td><td>YES</td><td>YES</td><td>IET Activation -11Dec 25</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
