@@ -1095,33 +1095,7 @@ function initialiseCurrencyConverter() {
     });
 }
 
-    prepareCurrencyInput(from);
-    prepareCurrencyInput(to);
-
-    amountInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            convertCurrencyPayport();
-        }
-    });
-
-    dateInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            convertCurrencyPayport();
-        }
-    });
-
-    swapBtn.onclick = function () {
-        const tmp = from.value;
-        from.value = to.value;
-        to.value = tmp;
-        convertCurrencyPayport();
-    };
-
-    convertBtn.onclick = convertCurrencyPayport;
-}
-
+   
 async function convertCurrencyPayport() {
     try {
         const amountEl = document.getElementById("currencyAmount");
