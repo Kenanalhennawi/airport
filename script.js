@@ -1307,8 +1307,8 @@ async function convertCurrencyPayport(){
                 year:"numeric"
             }).replace(/ /g,"-");
 
-        const url =
-    "https://payport-proxy.onrender.com/api/convert" +
+       const url =
+    "https://payport-proxy.dominater988.workers.dev/api/convert" +
     "?amount=" + encodeURIComponent(amount) +
     "&from=" + encodeURIComponent(from) +
     "&to=" + encodeURIComponent(to) +
