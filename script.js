@@ -1034,6 +1034,53 @@ function initialiseCurrencyConverter() {
         String(today.getMonth() + 1).padStart(2, "0") + "-" +
         String(today.getDate()).padStart(2, "0");
 
+    function prepareCurrencyInput(input) {
+        input.addEventListener("focus", function () {
+            setTimeout(function () {
+                input.select();
+            }, 0);
+        });
+
+        input.addEventListener("click", function () {
+            setTimeout(function () {
+                input.select();
+            }, 0);
+        });
+
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                convertCurrencyPayport();
+                return;
+            }
+
+            if (
+                input.selectionStart === 0 &&
+                input.selectionEnd === input.value.length &&
+                e.key.length === 1
+            ) {
+                input.value = "";
+            }
+        });
+    }
+
+    prepareCurrencyInput(from);
+    prepareCurrencyInput(to);
+
+    amountInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            convertCurrencyPayport();
+        }
+    });
+
+    dateInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            convertCurrencyPayport();
+        }
+    });
+
     swapBtn.onclick = function () {
         const tmp = from.value;
         from.value = to.value;
@@ -1042,15 +1089,6 @@ function initialiseCurrencyConverter() {
     };
 
     convertBtn.onclick = convertCurrencyPayport;
-
-    [amountInput, from, to, dateInput].forEach(function (el) {
-        el.onkeydown = function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                convertCurrencyPayport();
-            }
-        };
-    });
 }
 
 async function convertCurrencyPayport() {
