@@ -627,24 +627,52 @@ function filterCarriers(query) {
 
     for (let i = 0; i < tbody.rows.length; i++) {
         const row = tbody.rows[i];
+
         const carrier = (row.cells[1] && row.cells[1].textContent) || '';
         const code = (row.cells[2] && row.cells[2].textContent) || '';
         const host = (row.cells[4] && row.cells[4].textContent) || '';
-        const iatci = (row.cells[6] && row.cells[6].textContent || '').trim().toUpperCase();
-        const bag = (row.cells[9] && row.cells[9].textContent || '').trim().toUpperCase();
+        const type = (row.cells[5] && row.cells[5].textContent) || '';
+        const iatci = ((row.cells[6] && row.cells[6].textContent) || '').trim().toUpperCase();
+        const iatciType = (row.cells[7] && row.cells[7].textContent) || '';
+        const bp = (row.cells[8] && row.cells[8].textContent) || '';
+        const bag = ((row.cells[9] && row.cells[9].textContent) || '').trim().toUpperCase();
+        const transfer = (row.cells[10] && row.cells[10].textContent) || '';
+        const remarks = (row.cells[11] && row.cells[11].textContent) || '';
+
+        const searchableText = [
+            carrier,
+            code,
+            host,
+            type,
+            iatci,
+            iatciType,
+            bp,
+            bag,
+            transfer,
+            remarks
+        ].join(' ').toLowerCase();
 
         const searchMatch =
             !q ||
-            carrier.toLowerCase().includes(q) ||
-            code.toLowerCase().includes(q) ||
-            host.toLowerCase().includes(q);
+            searchableText.includes(q);
 
         let filterMatch = true;
 
-        if (carrierFilterMode === 'iatci') filterMatch = iatci === 'YES';
-        else if (carrierFilterMode === 'iet') filterMatch = bag === 'YES';
+        if (carrierFilterMode === 'iatci') {
+            filterMatch = iatci === 'YES';
+        } else if (carrierFilterMode === 'iet') {
+            filterMatch = bag === 'YES';
+        }
 
-        row.style.display = (searchMatch && filterMatch) ? '' : 'none';
+        const finalMatch = searchMatch && filterMatch;
+
+        row.style.display = finalMatch ? '' : 'none';
+
+        if (finalMatch && q) {
+            row.classList.add('carrier-search-match');
+        } else {
+            row.classList.remove('carrier-search-match');
+        }
     }
 }
 
