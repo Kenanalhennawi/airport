@@ -597,22 +597,14 @@ footer strong { color: var(--fz-orange); }
 
 /* === CURRENCY PANEL === */
 .currency-panel {
-    background: var(--glass-bg);
+    max-width: 900px;
+    margin: 20px auto;
+    background: rgba(255,255,255,.95);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
     border-left: 5px solid #16a34a;
-}
-
-
-.currency-panel{
-    max-width:900px;
-    margin:20px auto;
-    background:rgba(255,255,255,.95);
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
 
 .currency-header{
