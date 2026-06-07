@@ -1008,18 +1008,20 @@ const payportCurrencies = [
 function initialiseCurrencyConverter() {
     const from = document.getElementById("currencyFrom");
     const to = document.getElementById("currencyTo");
+    const dataList = document.getElementById("currencyList");
     const dateInput = document.getElementById("currencyDate");
     const swapBtn = document.getElementById("currencySwapBtn");
     const convertBtn = document.getElementById("currencyConvertBtn");
+    const amountInput = document.getElementById("currencyAmount");
 
-    if (!from || !to || !dateInput || !swapBtn || !convertBtn) return;
+    if (!from || !to || !dataList || !dateInput || !swapBtn || !convertBtn || !amountInput) return;
 
-    from.innerHTML = "";
-    to.innerHTML = "";
+    dataList.innerHTML = "";
 
     payportCurrencies.forEach(function (currency) {
-        from.add(new Option(currency, currency));
-        to.add(new Option(currency, currency));
+        const option = document.createElement("option");
+        option.value = currency;
+        dataList.appendChild(option);
     });
 
     from.value = "United States Dollar (USD)";
@@ -1027,12 +1029,10 @@ function initialiseCurrencyConverter() {
 
     const today = new Date();
 
-    const dateString =
+    dateInput.value =
         today.getFullYear() + "-" +
         String(today.getMonth() + 1).padStart(2, "0") + "-" +
         String(today.getDate()).padStart(2, "0");
-
-    dateInput.value = dateString;
 
     swapBtn.onclick = function () {
         const tmp = from.value;
@@ -1042,6 +1042,15 @@ function initialiseCurrencyConverter() {
     };
 
     convertBtn.onclick = convertCurrencyPayport;
+
+    [amountInput, from, to, dateInput].forEach(function (el) {
+        el.onkeydown = function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                convertCurrencyPayport();
+            }
+        };
+    });
 }
 
 async function convertCurrencyPayport() {
