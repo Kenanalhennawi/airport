@@ -8,11 +8,12 @@ const searchInput = document.getElementById('searchInput');
 const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
+
 const PAYPORT_PROXY_URL =
     "https://payport-proxy.dominater988.workers.dev/api/convert";
 
-const PAYPORT_PROXY_VERSION = "1.0";
-// === MASTER COUNTRY LIST (FlagCDN ISO codes) ===
+const PAYPORT_PROXY_VERSION = "1.1";
+
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
     "Kuwait": "kw", "Oman": "om", "Qatar": "qa", "Jordan": "jo", "Lebanon": "lb",
@@ -314,21 +315,6 @@ function getLocalTime(timezone) {
         return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM');
     } catch (e) {
         return '--:--';
-    }
-}
-
-function getTimezoneAbbr(timezone) {
-    try {
-        var parts = new Intl.DateTimeFormat('en-GB', {
-            timeZone: timezone,
-            timeZoneName: 'short'
-        }).formatToParts(new Date());
-
-        var tz = parts.find(function (p) { return p.type === 'timeZoneName'; });
-
-        return tz ? tz.value : '';
-    } catch (e) {
-        return '';
     }
 }
 
@@ -751,6 +737,8 @@ function switchView(view) {
 
         if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
         if (clearBtn) clearBtn.classList.add('hidden');
+
+        convertCurrencyPayport();
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -960,9 +948,192 @@ function openModal(data) {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+const payportCurrencies = [
+    "Afghanistan Afghani (AFN)",
+    "Australian Dollar (AUD)",
+    "Azerbaijan Manat (AZN)",
+    "Bahraini Dinar (BHD)",
+    "Bangladesh Taka (BDT)",
+    "Belarusian Ruble (BYN)",
+    "Canadian Dollar (CAD)",
+    "Caribbean Guilder (XCG)",
+    "Czech Koruna (CZK)",
+    "Danish Krone (DKK)",
+    "Djibouti Franc (DJF)",
+    "Egyptian Pound (EGP)",
+    "Eritrean Nakfa (ERN)",
+    "Ethiopian Birr (ETB)",
+    "Euro (EUR)",
+    "Fiji Dollar (FJD)",
+    "Hong Kong Dollar (HKD)",
+    "Hungarian Forint (HUF)",
+    "Indian Rupee (INR)",
+    "Indonesian Rupiah (IDR)",
+    "Iranian Rial (IRR)",
+    "Jordanian Dinar (JOD)",
+    "Kazakhstan Tenge (KZT)",
+    "Kenyan Shilling (KES)",
+    "Kuwaiti Dinar (KWD)",
+    "Libyan Dinar (LYD)",
+    "Malaysian Ringgit (MYR)",
+    "Nepalese Rupee (NPR)",
+    "New Israeli Sheqel (ILS)",
+    "New Zealand Dollar (NZD)",
+    "Norwegian Krone (NOK)",
+    "Omani Rial (OMR)",
+    "Pakistan Rupee (PKR)",
+    "Polish Zloty (PLN)",
+    "Qatari Rial (QAR)",
+    "Russian Ruble (RUB)",
+    "Saudi Riyal (SAR)",
+    "Serbian Dinar (RSD)",
+    "Singapore Dollar (SGD)",
+    "South Sudanese Pound (SSP)",
+    "Sri Lanka Rupee (LKR)",
+    "Sudanese Pound (SDG)",
+    "Swedish Krona (SEK)",
+    "Swiss Franc (CHF)",
+    "Syrian Pound (SYP)",
+    "Tanzanian Shilling (TZS)",
+    "Thai Baht (THB)",
+    "Turkish Yeni Lira (TRY)",
+    "UK Pound Sterling (GBP)",
+    "Ukraine Hryvnia (UAH)",
+    "United Arab Emirates Dirham (AED)",
+    "United States Dollar (USD)",
+    "Uzbekistan Sum (UZS)",
+    "Zimbabwe's ZWG (ZWG)"
+];
+
+function initialiseCurrencyConverter() {
+    const from = document.getElementById("currencyFrom");
+    const to = document.getElementById("currencyTo");
+    const dateInput = document.getElementById("currencyDate");
+    const swapBtn = document.getElementById("currencySwapBtn");
+    const convertBtn = document.getElementById("currencyConvertBtn");
+
+    if (!from || !to || !dateInput || !swapBtn || !convertBtn) return;
+
+    from.innerHTML = "";
+    to.innerHTML = "";
+
+    payportCurrencies.forEach(function (currency) {
+        from.add(new Option(currency, currency));
+        to.add(new Option(currency, currency));
+    });
+
+    from.value = "United States Dollar (USD)";
+    to.value = "United Arab Emirates Dirham (AED)";
+
+    const today = new Date();
+
+    const dateString =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+
+    dateInput.value = dateString;
+
+    swapBtn.onclick = function () {
+        const tmp = from.value;
+        from.value = to.value;
+        to.value = tmp;
+        convertCurrencyPayport();
+    };
+
+    convertBtn.onclick = convertCurrencyPayport;
+}
+
+async function convertCurrencyPayport() {
+    try {
+        const amountEl = document.getElementById("currencyAmount");
+        const fromEl = document.getElementById("currencyFrom");
+        const toEl = document.getElementById("currencyTo");
+        const dateEl = document.getElementById("currencyDate");
+        const resultEl = document.getElementById("currencyResult");
+        const rateEl = document.getElementById("currencyRate");
+
+        if (!amountEl || !fromEl || !toEl || !dateEl || !resultEl || !rateEl) return;
+
+        const amount = amountEl.value.trim();
+        const from = fromEl.value;
+        const to = toEl.value;
+        const selectedDate = dateEl.value;
+
+        if (!amount || Number(amount) <= 0) {
+            resultEl.textContent = "Enter Amount";
+            rateEl.textContent = "";
+            return;
+        }
+
+        if (!selectedDate) {
+            resultEl.textContent = "Select Date";
+            rateEl.textContent = "";
+            return;
+        }
+
+        resultEl.textContent = "Loading...";
+        rateEl.textContent = "";
+
+        const d = new Date(selectedDate);
+
+        const period = d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, "-");
+
+        const url =
+            PAYPORT_PROXY_URL +
+            "?amount=" + encodeURIComponent(amount) +
+            "&from=" + encodeURIComponent(from) +
+            "&to=" + encodeURIComponent(to) +
+            "&period=" + encodeURIComponent(period);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Unable to reach PayPort service");
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.message || "PayPort returned an error");
+        }
+
+        const result =
+            data.targetValue ||
+            data.TargetValue ||
+            (data.raw && data.raw.TargetValue) ||
+            "N/A";
+
+        const rate =
+            data.rate ||
+            (data.raw && data.raw.rate) ||
+            "N/A";
+
+        const targetCode =
+            (to.match(/\(([A-Z]{3})\)/) || [])[1] || "";
+
+        resultEl.textContent = result + " " + targetCode;
+        rateEl.textContent = "Rate: " + rate;
+
+    } catch (error) {
+        const resultEl = document.getElementById("currencyResult");
+        const rateEl = document.getElementById("currencyRate");
+
+        if (resultEl) resultEl.textContent = "Live Rate Unavailable";
+        if (rateEl) rateEl.textContent = "Please try again later";
+
+        console.error("PayPort Error:", error);
+    }
+}
+
 function init() {
     updateLiveClock();
     populateInterlineTable();
+    initialiseCurrencyConverter();
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -1194,176 +1365,3 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
-const payportCurrencies = [
-"Afghanistan Afghani (AFN)",
-    "Australian Dollar (AUD)",
-    "Azerbaijan Manat (AZN)",
-    "Bahraini Dinar (BHD)",
-    "Bangladesh Taka (BDT)",
-    "Belarusian Ruble (BYN)",
-    "Canadian Dollar (CAD)",
-    "Caribbean Guilder (XCG)",
-    "Czech Koruna (CZK)",
-    "Danish Krone (DKK)",
-    "Djibouti Franc (DJF)",
-    "Egyptian Pound (EGP)",
-    "Eritrean Nakfa (ERN)",
-    "Ethiopian Birr (ETB)",
-    "Euro (EUR)",
-    "Fiji Dollar (FJD)",
-    "Hong Kong Dollar (HKD)",
-    "Hungarian Forint (HUF)",
-    "Indian Rupee (INR)",
-    "Indonesian Rupiah (IDR)",
-    "Iranian Rial (IRR)",
-    "Jordanian Dinar (JOD)",
-    "Kazakhstan Tenge (KZT)",
-    "Kenyan Shilling (KES)",
-    "Kuwaiti Dinar (KWD)",
-    "Libyan Dinar (LYD)",
-    "Malaysian Ringgit (MYR)",
-    "Nepalese Rupee (NPR)",
-    "New Israeli Sheqel (ILS)",
-    "New Zealand Dollar (NZD)",
-    "Norwegian Krone (NOK)",
-    "Omani Rial (OMR)",
-    "Pakistan Rupee (PKR)",
-    "Polish Zloty (PLN)",
-    "Qatari Rial (QAR)",
-    "Russian Ruble (RUB)",
-    "Saudi Riyal (SAR)",
-    "Serbian Dinar (RSD)",
-    "Singapore Dollar (SGD)",
-    "South Sudanese Pound (SSP)",
-    "Sri Lanka Rupee (LKR)",
-    "Sudanese Pound (SDG)",
-    "Swedish Krona (SEK)",
-    "Swiss Franc (CHF)",
-    "Syrian Pound (SYP)",
-    "Tanzanian Shilling (TZS)",
-    "Thai Baht (THB)",
-    "Turkish Yeni Lira (TRY)",
-    "UK Pound Sterling (GBP)",
-    "Ukraine Hryvnia (UAH)",
-    "United Arab Emirates Dirham (AED)",
-    "United States Dollar (USD)",
-    "Uzbekistan Sum (UZS)",
-    "Zimbabwe's ZWG (ZWG)"
-];
-
-function initialiseCurrencyConverter(){
-
-    const from = document.getElementById("currencyFrom");
-    const to = document.getElementById("currencyTo");
-
-    if(!from || !to) return;
-
-    from.innerHTML = "";
-    to.innerHTML = "";
-
-    payportCurrencies.forEach(currency=>{
-        from.add(new Option(currency,currency));
-        to.add(new Option(currency,currency));
-    });
-
-    from.value = "United States Dollar (USD)";
-    to.value = "United Arab Emirates Dirham (AED)";
-
-    const today = new Date();
-
-    const dateString =
-        today.getFullYear() + "-" +
-        String(today.getMonth()+1).padStart(2,"0") + "-" +
-        String(today.getDate()).padStart(2,"0");
-
-    document.getElementById("currencyDate").value = dateString;
-
-    document.getElementById("currencySwapBtn").addEventListener("click",()=>{
-        const tmp = from.value;
-        from.value = to.value;
-        to.value = tmp;
-    });
-
-    document.getElementById("currencyConvertBtn")
-        .addEventListener("click",convertCurrencyPayport);
-    setTimeout(() => {
-    convertCurrencyPayport();
-}, 300);
-}
-
-async function convertCurrencyPayport() {
-    try {
-        const amount = document.getElementById("currencyAmount").value.trim();
-        const from = document.getElementById("currencyFrom").value;
-        const to = document.getElementById("currencyTo").value;
-        const selectedDate = document.getElementById("currencyDate").value;
-
-        if (!amount || Number(amount) <= 0) {
-            document.getElementById("currencyResult").textContent = "Enter Amount";
-            document.getElementById("currencyRate").textContent = "";
-            return;
-        }
-
-        if (!selectedDate) {
-            document.getElementById("currencyResult").textContent = "Select Date";
-            document.getElementById("currencyRate").textContent = "";
-            return;
-        }
-
-        const d = new Date(selectedDate);
-
-        const period = d.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, "-");
-
-        const url =
-            PAYPORT_PROXY_URL +
-            "?amount=" + encodeURIComponent(amount) +
-            "&from=" + encodeURIComponent(from) +
-            "&to=" + encodeURIComponent(to) +
-            "&period=" + encodeURIComponent(period);
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error("Unable to reach PayPort service");
-        }
-
-        const data = await response.json();
-
-        const result =
-            data.targetValue ||
-            data.TargetValue ||
-            data.raw?.TargetValue ||
-            "N/A";
-
-        const rate =
-            data.rate ||
-            data.raw?.rate ||
-            "N/A";
-
-        const targetCode =
-            to.match(/\(([A-Z]{3})\)/)?.[1] || "";
-
-        document.getElementById("currencyResult").textContent =
-            result + " " + targetCode;
-
-        document.getElementById("currencyRate").textContent =
-            "Rate: " + rate;
-
-    } catch (error) {
-        document.getElementById("currencyResult").textContent =
-            "Live Rate Unavailable";
-
-        document.getElementById("currencyRate").textContent =
-            "Please try again later";
-
-        console.error("PayPort Error:", error);
-    }
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-    initialiseCurrencyConverter();
-});
