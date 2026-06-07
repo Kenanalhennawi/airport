@@ -8,7 +8,10 @@ const searchInput = document.getElementById('searchInput');
 const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
+const PAYPORT_PROXY_URL =
+    "https://payport-proxy.dominater988.workers.dev/api/convert";
 
+const PAYPORT_PROXY_VERSION = "1.0";
 // === MASTER COUNTRY LIST (FlagCDN ISO codes) ===
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -1307,13 +1310,12 @@ async function convertCurrencyPayport(){
                 year:"numeric"
             }).replace(/ /g,"-");
 
-       const url =
-    "https://payport-proxy.dominater988.workers.dev/api/convert" +
+    const url =
+    PAYPORT_PROXY_URL +
     "?amount=" + encodeURIComponent(amount) +
     "&from=" + encodeURIComponent(from) +
     "&to=" + encodeURIComponent(to) +
-    "&period=" + encodeURIComponent(period) +
-    "&_=" + Date.now();
+    "&period=" + encodeURIComponent(period);
 
 const response = await fetch(url);
 const data = await response.json();
