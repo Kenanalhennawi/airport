@@ -1258,6 +1258,9 @@ function initialiseCurrencyConverter(){
 
     if(!from || !to) return;
 
+    from.innerHTML = "";
+    to.innerHTML = "";
+
     payportCurrencies.forEach(currency=>{
         from.add(new Option(currency,currency));
         to.add(new Option(currency,currency));
