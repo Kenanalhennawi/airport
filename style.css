@@ -746,3 +746,21 @@ footer strong { color: var(--fz-orange); }
     text-align: center;
     line-height: 1.4;
 }
+.official-payport-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 14px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #005EB8;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    transition: all 0.2s ease;
+}
+
+.official-payport-link:hover {
+    background: #003d73;
+    transform: translateY(-1px);
+}
