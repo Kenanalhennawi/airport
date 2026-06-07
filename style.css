@@ -764,3 +764,32 @@ footer strong { color: var(--fz-orange); }
     background: #003d73;
     transform: translateY(-1px);
 }
+.ops-info-card {
+    margin-top: 24px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    border-left: 5px solid var(--fz-orange);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    color: #334155;
+    line-height: 1.6;
+}
+
+.ops-info-card h3 {
+    color: var(--fz-blue);
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+}
+
+.ops-info-card p {
+    margin-bottom: 12px;
+}
+
+.ops-info-card ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.ops-info-card li {
+    margin-bottom: 10px;
+}
