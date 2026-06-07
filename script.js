@@ -1,20 +1,13 @@
 /**
  * FlyDubai Ops Guide - Production-Ready Script
- * Airport operations tool with interline data, 24h calculator, and live clocks.
+ * Airport operations tool with interline data, 24h calculator, live clocks, and PayPort currency tab.
  */
+
 const container = document.getElementById('cardsContainer');
 const searchInput = document.getElementById('searchInput');
 const clearBtn = document.getElementById('clearBtn');
 const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
-const currencyAmountInput = document.getElementById('currencyAmount');
-const currencyDateInput = document.getElementById('currencyDate');
-const fromCurrencySelect = document.getElementById('fromCurrency');
-const toCurrencySelect = document.getElementById('toCurrency');
-const currencyResultEl = document.getElementById('currencyResult');
-const currencyRateInfoEl = document.getElementById('currencyRateInfo');
-const currencyMetaEl = document.getElementById('currencyMeta');
-const swapCurrencyBtn = document.getElementById('swapCurrencyBtn');
 
 // === MASTER COUNTRY LIST (FlagCDN ISO codes) ===
 const countryCodes = {
@@ -49,7 +42,6 @@ const countryCodes = {
     "Samoa": "ws", "Tonga": "to", "Réunion": "re", "Bhutan": "bt", "Ecuador": "ec"
 };
 
-// === DD/MM/YYYY MASKED INPUT (bypasses browser regional MM/DD) ===
 function formatDateInput(el) {
     let v = el.value.replace(/[^\d]/g, '');
     if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2);
@@ -63,12 +55,15 @@ function formatTimeInput(el) {
         var digits = raw.replace(/\D/g, '').slice(0, 4);
         var ampm = raw.match(/([ap]m?)$/i);
         var suffix = ampm ? (ampm[1].toLowerCase().charAt(0) === 'p' ? ' PM' : ' AM') : '';
+
         if (digits.length === 4) digits = digits.slice(0, 2) + ':' + digits.slice(2);
         else if (digits.length === 3) digits = digits.slice(0, 1) + ':' + digits.slice(1);
         else if (digits.length === 2) digits = digits.slice(0, 1) + ':' + digits.slice(1, 2);
+
         el.value = digits + suffix;
         return;
     }
+
     let v = el.value.replace(/[^\d]/g, '');
     if (v.length >= 2) v = v.slice(0, 2) + ':' + v.slice(2);
     el.value = v.slice(0, 5);
@@ -77,37 +72,70 @@ function formatTimeInput(el) {
 function parseTimeInput(str) {
     return parseTimeFlexible(str);
 }
+
 function parseTimeFlexible(str) {
     var s = (str || '').trim();
     if (!s || s.length < 4) return null;
+
     var m12 = s.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+
     if (m12) {
         var hr = parseInt(m12[1], 10);
         var min = parseInt(m12[2], 10);
+
         if (min < 0 || min > 59) return null;
-        if ((m12[3] || '').toLowerCase() === 'pm') { if (hr !== 12) hr += 12; } else { if (hr === 12) hr = 0; }
+
+        if ((m12[3] || '').toLowerCase() === 'pm') {
+            if (hr !== 12) hr += 12;
+        } else {
+            if (hr === 12) hr = 0;
+        }
+
         if (hr < 0 || hr > 23) return null;
+
         return { hr: hr, min: min };
     }
+
     var parts = s.split(':');
+
     if (parts.length !== 2) return null;
-    var hr = parseInt(parts[0], 10);
-    var min = parseInt(parts[1], 10);
-    if (!isValidTime(hr, min)) return null;
-    return { hr: hr, min: min };
+
+    var hour = parseInt(parts[0], 10);
+    var minute = parseInt(parts[1], 10);
+
+    if (!isValidTime(hour, minute)) return null;
+
+    return { hr: hour, min: minute };
 }
+
 function formatTimeDisplay(hr, min, use12h) {
     if (use12h) {
         var h = hr === 0 ? 12 : (hr > 12 ? hr - 12 : hr);
         var suffix = hr < 12 ? ' AM' : ' PM';
         return (h < 10 ? '0' : '') + h + ':' + (min < 10 ? '0' : '') + min + suffix;
     }
+
     return (hr < 10 ? '0' : '') + hr + ':' + (min < 10 ? '0' : '') + min;
 }
 
 function isValidDate(d, m, y) {
     if (m < 1 || m > 12 || y < 1900 || y > 2100) return false;
-    const daysInMonth = [31, (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    const daysInMonth = [
+        31,
+        (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0)) ? 29 : 28,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31
+    ];
+
     return d >= 1 && d <= daysInMonth[m - 1];
 }
 
@@ -115,8 +143,6 @@ function isValidTime(hr, min) {
     return hr >= 0 && hr <= 23 && min >= 0 && min <= 59;
 }
 
-// Returns timezone offset in minutes for a specific instant.
-// Uses full date parts, so UTC+12/+13 zones and DST transition days stay accurate.
 function getTimezoneOffsetMinutes(timezone, date) {
     var fmt = new Intl.DateTimeFormat('en-GB', {
         timeZone: timezone,
@@ -146,32 +172,34 @@ function getTimezoneOffsetMinutes(timezone, date) {
     return Math.round((asUTC - date.getTime()) / 60000);
 }
 
-// Converts local airport date/time to a UTC Date.
-// Handles DST (summer/winter), half-hour zones, +12/+13 zones, and transition days via IANA timezones.
 function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
     try {
         var utcGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0));
 
-        // Iterate because the correct offset may differ around DST transition moments.
         for (var i = 0; i < 4; i++) {
             var offsetMinutes = getTimezoneOffsetMinutes(timezone, utcGuess);
             var nextGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0) - offsetMinutes * 60000);
+
             if (Math.abs(nextGuess.getTime() - utcGuess.getTime()) < 1000) break;
+
             utcGuess = nextGuess;
         }
 
         return utcGuess;
-    } catch (e) { return null; }
+    } catch (e) {
+        return null;
+    }
 }
 
-// === 24-HOUR CALCULATOR (time-only OR date+time) - uses airport's timezone ===
 function calculateTimeDifference(iata, timezone) {
     const dIn = document.getElementById('dateIn-' + iata);
     const tIn = document.getElementById('timeIn-' + iata);
     const resultEl = document.getElementById('timeResult-' + iata);
+
     if (!dIn || !tIn || !resultEl) return;
 
     var tz = timezone;
+
     if (!tz) {
         var data = (typeof window !== 'undefined' && window.airportsData) || [];
         var apt = Array.isArray(data) ? data.find(function (a) { return a.iata === iata; }) : null;
@@ -183,75 +211,122 @@ function calculateTimeDifference(iata, timezone) {
     const now = new Date();
 
     var parsed = parseTimeInput(tStr);
+
     if (!parsed) {
         var msg = (tStr.length >= 3) ? 'Invalid time' : 'Enter time (' + (use12Hour() ? 'h:MM AM/PM' : 'HH:MM') + ')';
-        resultEl.innerHTML = (dStr || tStr) ? '<span style="color:' + (tStr.length >= 3 ? '#dc2626' : '#64748b') + ';font-size:0.8rem;font-weight:' + (tStr.length >= 3 ? 'bold' : 'normal') + ';">' + msg + '</span>' : '';
+
+        resultEl.innerHTML = (dStr || tStr)
+            ? '<span style="color:' + (tStr.length >= 3 ? '#dc2626' : '#64748b') + ';font-size:0.8rem;font-weight:' + (tStr.length >= 3 ? 'bold' : 'normal') + ';">' + msg + '</span>'
+            : '';
+
         return;
     }
-    var hr = parsed.hr, min = parsed.min;
 
+    var hr = parsed.hr;
+    var min = parsed.min;
     var targetDate;
+
     if (dStr.length >= 10) {
         var parts = dStr.split('/').map(Number);
-        var d = parts[0], m = parts[1], y = parts[2];
+        var d = parts[0];
+        var m = parts[1];
+        var y = parts[2];
+
         if (!isValidDate(d, m, y)) {
             resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid date</span>';
             return;
         }
+
         targetDate = localTimeInTimezoneToUTC(y, m, d, hr, min, tz);
     } else {
-        var pt = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(now);
-        var y = parseInt(pt.find(function (p) { return p.type === 'year'; }).value, 10);
-        var m = parseInt(pt.find(function (p) { return p.type === 'month'; }).value, 10);
-        var d = parseInt(pt.find(function (p) { return p.type === 'day'; }).value, 10);
-        targetDate = localTimeInTimezoneToUTC(y, m, d, hr, min, tz);
+        var pt = new Intl.DateTimeFormat('en-CA', {
+            timeZone: tz,
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+        }).formatToParts(now);
+
+        var currentYear = parseInt(pt.find(function (p) { return p.type === 'year'; }).value, 10);
+        var currentMonth = parseInt(pt.find(function (p) { return p.type === 'month'; }).value, 10);
+        var currentDay = parseInt(pt.find(function (p) { return p.type === 'day'; }).value, 10);
+
+        targetDate = localTimeInTimezoneToUTC(currentYear, currentMonth, currentDay, hr, min, tz);
     }
+
     if (!targetDate) {
         resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid timezone</span>';
         return;
     }
 
     const absDiff = Math.abs(targetDate - now);
-    const totalMs = absDiff;
-    const days = Math.floor(totalMs / 86400000);
-    const hours = Math.floor((totalMs % 86400000) / 3600000);
-    const minutes = Math.floor((totalMs % 3600000) / 60000);
+    const days = Math.floor(absDiff / 86400000);
+    const hours = Math.floor((absDiff % 86400000) / 3600000);
+    const minutes = Math.floor((absDiff % 3600000) / 60000);
     const status = (targetDate - now) > 0 ? 'remaining' : 'passed';
     const color = (targetDate - now) > 0 ? '#16a34a' : '#dc2626';
 
-    var parts = [];
-    if (days > 0) parts.push(days + ' day' + (days !== 1 ? 's' : ''));
-    parts.push(hours + 'h');
-    parts.push(minutes + 'm');
-    const display = parts.join(' ') + ' ' + status;
+    var outputParts = [];
+
+    if (days > 0) outputParts.push(days + ' day' + (days !== 1 ? 's' : ''));
+
+    outputParts.push(hours + 'h');
+    outputParts.push(minutes + 'm');
+
+    const display = outputParts.join(' ') + ' ' + status;
 
     resultEl.innerHTML = '<span style="color:' + color + ';font-weight:bold;display:block;margin-top:5px;">' + display + '</span>';
 }
 
-// === TIME FORMAT PREFERENCE (12h / 24h) ===
 function getTimeFormatPreference() {
-    try { return (localStorage.getItem('timeFormat') || '24'); } catch (e) { return '24'; }
+    try {
+        return localStorage.getItem('timeFormat') || '24';
+    } catch (e) {
+        return '24';
+    }
 }
-function setTimeFormatPreference(val) {
-    try { localStorage.setItem('timeFormat', val === '12' ? '12' : '24'); } catch (e) {}
-}
-function use12Hour() { return getTimeFormatPreference() === '12'; }
-function getTimePlaceholder() { return use12Hour() ? 'h:MM AM/PM' : 'HH:MM'; }
 
-// === HELPER FUNCTIONS (DST handled via IANA timezones) ===
+function setTimeFormatPreference(val) {
+    try {
+        localStorage.setItem('timeFormat', val === '12' ? '12' : '24');
+    } catch (e) {}
+}
+
+function use12Hour() {
+    return getTimeFormatPreference() === '12';
+}
+
+function getTimePlaceholder() {
+    return use12Hour() ? 'h:MM AM/PM' : 'HH:MM';
+}
+
 function getLocalTime(timezone) {
     try {
-        var s = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: use12Hour() }).format(new Date());
+        var s = new Intl.DateTimeFormat('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: timezone,
+            hour12: use12Hour()
+        }).format(new Date());
+
         return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM');
-    } catch (e) { return '--:--'; }
+    } catch (e) {
+        return '--:--';
+    }
 }
 
 function getTimezoneAbbr(timezone) {
     try {
-        var parts = new Intl.DateTimeFormat('en-GB', { timeZone: timezone, timeZoneName: 'short' }).formatToParts(new Date());
+        var parts = new Intl.DateTimeFormat('en-GB', {
+            timeZone: timezone,
+            timeZoneName: 'short'
+        }).formatToParts(new Date());
+
         var tz = parts.find(function (p) { return p.type === 'timeZoneName'; });
+
         return tz ? tz.value : '';
-    } catch (e) { return ''; }
+    } catch (e) {
+        return '';
+    }
 }
 
 function getFlagUrl(countryName) {
@@ -278,8 +353,10 @@ function formatTimeDiffDisplay(diffMinutes) {
     var abs = Math.abs(diffMinutes);
     var h = Math.floor(abs / 60);
     var m = abs % 60;
+
     if (m === 0) return sign + h + 'h';
     if (h === 0) return sign + m + 'm';
+
     return sign + h + 'h ' + m + 'm';
 }
 
@@ -289,59 +366,91 @@ function getTimeDiffHTML(timezone) {
         var diffMinutes = getTimezoneOffsetMinutes(timezone, now) - getTimezoneOffsetMinutes('Asia/Dubai', now);
 
         if (diffMinutes === 0) return '<span class="time-diff diff-same">(Same Time)</span>';
+
         var txt = formatTimeDiffDisplay(diffMinutes) + ' vs DXB';
-        return diffMinutes > 0 ? '<span class="time-diff diff-plus">(' + txt + ')</span>' : '<span class="time-diff diff-minus">(' + txt + ')</span>';
-    } catch (e) { return ''; }
+
+        return diffMinutes > 0
+            ? '<span class="time-diff diff-plus">(' + txt + ')</span>'
+            : '<span class="time-diff diff-minus">(' + txt + ')</span>';
+    } catch (e) {
+        return '';
+    }
 }
 
 function getDayNightIcon(timezone) {
     try {
-        const hour = parseInt(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: timezone }).format(new Date()));
-        return (hour >= 6 && hour < 18) ? '<i data-lucide="sun" class="icon-sun"></i>' : '<i data-lucide="moon" class="icon-moon"></i>';
-    } catch (e) { return ''; }
+        const hour = parseInt(new Intl.DateTimeFormat('en-GB', {
+            hour: 'numeric',
+            hour12: false,
+            timeZone: timezone
+        }).format(new Date()));
+
+        return (hour >= 6 && hour < 18)
+            ? '<i data-lucide="sun" class="icon-sun"></i>'
+            : '<i data-lucide="moon" class="icon-moon"></i>';
+    } catch (e) {
+        return '';
+    }
 }
 
 function updateLiveClock() {
     const now = new Date();
     const utcEl = document.getElementById('utcTime');
     const dxbEl = document.getElementById('dxbTime');
-    var opts = { hour12: use12Hour(), hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
+    var opts = {
+        hour12: use12Hour(),
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+
     var fmt = function (tz) {
         var s = now.toLocaleTimeString('en-GB', Object.assign({ timeZone: tz }, opts));
         return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM');
     };
+
     if (utcEl) utcEl.textContent = fmt('UTC');
     if (dxbEl) dxbEl.textContent = fmt('Asia/Dubai');
 }
 
-// === INTERLINE: Populate from hidden carrier source (55 carriers) ===
 function populateInterlineTable() {
     const carrierModal = document.getElementById('carrierModal');
     const carrierTableBody = document.getElementById('carrierTableBody');
     const modalTable = carrierModal && carrierModal.querySelector('.carrier-table');
+
     if (!modalTable || !modalTable.tBodies[0] || !carrierTableBody) return;
 
     carrierTableBody.innerHTML = '';
-    const rows = Array.from(modalTable.tBodies[0].rows).map(r => r.cloneNode(true));
+
+    const rows = Array.from(modalTable.tBodies[0].rows).map(function (r) {
+        return r.cloneNode(true);
+    });
+
     const seen = new Set();
-    const unique = rows.filter(r => {
+
+    const unique = rows.filter(function (r) {
         const code = (r.cells[2] && r.cells[2].textContent || '').trim();
+
         if (!code || seen.has(code)) return false;
+
         seen.add(code);
         return true;
     });
-    unique.sort((a, b) => {
+
+    unique.sort(function (a, b) {
         const nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
         const nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
+
         return nameA.localeCompare(nameB);
     });
-    unique.forEach((row, i) => {
+
+    unique.forEach(function (row, i) {
         if (row.cells[0]) row.cells[0].textContent = i + 1;
         carrierTableBody.appendChild(row);
     });
 }
 
-// === DELAY POLICY (D-6 flight delay notification) ===
 var delayPolicyData = [
     { airports: 'ALA', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
     { airports: 'IST', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
@@ -390,16 +499,13 @@ var delayPolicyData = [
     { airports: 'BJV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
     { airports: 'All Other', std03: '√', etd03: 'X', closure90: 'X', closure30: '√', closureTime: 'ETD-60' }
 ];
-function formatMark(value) {
-    if (value === '√') {
-        return '<span class="delay-yes">√</span>';
-    }
 
+function formatMark(value) {
+    if (value === '√') return '<span class="delay-yes">√</span>';
     return '<span class="delay-no">X</span>';
 }
 
 function populateDelayPolicyTable() {
-
     var tbody = document.getElementById('delayPolicyBody');
 
     if (!tbody) return;
@@ -407,7 +513,6 @@ function populateDelayPolicyTable() {
     tbody.innerHTML = '';
 
     delayPolicyData.forEach(function (r) {
-
         var tr = document.createElement('tr');
 
         tr.dataset.airports = r.airports.toLowerCase();
@@ -415,10 +520,7 @@ function populateDelayPolicyTable() {
         var isStd = r.closureTime.indexOf('STD') >= 0;
 
         tr.dataset.closureType = isStd ? 'std' : 'etd';
-
-        tr.classList.add(
-            'delay-row-' + (isStd ? 'std' : 'etd')
-        );
+        tr.classList.add('delay-row-' + (isStd ? 'std' : 'etd'));
 
         var closureBadge =
             '<span class="closure-badge closure-' +
@@ -433,9 +535,7 @@ function populateDelayPolicyTable() {
             '<td>' + formatMark(r.etd03) + '</td>' +
             '<td>' + formatMark(r.closure90) + '</td>' +
             '<td>' + formatMark(r.closure30) + '</td>' +
-            '<td class="closure-cell">' +
-            closureBadge +
-            '</td>';
+            '<td class="closure-cell">' + closureBadge + '</td>';
 
         tbody.appendChild(tr);
     });
@@ -446,49 +546,79 @@ function populateDelayPolicyTable() {
             : ''
     );
 }
+
 function filterDelayPolicy(query) {
     var tbody = document.getElementById('delayPolicyBody');
+
     if (!tbody) return;
+
     var q = (query || '').trim().toLowerCase();
     var allOtherRow = null;
     var hasMatch = false;
     var matchedRows = [];
+
     for (var i = 0; i < tbody.rows.length; i++) {
         var row = tbody.rows[i];
         var airports = (row.dataset.airports || '').toLowerCase();
         var isAllOther = airports.indexOf('all other') >= 0;
+
         if (isAllOther) allOtherRow = row;
-        var match = !q || airports.indexOf(q) >= 0 || airports.split('/').some(function (a) { return a.trim().indexOf(q) >= 0; });
-        if (match) { hasMatch = true; if (q && !isAllOther) matchedRows.push(row); }
+
+        var match =
+            !q ||
+            airports.indexOf(q) >= 0 ||
+            airports.split('/').some(function (a) {
+                return a.trim().indexOf(q) >= 0;
+            });
+
+        if (match) {
+            hasMatch = true;
+            if (q && !isAllOther) matchedRows.push(row);
+        }
+
         row.style.display = match ? '' : 'none';
         row.classList.remove('delay-result-highlight', 'delay-all-other', 'delay-row-std', 'delay-row-etd');
+
         if (match && q) {
             row.classList.add('delay-result-highlight');
+
             var ct = row.dataset.closureType || '';
+
             if (ct === 'std') row.classList.add('delay-row-std');
             else row.classList.add('delay-row-etd');
         }
     }
+
     var hintEl = document.getElementById('delaySearchHint');
     var summaryEl = document.getElementById('delayResultSummary');
+
     if (q && allOtherRow && !hasMatch) {
         allOtherRow.style.display = '';
         allOtherRow.classList.add('delay-result-highlight', 'delay-all-other', 'delay-row-etd');
-        if (hintEl) { hintEl.textContent = 'Airport not in list — applies: All Other'; hintEl.classList.remove('hidden'); }
+
+        if (hintEl) {
+            hintEl.textContent = 'Airport not in list — applies: All Other';
+            hintEl.classList.remove('hidden');
+        }
+
         if (summaryEl) {
             summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>All Other</strong> — <span class="closure-badge closure-etd">ETD-60</span> (ETD-based)';
             summaryEl.classList.remove('hidden');
         }
     } else {
         if (hintEl) hintEl.classList.add('hidden');
+
         if (summaryEl) {
             if (q && matchedRows.length > 0) {
                 var first = matchedRows[0];
                 var apt = first.cells[0] ? first.cells[0].textContent.trim() : '';
                 var closure = first.cells[5] ? first.cells[5].innerHTML : '';
                 var type = first.dataset.closureType === 'std' ? 'STD-based' : 'ETD-based';
+
                 summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>' + apt + '</strong> — ' + closure + ' (' + type + ')';
+
                 if (matchedRows.length > 1) summaryEl.innerHTML += ' <small>+' + (matchedRows.length - 1) + ' more</small>';
+
                 summaryEl.classList.remove('hidden');
             } else {
                 summaryEl.classList.add('hidden');
@@ -498,10 +628,14 @@ function filterDelayPolicy(query) {
 }
 
 let carrierFilterMode = 'all';
+
 function filterCarriers(query) {
     const tbody = document.getElementById('carrierTableBody');
+
     if (!tbody) return;
+
     const q = (query || '').trim().toLowerCase();
+
     for (let i = 0; i < tbody.rows.length; i++) {
         const row = tbody.rows[i];
         const carrier = (row.cells[1] && row.cells[1].textContent) || '';
@@ -509,70 +643,126 @@ function filterCarriers(query) {
         const host = (row.cells[4] && row.cells[4].textContent) || '';
         const iatci = (row.cells[6] && row.cells[6].textContent || '').trim().toUpperCase();
         const bag = (row.cells[9] && row.cells[9].textContent || '').trim().toUpperCase();
-        const searchMatch = !q || carrier.toLowerCase().includes(q) || code.toLowerCase().includes(q) || host.toLowerCase().includes(q);
+
+        const searchMatch =
+            !q ||
+            carrier.toLowerCase().includes(q) ||
+            code.toLowerCase().includes(q) ||
+            host.toLowerCase().includes(q);
+
         let filterMatch = true;
+
         if (carrierFilterMode === 'iatci') filterMatch = iatci === 'YES';
         else if (carrierFilterMode === 'iet') filterMatch = bag === 'YES';
+
         row.style.display = (searchMatch && filterMatch) ? '' : 'none';
     }
 }
 
-// === VIEW SWITCHING ===
 let currentView = 'airports';
+
 function switchView(view) {
     currentView = view;
+
     const airportsPanel = document.getElementById('airportsView');
     const interlinePanel = document.getElementById('interlineView');
     const delayPanel = document.getElementById('delayPolicyView');
     const currencyPanel = document.getElementById('currencyView');
+
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
     const tabCurrency = document.getElementById('tabCurrency');
+
     const containerEl = document.querySelector('.container');
+
     if (!airportsPanel || !interlinePanel) return;
 
-    if (containerEl) containerEl.classList.toggle('interline-active', view === 'interline' || view === 'delay');
+    if (containerEl) {
+        containerEl.classList.toggle('interline-active', view === 'interline' || view === 'delay' || view === 'currency');
+    }
 
-    [airportsPanel, interlinePanel, delayPanel, currencyPanel].forEach(function (p) { if (p) p.classList.remove('active'); });
-    [tabAirports, tabInterline, tabDelay, tabCurrency].forEach(function (t) { if (t) { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); } });
+    [airportsPanel, interlinePanel, delayPanel, currencyPanel].forEach(function (p) {
+        if (p) p.classList.remove('active');
+    });
+
+    [tabAirports, tabInterline, tabDelay, tabCurrency].forEach(function (t) {
+        if (t) {
+            t.classList.remove('active');
+            t.setAttribute('aria-pressed', 'false');
+        }
+    });
 
     if (view === 'airports') {
         airportsPanel.classList.add('active');
-        if (tabAirports) { tabAirports.classList.add('active'); tabAirports.setAttribute('aria-pressed', 'true'); }
-        if (searchInput) { searchInput.placeholder = 'Search IATA, airport, city, country, or region...'; searchInput.parentElement.style.display = ''; }
+
+        if (tabAirports) {
+            tabAirports.classList.add('active');
+            tabAirports.setAttribute('aria-pressed', 'true');
+        }
+
+        if (searchInput) {
+            searchInput.placeholder = 'Search IATA, airport, city, country, or region...';
+            searchInput.parentElement.style.display = '';
+        }
+
         renderCards(searchInput ? searchInput.value : '');
     } else if (view === 'interline') {
         interlinePanel.classList.add('active');
-        if (tabInterline) { tabInterline.classList.add('active'); tabInterline.setAttribute('aria-pressed', 'true'); }
-        if (searchInput) { searchInput.placeholder = 'Search carrier name or code...'; searchInput.parentElement.style.display = ''; }
-        if (clearBtn) { if (searchInput && searchInput.value.trim()) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
+
+        if (tabInterline) {
+            tabInterline.classList.add('active');
+            tabInterline.setAttribute('aria-pressed', 'true');
+        }
+
+        if (searchInput) {
+            searchInput.placeholder = 'Search carrier name or code...';
+            searchInput.parentElement.style.display = '';
+        }
+
+        if (clearBtn) {
+            if (searchInput && searchInput.value.trim()) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+        }
+
         filterCarriers(searchInput ? searchInput.value : '');
     } else if (view === 'delay') {
         if (delayPanel) delayPanel.classList.add('active');
-        if (tabDelay) { tabDelay.classList.add('active'); tabDelay.setAttribute('aria-pressed', 'true'); }
+
+        if (tabDelay) {
+            tabDelay.classList.add('active');
+            tabDelay.setAttribute('aria-pressed', 'true');
+        }
+
         if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
         if (clearBtn) clearBtn.classList.add('hidden');
+
         populateDelayPolicyTable();
     } else if (view === 'currency') {
         if (currencyPanel) currencyPanel.classList.add('active');
-        if (tabCurrency) { tabCurrency.classList.add('active'); tabCurrency.setAttribute('aria-pressed', 'true'); }
+
+        if (tabCurrency) {
+            tabCurrency.classList.add('active');
+            tabCurrency.setAttribute('aria-pressed', 'true');
+        }
+
         if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
         if (clearBtn) clearBtn.classList.add('hidden');
-        updateCurrencyMeta();
-        convertCurrency();
     }
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-// === RENDERING ENGINE (cards hidden until user types) ===
 function renderCards(filterText) {
     if (!container) return;
+
     const data = (typeof window !== 'undefined' && window.airportsData) || [];
     const airportsData = Array.isArray(data) ? data : [];
+
     container.innerHTML = '';
 
     const query = (filterText || '').trim();
+
     if (clearBtn) {
         if (query) clearBtn.classList.remove('hidden');
         else clearBtn.classList.add('hidden');
@@ -585,6 +775,7 @@ function renderCards(filterText) {
     }
 
     const q = query.toLowerCase();
+
     const filtered = airportsData.filter(function (a) {
         return String(a.iata || '').toLowerCase().includes(q) ||
             String(a.airport || '').toLowerCase().includes(q) ||
@@ -599,10 +790,12 @@ function renderCards(filterText) {
         return;
     }
 
-    filtered.forEach(airport => {
+    filtered.forEach(function (airport) {
         const card = document.createElement('div');
+
         card.className = 'card';
         card.dataset.iata = airport.iata;
+
         const safeIata = escapeHTML(airport.iata || '');
         const safeCity = escapeHTML(airport.city || '');
         const safeCountry = escapeHTML(airport.country || '');
@@ -615,38 +808,53 @@ function renderCards(filterText) {
 
         card.innerHTML =
             '<div class="card-clickable">' +
-            '<div class="card-header"><div><div class="iata-code">' + safeIata + '</div>' +
-            '<div class="city-name"><img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '" onerror="this.style.display=\'none\';"> <span>' + safeCity + '</span></div>' +
-            '<div class="country-name"><span class="meta-label">Country:</span> ' + safeCountry + '</div>' +
-            (safeRegion ? '<div class="region-name"><span class="meta-label">Region:</span> ' + safeRegion + '</div>' : '') +
-            (safeAirportName ? '<div class="airport-name">' + safeAirportName + '</div>' : '') +
+                '<div class="card-header">' +
+                    '<div>' +
+                        '<div class="iata-code">' + safeIata + '</div>' +
+                        '<div class="city-name">' +
+                            '<img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '" onerror="this.style.display=\'none\';">' +
+                            '<span>' + safeCity + '</span>' +
+                        '</div>' +
+                        '<div class="country-name"><span class="meta-label">Country:</span> ' + safeCountry + '</div>' +
+                        (safeRegion ? '<div class="region-name"><span class="meta-label">Region:</span> ' + safeRegion + '</div>' : '') +
+                        (safeAirportName ? '<div class="airport-name">' + safeAirportName + '</div>' : '') +
+                    '</div>' +
+                    '<div class="time-container">' +
+                        '<div class="time-badge" data-timezone="' + safeTimezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div>' +
+                        '<div>' + getTimeDiffHTML(airport.timezone) + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + safeTerminal + '</span></div>' +
+                '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + safeDistance + '</span></div>' +
             '</div>' +
-            '<div class="time-container"><div class="time-badge" data-timezone="' + safeTimezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div><div>' + getTimeDiffHTML(airport.timezone) + '</div></div></div>' +
-            '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + safeTerminal + '</span></div>' +
-            '<div class="distance-preview"><i data-lucide="car" style="width:16px"></i><span>' + safeDistance + '</span></div></div>' +
             '<div class="calc-section" style="margin-top:15px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);">' +
-            '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY ' + getTimePlaceholder() + '):</label>' +
-            '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
-            '<div style="flex:1;display:flex;gap:4px;">' +
-            '<input type="text" id="dateIn-' + safeIata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
-            '<input type="date" id="datePicker-' + safeIata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
-            '<button type="button" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;margin:0;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
-            '</div>' +
-            '<input type="text" id="timeIn-' + safeIata + '" placeholder="' + getTimePlaceholder() + '" maxlength="' + (use12Hour() ? 10 : 5) + '" style="width:' + (use12Hour() ? 110 : 80) + 'px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;" class="calc-time-input">' +
-            '</div><div id="timeResult-' + safeIata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div></div>';
+                '<label style="font-size:0.7rem;font-weight:bold;color:var(--fz-blue);text-transform:uppercase;">Check Hours (DD/MM/YYYY ' + getTimePlaceholder() + '):</label>' +
+                '<div style="display:flex;gap:5px;margin-top:5px;align-items:center;">' +
+                    '<div style="flex:1;display:flex;gap:4px;">' +
+                        '<input type="text" id="dateIn-' + safeIata + '" placeholder="DD/MM/YYYY" maxlength="10" style="flex:1;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;">' +
+                        '<input type="date" id="datePicker-' + safeIata + '" title="Pick date" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">' +
+                        '<button type="button" class="cal-btn" title="Pick date" style="flex-shrink:0;width:36px;height:34px;margin:0;padding:0;border:1px solid #ddd;border-radius:5px;background:#f8fafc;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fz-blue);"><i data-lucide="calendar" style="width:18px;height:18px;"></i></button>' +
+                    '</div>' +
+                    '<input type="text" id="timeIn-' + safeIata + '" placeholder="' + getTimePlaceholder() + '" maxlength="' + (use12Hour() ? 10 : 5) + '" style="width:' + (use12Hour() ? 110 : 80) + 'px;font-size:0.8rem;padding:5px;border-radius:5px;border:1px solid #ddd;" class="calc-time-input">' +
+                '</div>' +
+                '<div id="timeResult-' + safeIata + '" style="text-align:center;font-size:0.85rem;min-height:1.5em;margin-top:5px;"></div>' +
+            '</div>';
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
         const timeIn = card.querySelector('#timeIn-' + airport.iata);
+
         const runCalc = function () {
             if (dateIn) formatDateInput(dateIn);
             if (timeIn) formatTimeInput(timeIn);
             calculateTimeDifference(airport.iata, airport.timezone);
         };
+
         if (dateIn) {
             dateIn.addEventListener('input', runCalc);
             dateIn.addEventListener('change', runCalc);
             dateIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
         }
+
         if (timeIn) {
             timeIn.addEventListener('input', runCalc);
             timeIn.addEventListener('change', runCalc);
@@ -655,19 +863,27 @@ function renderCards(filterText) {
 
         var datePicker = card.querySelector('#datePicker-' + airport.iata);
         var calBtn = datePicker && datePicker.nextElementSibling;
+
         if (datePicker && calBtn) {
             calBtn.onclick = function (e) {
                 e.stopPropagation();
+
                 try {
                     if (datePicker.showPicker) datePicker.showPicker();
                     else datePicker.click();
-                } catch (err) { datePicker.click(); }
+                } catch (err) {
+                    datePicker.click();
+                }
             };
+
             datePicker.addEventListener('change', function () {
                 var v = datePicker.value;
+
                 if (v) {
                     var p = v.split('-');
+
                     dateIn.value = p[2] + '/' + p[1] + '/' + p[0];
+
                     runCalc();
                 }
             });
@@ -678,8 +894,10 @@ function renderCards(filterText) {
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+
 function openModal(data) {
     if (!data || !modal) return;
+
     const modalIata = document.getElementById('modalIata');
     const modalCity = document.getElementById('modalCity');
     const modalDistance = document.getElementById('modalDistance');
@@ -687,13 +905,24 @@ function openModal(data) {
     const modalPhone = document.getElementById('modalPhone');
     const modalMapBtn = document.getElementById('modalMapBtn');
     const modalWebBtn = document.getElementById('modalWebBtn');
+
     if (modalIata) modalIata.textContent = data.iata || '';
-    if (modalCity) modalCity.textContent = (data.airport ? data.airport + ' • ' : '') + (data.city || '') + ', ' + (data.country || '') + (data.region ? ' • ' + data.region : '');
+
+    if (modalCity) {
+        modalCity.textContent =
+            (data.airport ? data.airport + ' • ' : '') +
+            (data.city || '') +
+            ', ' +
+            (data.country || '') +
+            (data.region ? ' • ' + data.region : '');
+    }
+
     if (modalDistance) modalDistance.textContent = data.distanceCenter || '';
     if (modalOtherAirports) modalOtherAirports.textContent = data.nearbyAirports || '';
 
     if (modalPhone) {
         const phoneRow = modalPhone.closest ? modalPhone.closest('.detail-row') : null;
+
         if (hasValue(data.phone)) {
             modalPhone.textContent = data.phone;
             if (phoneRow) phoneRow.style.display = '';
@@ -722,189 +951,31 @@ function openModal(data) {
             modalWebBtn.style.display = 'none';
         }
     }
+
     modal.classList.remove('hidden');
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-// === CURRENCY MODULE (monthly file source) ===
-var currencySourceData = {};
-var currencySourceLoaded = false;
-
-function setCurrencyMessage(resultText, rateText, isError) {
-    if (currencyResultEl) currencyResultEl.textContent = resultText || '--';
-    if (currencyRateInfoEl) currencyRateInfoEl.textContent = rateText || '';
-    if (currencyResultEl) currencyResultEl.classList.toggle('currency-error', !!isError);
-}
-
-function getCurrencyMonthKey(dateStr) {
-    if (!dateStr) return '';
-    var parts = dateStr.split('-');
-    if (parts.length < 2) return '';
-    return parts[0] + '-' + parts[1];
-}
-
-function formatCurrencyNumber(value) {
-    var num = Number(value);
-    if (!isFinite(num)) return '--';
-    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function loadCurrencySource() {
-    return fetch('currency-source.json', { cache: 'no-store' })
-        .then(function (res) {
-            if (!res.ok) throw new Error('Unable to load currency-source.json');
-            return res.json();
-        })
-        .then(function (data) {
-            currencySourceData = data || {};
-            currencySourceLoaded = true;
-            populateCurrencyDropdowns();
-            updateCurrencyMeta();
-            convertCurrency();
-        })
-        .catch(function () {
-            currencySourceLoaded = false;
-            setCurrencyMessage('Rates unavailable', 'Could not load currency-source.json', true);
-        });
-}
-
-function getAllCurrencies() {
-    var set = new Set(['AED']);
-    Object.keys(currencySourceData || {}).forEach(function (monthKey) {
-        var month = currencySourceData[monthKey];
-        var rates = month && month.ratesAgainstAED ? month.ratesAgainstAED : {};
-        Object.keys(rates).forEach(function (code) { set.add(code); });
-    });
-    return Array.from(set).sort();
-}
-
-function populateCurrencyDropdowns() {
-    if (!fromCurrencySelect || !toCurrencySelect) return;
-    var currencies = getAllCurrencies();
-    if (!currencies.length) return;
-
-    var currentFrom = fromCurrencySelect.value || 'USD';
-    var currentTo = toCurrencySelect.value || 'AED';
-
-    fromCurrencySelect.innerHTML = '';
-    toCurrencySelect.innerHTML = '';
-
-    currencies.forEach(function (code) {
-        var opt1 = document.createElement('option');
-        opt1.value = code;
-        opt1.textContent = code;
-        fromCurrencySelect.appendChild(opt1);
-
-        var opt2 = document.createElement('option');
-        opt2.value = code;
-        opt2.textContent = code;
-        toCurrencySelect.appendChild(opt2);
-    });
-
-    fromCurrencySelect.value = currencies.indexOf(currentFrom) >= 0 ? currentFrom : (currencies.indexOf('USD') >= 0 ? 'USD' : currencies[0]);
-    toCurrencySelect.value = currencies.indexOf(currentTo) >= 0 ? currentTo : (currencies.indexOf('AED') >= 0 ? 'AED' : currencies[0]);
-
-    if (fromCurrencySelect.value === toCurrencySelect.value && currencies.length > 1) {
-        toCurrencySelect.value = currencies[0] === fromCurrencySelect.value ? currencies[1] : currencies[0];
-    }
-}
-
-function updateCurrencyMeta() {
-    if (!currencyMetaEl || !currencyDateInput) return;
-    var monthKey = getCurrencyMonthKey(currencyDateInput.value);
-    if (!monthKey || !currencySourceData[monthKey]) {
-        currencyMetaEl.textContent = '';
-        currencyMetaEl.classList.add('hidden');
-        return;
-    }
-    var monthInfo = currencySourceData[monthKey];
-    var label = monthInfo.label || monthKey;
-    currencyMetaEl.textContent = 'Using monthly rates: ' + label;
-    currencyMetaEl.classList.remove('hidden');
-}
-
-function convertCurrency() {
-    if (!currencyResultEl || !currencyRateInfoEl) return;
-
-    if (!currencySourceLoaded) {
-        setCurrencyMessage('Rates unavailable', 'Waiting for currency-source.json', true);
-        return;
-    }
-
-    var amount = currencyAmountInput ? parseFloat(currencyAmountInput.value) : NaN;
-    var dateStr = currencyDateInput ? currencyDateInput.value : '';
-    var from = fromCurrencySelect ? fromCurrencySelect.value : '';
-    var to = toCurrencySelect ? toCurrencySelect.value : '';
-
-    if (!dateStr) {
-        updateCurrencyMeta();
-        setCurrencyMessage('--', 'Select a date to load the correct month', false);
-        return;
-    }
-
-    updateCurrencyMeta();
-
-    if (!isFinite(amount)) {
-        setCurrencyMessage('--', 'Enter an amount', false);
-        return;
-    }
-
-    var monthKey = getCurrencyMonthKey(dateStr);
-    var monthData = currencySourceData[monthKey];
-    if (!monthData || !monthData.ratesAgainstAED) {
-        setCurrencyMessage('No rates', 'No rates found for ' + monthKey, true);
-        return;
-    }
-
-    var rates = monthData.ratesAgainstAED;
-    if (!rates[from] || !rates[to]) {
-        setCurrencyMessage('Unsupported', 'Selected currency is missing from ' + monthKey, true);
-        return;
-    }
-
-    var amountInAED = amount * Number(rates[from]);
-    var converted = amountInAED / Number(rates[to]);
-    var directRate = Number(rates[from]) / Number(rates[to]);
-
-    setCurrencyMessage(formatCurrencyNumber(converted) + ' ' + to, '1 ' + from + ' = ' + formatCurrencyNumber(directRate) + ' ' + to, false);
-}
-
-function setDefaultCurrencyDate() {
-    if (!currencyDateInput || currencyDateInput.value) return;
-    var now = new Date();
-    var month = String(now.getMonth() + 1).padStart(2, '0');
-    var day = String(now.getDate()).padStart(2, '0');
-    currencyDateInput.value = now.getFullYear() + '-' + month + '-' + day;
-}
-
-function bindCurrencyEvents() {
-    [currencyAmountInput, currencyDateInput, fromCurrencySelect, toCurrencySelect].forEach(function (el) {
-        if (!el) return;
-        el.addEventListener('input', convertCurrency);
-        el.addEventListener('change', convertCurrency);
-    });
-
-    if (swapCurrencyBtn) {
-        swapCurrencyBtn.addEventListener('click', function () {
-            if (!fromCurrencySelect || !toCurrencySelect) return;
-            var tmp = fromCurrencySelect.value;
-            fromCurrencySelect.value = toCurrencySelect.value;
-            toCurrencySelect.value = tmp;
-            convertCurrency();
-        });
-    }
-}
-
-// === INITIALIZATION ===
 function init() {
     updateLiveClock();
     populateInterlineTable();
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     const carrierModal = document.getElementById('carrierModal');
     const closeCarrierModal = document.getElementById('closeCarrierModal');
-    if (closeModalBtn) closeModalBtn.onclick = function () { modal.classList.add('hidden'); };
-    window.onclick = function (e) { if (e.target === modal) modal.classList.add('hidden'); };
+
+    if (closeModalBtn) {
+        closeModalBtn.onclick = function () {
+            modal.classList.add('hidden');
+        };
+    }
+
+    window.onclick = function (e) {
+        if (e.target === modal) modal.classList.add('hidden');
+    };
+
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             if (modal && !modal.classList.contains('hidden')) modal.classList.add('hidden');
@@ -915,24 +986,40 @@ function init() {
     if (container) {
         container.addEventListener('click', function (e) {
             if (e.target.closest('input') || e.target.closest('button')) return;
+
             const card = e.target.closest('.card');
+
             if (!card) return;
+
             const iata = card.dataset.iata || (card.querySelector('.iata-code') && card.querySelector('.iata-code').textContent);
+
             if (!iata) return;
+
             const data = (typeof window !== 'undefined' && window.airportsData) || [];
             const airportsData = Array.isArray(data) ? data : [];
             const airport = airportsData.find(function (a) { return a.iata === iata; });
+
             if (airport) openModal(airport);
         });
     }
 
-    if (closeCarrierModal && carrierModal) closeCarrierModal.onclick = function () { carrierModal.classList.add('hidden'); };
-    if (carrierModal) carrierModal.onclick = function (e) { if (e.target === carrierModal) carrierModal.classList.add('hidden'); };
+    if (closeCarrierModal && carrierModal) {
+        closeCarrierModal.onclick = function () {
+            carrierModal.classList.add('hidden');
+        };
+    }
+
+    if (carrierModal) {
+        carrierModal.onclick = function (e) {
+            if (e.target === carrierModal) carrierModal.classList.add('hidden');
+        };
+    }
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
     const tabCurrency = document.getElementById('tabCurrency');
+
     if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
     if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
     if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
@@ -940,69 +1027,108 @@ function init() {
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
         btn.onclick = function () {
-            document.querySelectorAll('.carrier-filter-btn').forEach(function (b) { b.classList.remove('active'); });
+            document.querySelectorAll('.carrier-filter-btn').forEach(function (b) {
+                b.classList.remove('active');
+            });
+
             btn.classList.add('active');
+
             carrierFilterMode = btn.dataset.filter || 'all';
+
             filterCarriers(searchInput ? searchInput.value : '');
         };
     });
 
     var delaySearch = document.getElementById('delayPolicySearch');
     var delayClearBtn = document.getElementById('delayClearBtn');
+
     if (delaySearch) {
         delaySearch.addEventListener('input', function () {
             var val = delaySearch.value;
+
             if (delayClearBtn) delayClearBtn.classList.toggle('hidden', !val.trim());
+
             filterDelayPolicy(val);
         });
+
         delaySearch.addEventListener('keyup', function (e) {
-            if (e.key === 'Escape') { delaySearch.value = ''; if (delayClearBtn) delayClearBtn.classList.add('hidden'); filterDelayPolicy(''); }
+            if (e.key === 'Escape') {
+                delaySearch.value = '';
+
+                if (delayClearBtn) delayClearBtn.classList.add('hidden');
+
+                filterDelayPolicy('');
+            }
         });
     }
-    if (delayClearBtn) delayClearBtn.onclick = function () {
-        if (delaySearch) { delaySearch.value = ''; delaySearch.focus(); }
-        delayClearBtn.classList.add('hidden');
-        var h = document.getElementById('delaySearchHint');
-        var s = document.getElementById('delayResultSummary');
-        if (h) h.classList.add('hidden');
-        if (s) s.classList.add('hidden');
-        filterDelayPolicy('');
-    };
 
-    if (searchInput) searchInput.addEventListener('input', function () {
-        var val = searchInput.value;
-        if (clearBtn) {
-            if (val.trim()) clearBtn.classList.remove('hidden');
-            else clearBtn.classList.add('hidden');
-        }
-        if (currentView === 'airports') renderCards(val);
-        else if (currentView === 'interline') filterCarriers(val);
-    });
-    if (clearBtn) clearBtn.onclick = function () {
-        searchInput.value = '';
-        clearBtn.classList.add('hidden');
-        renderCards('');
-        switchView(currentView);
-    };
+    if (delayClearBtn) {
+        delayClearBtn.onclick = function () {
+            if (delaySearch) {
+                delaySearch.value = '';
+                delaySearch.focus();
+            }
+
+            delayClearBtn.classList.add('hidden');
+
+            var h = document.getElementById('delaySearchHint');
+            var s = document.getElementById('delayResultSummary');
+
+            if (h) h.classList.add('hidden');
+            if (s) s.classList.add('hidden');
+
+            filterDelayPolicy('');
+        };
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var val = searchInput.value;
+
+            if (clearBtn) {
+                if (val.trim()) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            if (currentView === 'airports') renderCards(val);
+            else if (currentView === 'interline') filterCarriers(val);
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.onclick = function () {
+            searchInput.value = '';
+            clearBtn.classList.add('hidden');
+            renderCards('');
+            switchView(currentView);
+        };
+    }
 
     function syncFormatButtons() {
         var pref = getTimeFormatPreference();
         var btn12 = document.getElementById('format12h');
         var btn24 = document.getElementById('format24h');
+
         if (btn12) btn12.classList.toggle('active', pref === '12');
         if (btn24) btn24.classList.toggle('active', pref === '24');
     }
+
     syncFormatButtons();
+
     var btn12 = document.getElementById('format12h');
     var btn24 = document.getElementById('format24h');
+
     function refreshAllTimes() {
         updateLiveClock();
+
         document.querySelectorAll('.time-badge').forEach(function (el) {
             const tz = el.getAttribute('data-timezone');
             el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz);
         });
+
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
+
     function updateTimeInputPlaceholders() {
         document.querySelectorAll('.calc-time-input').forEach(function (el) {
             el.placeholder = getTimePlaceholder();
@@ -1010,30 +1136,54 @@ function init() {
             el.style.width = use12Hour() ? '110px' : '80px';
         });
     }
+
     function convertAllTimeInputs() {
         document.querySelectorAll('.calc-time-input').forEach(function (el) {
             var val = (el.value || '').trim();
+
             if (!val) return;
+
             var p = parseTimeFlexible(val);
+
             if (p) {
                 el.value = formatTimeDisplay(p.hr, p.min, use12Hour());
+
                 var iata = (el.id || '').replace('timeIn-', '');
+
                 if (iata) calculateTimeDifference(iata, null);
             }
         });
     }
-    if (btn12) btn12.onclick = function () { setTimeFormatPreference('12'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
-    if (btn24) btn24.onclick = function () { setTimeFormatPreference('24'); syncFormatButtons(); refreshAllTimes(); updateTimeInputPlaceholders(); convertAllTimeInputs(); };
 
-    bindCurrencyEvents();
-    setDefaultCurrencyDate();
-    loadCurrencySource();
+    if (btn12) {
+        btn12.onclick = function () {
+            setTimeFormatPreference('12');
+            syncFormatButtons();
+            refreshAllTimes();
+            updateTimeInputPlaceholders();
+            convertAllTimeInputs();
+        };
+    }
+
+    if (btn24) {
+        btn24.onclick = function () {
+            setTimeFormatPreference('24');
+            syncFormatButtons();
+            refreshAllTimes();
+            updateTimeInputPlaceholders();
+            convertAllTimeInputs();
+        };
+    }
 
     setInterval(refreshAllTimes, 1000);
 
     switchView('airports');
+
     if (typeof lucide !== 'undefined') lucide.createIcons();
-    setTimeout(function () { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+
+    setTimeout(function () {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 100);
 }
 
 if (document.readyState === 'loading') {
