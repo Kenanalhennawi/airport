@@ -1100,7 +1100,7 @@ function initialiseCurrencyConverter() {
 
     window.currencyEnterListenerAdded = true;
 }
-
+}
    
 async function convertCurrencyPayport() {
     try {
