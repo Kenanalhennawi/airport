@@ -1285,12 +1285,12 @@ function initialiseCurrencyConverter(){
         .addEventListener("click",convertCurrencyPayport);
 }
 
-async function convertCurrencyPayport(){
+async function convertCurrencyPayport() {
 
-    try{
+    try {
 
         const amount =
-            document.getElementById("currencyAmount").value;
+            document.getElementById("currencyAmount").value.trim();
 
         const from =
             document.getElementById("currencyFrom").value;
@@ -1301,35 +1301,78 @@ async function convertCurrencyPayport(){
         const selectedDate =
             document.getElementById("currencyDate").value;
 
+        if (!amount || Number(amount) <= 0) {
+
+            document.getElementById("currencyResult")
+                .textContent = "Enter Amount";
+
+            document.getElementById("currencyRate")
+                .textContent = "";
+
+            return;
+        }
+
+        if (!selectedDate) {
+
+            document.getElementById("currencyResult")
+                .textContent = "Select Date";
+
+            document.getElementById("currencyRate")
+                .textContent = "";
+
+            return;
+        }
+
         const d = new Date(selectedDate);
 
         const period =
-            d.toLocaleDateString("en-GB",{
-                day:"2-digit",
-                month:"short",
-                year:"numeric"
-            }).replace(/ /g,"-");
+            d.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }).replace(/ /g, "-");
 
-    const url =
-    PAYPORT_PROXY_URL +
-    "?amount=" + encodeURIComponent(amount) +
-    "&from=" + encodeURIComponent(from) +
-    "&to=" + encodeURIComponent(to) +
-    "&period=" + encodeURIComponent(period);
+        const url =
+            PAYPORT_PROXY_URL +
+            "?amount=" + encodeURIComponent(amount) +
+            "&from=" + encodeURIComponent(from) +
+            "&to=" + encodeURIComponent(to) +
+            "&period=" + encodeURIComponent(period);
 
-const response = await fetch(url);
-const data = await response.json();
+        const response = await fetch(url);
 
-document.getElementById("currencyResult").textContent = data.targetValue;
-document.getElementById("currencyRate").textContent = "Rate: " + data.rate;
+        if (!response.ok) {
+            throw new Error("Unable to reach PayPort service");
+        }
 
-    }catch(error){
+        const data = await response.json();
+
+        const result =
+            data.targetValue ||
+            data.TargetValue ||
+            data.raw?.TargetValue ||
+            "N/A";
+
+        const rate =
+            data.rate ||
+            data.raw?.rate ||
+            "N/A";
 
         document.getElementById("currencyResult")
-            .textContent = "Error";
+            .textContent = result;
 
         document.getElementById("currencyRate")
-            .textContent = error.message;
+            .textContent = "Rate: " + rate;
+
+    } catch (error) {
+
+        document.getElementById("currencyResult")
+            .textContent = "Live Rate Unavailable";
+
+        document.getElementById("currencyRate")
+            .textContent = "Please try again later";
+
+        console.error("PayPort Error:", error);
     }
 }
 
