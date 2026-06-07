@@ -1225,27 +1225,44 @@ function renderCards(filterText) {
     }
 
     const q = normalizeSearchText(query);
-const countryAliasMatches = getCountryAliasMatches(q);
+    const countryAliasMatches = getCountryAliasMatches(q);
 
-const filtered = airportsData.filter(function (a) {
-    const iata = normalizeSearchText(a.iata);
-    const airport = normalizeSearchText(a.airport);
-    const city = normalizeSearchText(a.city);
-    const country = normalizeSearchText(a.country);
-    const region = normalizeSearchText(a.region);
+    const strictCountryOnlyAliases = [
+        "usa",
+        "uae",
+        "ksa"
+    ];
 
-    if (countryAliasMatches) {
-        return countryAliasMatches.some(function (aliasCountry) {
-            return country === normalizeSearchText(aliasCountry);
-        });
-    }
+    const shouldAlsoSearchText =
+        q.length <= 2 ||
+        !strictCountryOnlyAliases.includes(q);
 
-    return iata.includes(q) ||
-        airport.includes(q) ||
-        city.includes(q) ||
-        country.includes(q) ||
-        region.includes(q);
-});
+    const filtered = airportsData.filter(function (a) {
+        const iata = normalizeSearchText(a.iata);
+        const airport = normalizeSearchText(a.airport);
+        const city = normalizeSearchText(a.city);
+        const country = normalizeSearchText(a.country);
+        const region = normalizeSearchText(a.region);
+
+        const aliasMatch = countryAliasMatches
+            ? countryAliasMatches.some(function (aliasCountry) {
+                return country === normalizeSearchText(aliasCountry);
+            })
+            : false;
+
+        const textMatch =
+            iata.includes(q) ||
+            airport.includes(q) ||
+            city.includes(q) ||
+            country.includes(q) ||
+            region.includes(q);
+
+        if (countryAliasMatches) {
+            return aliasMatch || (shouldAlsoSearchText && textMatch);
+        }
+
+        return textMatch;
+    });
 
     if (filtered.length === 0) {
         container.innerHTML = '<div class="search-hint search-hint-empty">No destination found.</div>';
@@ -1315,13 +1332,17 @@ const filtered = airportsData.filter(function (a) {
         if (dateIn) {
             dateIn.addEventListener('input', runCalc);
             dateIn.addEventListener('change', runCalc);
-            dateIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
+            dateIn.addEventListener('paste', function () {
+                setTimeout(runCalc, 0);
+            });
         }
 
         if (timeIn) {
             timeIn.addEventListener('input', runCalc);
             timeIn.addEventListener('change', runCalc);
-            timeIn.addEventListener('paste', function () { setTimeout(runCalc, 0); });
+            timeIn.addEventListener('paste', function () {
+                setTimeout(runCalc, 0);
+            });
         }
 
         var datePicker = card.querySelector('#datePicker-' + airport.iata);
