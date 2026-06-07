@@ -1286,54 +1286,37 @@ function initialiseCurrencyConverter(){
 
     document.getElementById("currencyConvertBtn")
         .addEventListener("click",convertCurrencyPayport);
+    setTimeout(() => {
+    convertCurrencyPayport();
+}, 300);
 }
 
 async function convertCurrencyPayport() {
-
     try {
-
-        const amount =
-            document.getElementById("currencyAmount").value.trim();
-
-        const from =
-            document.getElementById("currencyFrom").value;
-
-        const to =
-            document.getElementById("currencyTo").value;
-
-        const selectedDate =
-            document.getElementById("currencyDate").value;
+        const amount = document.getElementById("currencyAmount").value.trim();
+        const from = document.getElementById("currencyFrom").value;
+        const to = document.getElementById("currencyTo").value;
+        const selectedDate = document.getElementById("currencyDate").value;
 
         if (!amount || Number(amount) <= 0) {
-
-            document.getElementById("currencyResult")
-                .textContent = "Enter Amount";
-
-            document.getElementById("currencyRate")
-                .textContent = "";
-
+            document.getElementById("currencyResult").textContent = "Enter Amount";
+            document.getElementById("currencyRate").textContent = "";
             return;
         }
 
         if (!selectedDate) {
-
-            document.getElementById("currencyResult")
-                .textContent = "Select Date";
-
-            document.getElementById("currencyRate")
-                .textContent = "";
-
+            document.getElementById("currencyResult").textContent = "Select Date";
+            document.getElementById("currencyRate").textContent = "";
             return;
         }
 
         const d = new Date(selectedDate);
 
-        const period =
-            d.toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }).replace(/ /g, "-");
+        const period = d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, "-");
 
         const url =
             PAYPORT_PROXY_URL +
@@ -1361,19 +1344,21 @@ async function convertCurrencyPayport() {
             data.raw?.rate ||
             "N/A";
 
-        document.getElementById("currencyResult")
-            .textContent = result;
+        const targetCode =
+            to.match(/\(([A-Z]{3})\)/)?.[1] || "";
 
-        document.getElementById("currencyRate")
-            .textContent = "Rate: " + rate;
+        document.getElementById("currencyResult").textContent =
+            result + " " + targetCode;
+
+        document.getElementById("currencyRate").textContent =
+            "Rate: " + rate;
 
     } catch (error) {
+        document.getElementById("currencyResult").textContent =
+            "Live Rate Unavailable";
 
-        document.getElementById("currencyResult")
-            .textContent = "Live Rate Unavailable";
-
-        document.getElementById("currencyRate")
-            .textContent = "Please try again later";
+        document.getElementById("currencyRate").textContent =
+            "Please try again later";
 
         console.error("PayPort Error:", error);
     }
