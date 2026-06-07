@@ -278,54 +278,72 @@
         </div>
 
         <div id="delayPolicyView" class="view-panel">
-            <div class="delay-policy-search-wrap">
-                <i data-lucide="search" class="delay-search-icon"></i>
-                <input type="text" id="delayPolicySearch" placeholder="Search airport (e.g. DXB, BEG)... Not found = All Other" autocomplete="off">
-                <div id="delayClearBtn" class="delay-clear-btn hidden">
-                    <i data-lucide="x"></i>
-                </div>
-                <p id="delaySearchHint" class="delay-search-hint hidden"></p>
-                <div id="delayResultSummary" class="delay-result-summary hidden"></div>
-            </div>
+    <div class="delay-policy-search-wrap">
+        <i data-lucide="search" class="delay-search-icon"></i>
+        <input type="text" id="delayPolicySearch" placeholder="Search airport (e.g. DXB, BEG)... Not found = All Other" autocomplete="off">
 
-            <div class="delay-policy-content">
-                <div class="delay-legend">
-                    <strong>ETD</strong> = Estimated Time of Departure &nbsp;|&nbsp; <strong>STD</strong> = Scheduled Time of Departure
-                </div>
-
-                <p class="carrier-explanation">
-                    In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
-                </p>
-
-                <p class="carrier-explanation carrier-note">
-                    <strong>Departure from DXB/DWC:</strong> Passengers receive Email/SMS if delay is 30 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
-                </p>
-
-                <p class="carrier-explanation carrier-note">
-                    <strong>Outstation (STD-based):</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before original STD (STD-03h). Check-in closure: STD-60.
-                </p>
-
-                <p class="carrier-explanation carrier-note">
-                    <strong>All Other Outstations:</strong> Passengers receive Email/SMS if delay is 90 mins or more. Report 3h before new departure (ETD-03h). Check-in closure: ETD-60.
-                </p>
-
-                <div class="table-scroll">
-                    <table class="delay-policy-table" id="delayPolicyTable">
-                        <thead>
-                            <tr>
-                                <th>Airports</th>
-                                <th>Pax Email/SMS<br><small>STD-03h (delay 90+ mins)</small></th>
-                                <th>Pax Email/SMS<br><small>ETD-03h (delay 30+ mins)</small></th>
-                                <th>Check-in closure<br><small>90 mins delay</small></th>
-                                <th>Check-in closure<br><small>30 mins delay</small></th>
-                                <th>Closure time<br><small>STD or ETD based</small></th>
-                            </tr>
-                        </thead>
-                        <tbody id="delayPolicyBody"></tbody>
-                    </table>
-                </div>
-            </div>
+        <div id="delayClearBtn" class="delay-clear-btn hidden">
+            <i data-lucide="x"></i>
         </div>
+
+        <p id="delaySearchHint" class="delay-search-hint hidden"></p>
+        <div id="delayResultSummary" class="delay-result-summary hidden"></div>
+    </div>
+
+    <div class="delay-policy-content">
+        <div class="table-scroll">
+            <table class="delay-policy-table" id="delayPolicyTable">
+                <thead>
+                    <tr>
+                        <th>Airports</th>
+                        <th>Pax Email/SMS<br><small>STD-03h (delay 90+ mins)</small></th>
+                        <th>Pax Email/SMS<br><small>ETD-03h (delay 30+ mins)</small></th>
+                        <th>Check-in closure<br><small>90 mins delay</small></th>
+                        <th>Check-in closure<br><small>30 mins delay</small></th>
+                        <th>Closure time<br><small>STD or ETD based</small></th>
+                    </tr>
+                </thead>
+                <tbody id="delayPolicyBody"></tbody>
+            </table>
+        </div>
+
+        <div class="ops-info-card delay-info-footer">
+            <h3>Delay Policy Reference</h3>
+
+            <p>
+                <strong>ETD</strong> = Estimated Time of Departure |
+                <strong>STD</strong> = Scheduled Time of Departure
+            </p>
+
+            <p>
+                In the event of a flight delay within 6 hours (D-6), passengers will be notified by Email/SMS as follows:
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Departure from DXB/DWC:</strong>
+                    Passengers receive Email/SMS if delay is 30 mins or more.
+                    Report 3h before new departure (ETD-03h).
+                    Check-in closure: ETD-60.
+                </li>
+
+                <li>
+                    <strong>Outstation (STD-based):</strong>
+                    Passengers receive Email/SMS if delay is 90 mins or more.
+                    Report 3h before original STD (STD-03h).
+                    Check-in closure: STD-60.
+                </li>
+
+                <li>
+                    <strong>All Other Outstations:</strong>
+                    Passengers receive Email/SMS if delay is 90 mins or more.
+                    Report 3h before new departure (ETD-03h).
+                    Check-in closure: ETD-60.
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <div id="currencyView" class="view-panel">
     <div class="currency-panel">
