@@ -743,7 +743,466 @@ function switchView(view) {
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+const countrySearchAliases = {
+    // United States
+    "usa": ["United States", "USA", "United States of America"],
+    "us": ["United States", "USA", "United States of America"],
+    "america": ["United States", "USA", "United States of America"],
+    "united states": ["United States", "USA", "United States of America"],
 
+    // United Arab Emirates
+    "uae": ["United Arab Emirates", "UAE"],
+    "ae": ["United Arab Emirates", "UAE"],
+    "emirates": ["United Arab Emirates", "UAE"],
+    "dubai country": ["United Arab Emirates", "UAE"],
+    "united arab emirates": ["United Arab Emirates", "UAE"],
+
+    // Saudi Arabia
+    "ksa": ["Saudi Arabia"],
+    "sa": ["Saudi Arabia"],
+    "saudi": ["Saudi Arabia"],
+    "saudi arabia": ["Saudi Arabia"],
+
+    // United Kingdom
+    "uk": ["UK", "United Kingdom"],
+    "gb": ["UK", "United Kingdom"],
+    "britain": ["UK", "United Kingdom"],
+    "great britain": ["UK", "United Kingdom"],
+    "united kingdom": ["UK", "United Kingdom"],
+    "england": ["UK", "United Kingdom"],
+
+    // GCC / Middle East
+    "bh": ["Bahrain"],
+    "bahrain": ["Bahrain"],
+
+    "kw": ["Kuwait"],
+    "kuwait": ["Kuwait"],
+
+    "om": ["Oman"],
+    "oman": ["Oman"],
+
+    "qa": ["Qatar"],
+    "qatar": ["Qatar"],
+
+    "jo": ["Jordan"],
+    "jordan": ["Jordan"],
+
+    "lb": ["Lebanon"],
+    "lebanon": ["Lebanon"],
+
+    "iq": ["Iraq"],
+    "iraq": ["Iraq"],
+
+    "ir": ["Iran"],
+    "iran": ["Iran"],
+
+    "sy": ["Syria"],
+    "syria": ["Syria"],
+
+    "il": ["Israel"],
+    "israel": ["Israel"],
+
+    "ye": ["Yemen"],
+    "yemen": ["Yemen"],
+
+    "tr": ["Türkiye", "Turkey"],
+    "turkey": ["Türkiye", "Turkey"],
+    "turkiye": ["Türkiye", "Turkey"],
+    "türkiye": ["Türkiye", "Turkey"],
+
+    // Africa
+    "eg": ["Egypt"],
+    "egypt": ["Egypt"],
+
+    "sd": ["Sudan"],
+    "sudan": ["Sudan"],
+
+    "dj": ["Djibouti"],
+    "djibouti": ["Djibouti"],
+
+    "er": ["Eritrea"],
+    "eritrea": ["Eritrea"],
+
+    "so": ["Somalia"],
+    "somalia": ["Somalia"],
+
+    "et": ["Ethiopia"],
+    "ethiopia": ["Ethiopia"],
+
+    "ss": ["South Sudan"],
+    "south sudan": ["South Sudan"],
+
+    "ke": ["Kenya"],
+    "kenya": ["Kenya"],
+
+    "ug": ["Uganda"],
+    "uganda": ["Uganda"],
+
+    "tz": ["Tanzania", "Zanzibar"],
+    "tanzania": ["Tanzania"],
+    "zanzibar": ["Zanzibar", "Tanzania"],
+
+    "za": ["South Africa"],
+    "south africa": ["South Africa"],
+
+    "ng": ["Nigeria"],
+    "nigeria": ["Nigeria"],
+
+    "gh": ["Ghana"],
+    "ghana": ["Ghana"],
+
+    "sn": ["Senegal"],
+    "senegal": ["Senegal"],
+
+    "ci": ["Ivory Coast"],
+    "ivory coast": ["Ivory Coast"],
+    "cote d ivoire": ["Ivory Coast"],
+    "côte d ivoire": ["Ivory Coast"],
+
+    "ma": ["Morocco"],
+    "morocco": ["Morocco"],
+
+    "tn": ["Tunisia"],
+    "tunisia": ["Tunisia"],
+
+    "dz": ["Algeria"],
+    "algeria": ["Algeria"],
+
+    "zm": ["Zambia"],
+    "zambia": ["Zambia"],
+
+    "cg": ["Congo"],
+    "congo": ["Congo"],
+
+    "cd": ["Democratic Republic of the Congo"],
+    "drc": ["Democratic Republic of the Congo"],
+    "democratic republic of the congo": ["Democratic Republic of the Congo"],
+
+    "zw": ["Zimbabwe"],
+    "zimbabwe": ["Zimbabwe"],
+
+    "na": ["Namibia"],
+    "namibia": ["Namibia"],
+
+    "rw": ["Rwanda"],
+    "rwanda": ["Rwanda"],
+
+    "ly": ["Libya"],
+    "libya": ["Libya"],
+
+    "mu": ["Mauritius"],
+    "mauritius": ["Mauritius"],
+
+    "sc": ["Seychelles"],
+    "seychelles": ["Seychelles"],
+
+    "cv": ["Cape Verde"],
+    "cape verde": ["Cape Verde"],
+
+    "re": ["Réunion"],
+    "reunion": ["Réunion"],
+    "réunion": ["Réunion"],
+
+    // Europe / CIS
+    "ru": ["Russian Federation", "Russia"],
+    "russia": ["Russian Federation", "Russia"],
+    "russian federation": ["Russian Federation", "Russia"],
+
+    "ua": ["Ukraine"],
+    "ukraine": ["Ukraine"],
+
+    "by": ["Belarus"],
+    "belarus": ["Belarus"],
+
+    "pl": ["Poland"],
+    "poland": ["Poland"],
+
+    "ro": ["Romania"],
+    "romania": ["Romania"],
+
+    "bg": ["Bulgaria"],
+    "bulgaria": ["Bulgaria"],
+
+    "rs": ["Serbia"],
+    "serbia": ["Serbia"],
+
+    "ba": ["Bosnia", "Bosnia and Herzegovina"],
+    "bosnia": ["Bosnia", "Bosnia and Herzegovina"],
+    "bosnia and herzegovina": ["Bosnia and Herzegovina"],
+
+    "me": ["Montenegro"],
+    "montenegro": ["Montenegro"],
+
+    "hr": ["Croatia"],
+    "croatia": ["Croatia"],
+
+    "si": ["Slovenia"],
+    "slovenia": ["Slovenia"],
+
+    "hu": ["Hungary"],
+    "hungary": ["Hungary"],
+
+    "cz": ["Czech Republic"],
+    "czech": ["Czech Republic"],
+    "czech republic": ["Czech Republic"],
+
+    "sk": ["Slovakia"],
+    "slovakia": ["Slovakia"],
+
+    "gr": ["Greece"],
+    "greece": ["Greece"],
+
+    "it": ["Italy"],
+    "italy": ["Italy"],
+
+    "fr": ["France"],
+    "france": ["France"],
+
+    "ch": ["Switzerland"],
+    "switzerland": ["Switzerland"],
+
+    "at": ["Austria"],
+    "austria": ["Austria"],
+
+    "de": ["Germany"],
+    "germany": ["Germany"],
+
+    "nl": ["Netherlands"],
+    "netherlands": ["Netherlands"],
+    "holland": ["Netherlands"],
+
+    "be": ["Belgium"],
+    "belgium": ["Belgium"],
+
+    "ie": ["Ireland"],
+    "ireland": ["Ireland"],
+
+    "es": ["Spain"],
+    "spain": ["Spain"],
+
+    "pt": ["Portugal"],
+    "portugal": ["Portugal"],
+
+    "fi": ["Finland"],
+    "finland": ["Finland"],
+
+    "se": ["Sweden"],
+    "sweden": ["Sweden"],
+
+    "no": ["Norway"],
+    "norway": ["Norway"],
+
+    "dk": ["Denmark"],
+    "denmark": ["Denmark"],
+
+    "lt": ["Lithuania"],
+    "lithuania": ["Lithuania"],
+
+    "lv": ["Latvia"],
+    "latvia": ["Latvia"],
+
+    "ee": ["Estonia"],
+    "estonia": ["Estonia"],
+
+    "ge": ["Georgia"],
+    "georgia": ["Georgia"],
+
+    "md": ["Moldova"],
+    "moldova": ["Moldova"],
+
+    "al": ["Albania"],
+    "albania": ["Albania"],
+
+    "az": ["Azerbaijan"],
+    "azerbaijan": ["Azerbaijan"],
+
+    "am": ["Armenia"],
+    "armenia": ["Armenia"],
+
+    "is": ["Iceland"],
+    "iceland": ["Iceland"],
+
+    "mt": ["Malta"],
+    "malta": ["Malta"],
+
+    "cy": ["Cyprus"],
+    "cyprus": ["Cyprus"],
+
+    // Indian Subcontinent / Asia
+    "in": ["India"],
+    "india": ["India"],
+
+    "pk": ["Pakistan"],
+    "pakistan": ["Pakistan"],
+
+    "bd": ["Bangladesh"],
+    "bangladesh": ["Bangladesh"],
+
+    "lk": ["Sri Lanka"],
+    "sri lanka": ["Sri Lanka"],
+
+    "np": ["Nepal"],
+    "nepal": ["Nepal"],
+
+    "mv": ["Maldives"],
+    "maldives": ["Maldives"],
+
+    "af": ["Afghanistan"],
+    "afghanistan": ["Afghanistan"],
+
+    "bt": ["Bhutan"],
+    "bhutan": ["Bhutan"],
+
+    // Central Asia
+    "kz": ["Kazakhstan"],
+    "kazakhstan": ["Kazakhstan"],
+
+    "kg": ["Kyrgyzstan"],
+    "kyrgyzstan": ["Kyrgyzstan"],
+
+    "uz": ["Uzbekistan"],
+    "uzbekistan": ["Uzbekistan"],
+
+    "tm": ["Turkmenistan"],
+    "turkmenistan": ["Turkmenistan"],
+
+    "tj": ["Tajikistan"],
+    "tajikistan": ["Tajikistan"],
+
+    // Southeast / East Asia
+    "th": ["Thailand"],
+    "thailand": ["Thailand"],
+
+    "my": ["Malaysia"],
+    "malaysia": ["Malaysia"],
+
+    "sg": ["Singapore"],
+    "singapore": ["Singapore"],
+
+    "id": ["Indonesia"],
+    "indonesia": ["Indonesia"],
+
+    "ph": ["Philippines"],
+    "philippines": ["Philippines"],
+
+    "vn": ["Vietnam"],
+    "vietnam": ["Vietnam"],
+
+    "cn": ["China"],
+    "china": ["China"],
+
+    "hk": ["Hong Kong"],
+    "hong kong": ["Hong Kong"],
+
+    "tw": ["Taiwan"],
+    "taiwan": ["Taiwan"],
+
+    "kr": ["South Korea"],
+    "korea": ["South Korea"],
+    "south korea": ["South Korea"],
+
+    "jp": ["Japan"],
+    "japan": ["Japan"],
+
+    "mm": ["Myanmar"],
+    "myanmar": ["Myanmar"],
+
+    // North / South America
+    "ca": ["Canada"],
+    "canada": ["Canada"],
+
+    "mx": ["Mexico"],
+    "mexico": ["Mexico"],
+
+    "br": ["Brazil"],
+    "brazil": ["Brazil"],
+
+    "ar": ["Argentina"],
+    "argentina": ["Argentina"],
+
+    "cl": ["Chile"],
+    "chile": ["Chile"],
+
+    "co": ["Colombia"],
+    "colombia": ["Colombia"],
+
+    "pe": ["Peru"],
+    "peru": ["Peru"],
+
+    "ve": ["Venezuela"],
+    "venezuela": ["Venezuela"],
+
+    "pa": ["Panama"],
+    "panama": ["Panama"],
+
+    "ec": ["Ecuador"],
+    "ecuador": ["Ecuador"],
+
+    "bm": ["Bermuda"],
+    "bermuda": ["Bermuda"],
+
+    // Oceania / Pacific
+    "au": ["Australia"],
+    "australia": ["Australia"],
+
+    "nz": ["New Zealand"],
+    "new zealand": ["New Zealand"],
+
+    "fj": ["Fiji"],
+    "fiji": ["Fiji"],
+
+    "pg": ["Papua New Guinea"],
+    "papua new guinea": ["Papua New Guinea"],
+
+    "sb": ["Solomon Islands"],
+    "solomon islands": ["Solomon Islands"],
+
+    "nc": ["New Caledonia"],
+    "new caledonia": ["New Caledonia"],
+
+    "ws": ["Samoa"],
+    "samoa": ["Samoa"],
+
+    "to": ["Tonga"],
+    "tonga": ["Tonga"],
+
+    "gu": ["Guam"],
+    "gum": ["Guam"],
+    "guam": ["Guam"]
+};
+
+function normalizeSearchText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/ü/g, "u")
+        .replace(/ı/g, "i")
+        .replace(/ğ/g, "g")
+        .replace(/ş/g, "s")
+        .replace(/ç/g, "c")
+        .replace(/ö/g, "o")
+        .replace(/\s+/g, " ");
+}
+
+function getCountryAliasMatches(query) {
+    const normalizedQuery = normalizeSearchText(query);
+
+    if (countrySearchAliases[normalizedQuery]) {
+        return countrySearchAliases[normalizedQuery];
+    }
+
+    const dynamicMatches = [];
+
+    Object.keys(countryCodes).forEach(function (countryName) {
+        const code = normalizeSearchText(countryCodes[countryName]);
+
+        if (code === normalizedQuery) {
+            dynamicMatches.push(countryName);
+        }
+    });
+
+    return dynamicMatches.length ? dynamicMatches : null;
+}
 function renderCards(filterText) {
     if (!container) return;
 
@@ -765,15 +1224,28 @@ function renderCards(filterText) {
         return;
     }
 
-    const q = query.toLowerCase();
+    const q = normalizeSearchText(query);
+const countryAliasMatches = getCountryAliasMatches(q);
 
-    const filtered = airportsData.filter(function (a) {
-        return String(a.iata || '').toLowerCase().includes(q) ||
-            String(a.airport || '').toLowerCase().includes(q) ||
-            String(a.city || '').toLowerCase().includes(q) ||
-            String(a.country || '').toLowerCase().includes(q) ||
-            String(a.region || '').toLowerCase().includes(q);
-    });
+const filtered = airportsData.filter(function (a) {
+    const iata = normalizeSearchText(a.iata);
+    const airport = normalizeSearchText(a.airport);
+    const city = normalizeSearchText(a.city);
+    const country = normalizeSearchText(a.country);
+    const region = normalizeSearchText(a.region);
+
+    if (countryAliasMatches) {
+        return countryAliasMatches.some(function (aliasCountry) {
+            return country === normalizeSearchText(aliasCountry);
+        });
+    }
+
+    return iata.includes(q) ||
+        airport.includes(q) ||
+        city.includes(q) ||
+        country.includes(q) ||
+        region.includes(q);
+});
 
     if (filtered.length === 0) {
         container.innerHTML = '<div class="search-hint search-hint-empty">No destination found.</div>';
