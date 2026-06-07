@@ -1083,7 +1083,10 @@ function initialiseCurrencyConverter() {
         }
     };
 
+   if (!window.currencyEnterListenerAdded) {
+
     document.addEventListener("keydown", function (e) {
+
         if (
             e.key === "Enter" &&
             document.activeElement &&
@@ -1092,7 +1095,10 @@ function initialiseCurrencyConverter() {
             e.preventDefault();
             convertCurrencyPayport();
         }
+
     });
+
+    window.currencyEnterListenerAdded = true;
 }
 
    
