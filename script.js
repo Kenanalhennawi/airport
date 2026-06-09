@@ -2461,7 +2461,29 @@ setInterval(updateLiveClock, 1000);
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
 }
+document.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-special-action]");
 
+    if (!button) return;
+
+    const action = button.dataset.specialAction;
+    const serviceId = button.dataset.serviceId;
+    const blockType = button.dataset.blockType;
+
+    if (!serviceId) return;
+
+    if (action === "copy-email") {
+        copySpecialServiceEmail(serviceId);
+    }
+
+    if (action === "open-email") {
+        openSpecialServiceEmail(serviceId);
+    }
+
+    if (action === "toggle-block") {
+        toggleSpecialBlock(serviceId, blockType, button);
+    }
+});
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
