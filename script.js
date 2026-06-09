@@ -1989,7 +1989,7 @@ function renderAgentEmailActions(service) {
             "</button>" +
             '<button type="button" class="special-open-email-btn" data-special-action="open-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="mail"></i>' +
-                '<span>Open Email</span>' +
+                '<span>Open in Outlook Web</span>' +
             "</button>" +
         "</div>"
     );
@@ -2170,13 +2170,18 @@ function openSpecialServiceEmail(serviceId) {
 
     if (!email) return;
 
-    const mailto =
-        "mailto:" + encodeURIComponent(email.to) +
-        "?subject=" + encodeURIComponent(email.subject) +
-        (email.cc ? "&cc=" + encodeURIComponent(email.cc) : "") +
-        "&body=" + encodeURIComponent(email.body);
+    const baseUrl = "https://outlook.cloud.microsoft/mail/deeplink/compose";
 
-    window.location.href = mailto;
+    const params = new URLSearchParams();
+
+    if (email.to) params.set("to", email.to);
+    if (email.cc) params.set("cc", email.cc);
+    if (email.subject) params.set("subject", email.subject);
+    if (email.body) params.set("body", email.body);
+
+    const outlookUrl = baseUrl + "?" + params.toString();
+
+    window.open(outlookUrl, "_blank", "noopener,noreferrer");
 }
 
 function initialiseSpecialServices() {
