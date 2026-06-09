@@ -1467,3 +1467,202 @@ footer strong {
         padding: 16px;
     }
 }
+/* === SPECIAL SERVICES WORKFLOW FORM === */
+
+.special-agent-guide {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 5px solid var(--fz-blue);
+    border-radius: 14px;
+    padding: 13px;
+    margin-bottom: 12px;
+}
+
+.special-agent-guide-title,
+.special-service-form-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fz-blue);
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.special-agent-guide-title svg,
+.special-service-form-title svg {
+    width: 18px;
+    height: 18px;
+}
+
+.special-agent-guide-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.special-agent-guide-item {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    border: 1px solid #dbeafe;
+}
+
+.special-agent-guide-item strong {
+    display: block;
+    color: var(--fz-orange);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.special-agent-guide-item span {
+    color: #0f172a;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.special-agent-warning {
+    margin-top: 10px;
+    background: #fff7ed;
+    border-left: 4px solid var(--fz-orange);
+    color: #7c2d12;
+    border-radius: 10px;
+    padding: 9px 10px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.special-service-form-box {
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+    padding: 13px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(0, 94, 184, 0.08);
+}
+
+.special-service-form-desc {
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.special-service-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.special-service-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.special-service-form-field span {
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 0.82rem;
+}
+
+.required-star {
+    color: #dc2626;
+    font-weight: 900;
+}
+
+.special-service-form-field input,
+.special-service-form-field select,
+.special-service-form-field textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 9px 10px;
+    font-weight: 700;
+    color: #0f172a;
+    background: #f8fafc;
+    outline: none;
+}
+
+.special-service-form-field textarea {
+    min-height: 70px;
+    resize: vertical;
+}
+
+.special-service-form-field input:focus,
+.special-service-form-field select:focus,
+.special-service-form-field textarea:focus {
+    border-color: var(--fz-blue);
+    box-shadow: 0 0 0 3px rgba(0, 94, 184, 0.12);
+    background: #ffffff;
+}
+
+.special-email-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.special-copy-email-btn,
+.special-open-email-btn,
+.special-toggle-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 11px 12px;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.special-copy-email-btn {
+    background: #e0f2fe;
+    color: #075985;
+    border: 1px solid #bae6fd;
+}
+
+.special-open-email-btn {
+    background: linear-gradient(135deg, var(--fz-orange) 0%, #d97706 100%);
+    color: #ffffff;
+}
+
+.special-toggle-btn {
+    width: 100%;
+    margin-top: 10px;
+    background: linear-gradient(135deg, var(--fz-blue) 0%, #003f7d 100%);
+    color: #ffffff;
+}
+
+.special-toggle-supervisor {
+    background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+}
+
+.special-copy-email-btn:hover,
+.special-open-email-btn:hover,
+.special-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+.special-copy-email-btn svg,
+.special-open-email-btn svg,
+.special-toggle-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.special-hidden-block {
+    margin-top: 10px;
+}
+
+.special-collapsible {
+    margin-top: 10px;
+}
+
+.special-collapsible.hidden {
+    display: none;
+}
