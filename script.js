@@ -1829,6 +1829,7 @@ function renderSpecialServices(filterText) {
     filtered.forEach(function (service) {
         const card = document.createElement("div");
         card.className = "special-service-card";
+        card.setAttribute("data-service-id", service.id || "");
 
         card.innerHTML =
             '<div class="special-service-card-header">' +
@@ -1842,24 +1843,13 @@ function renderSpecialServices(filterText) {
             "</div>" +
 
             renderSpecialServiceBadges(service) +
-
-            '<p class="special-service-summary">' + escapeHTML(service.summary || "") + "</p>" +
-
-            renderSpecialServiceSection("Quick Facts", service.quickFacts) +
-            renderSpecialServiceSection("Timing", service.timing) +
-            renderSpecialServiceSection("Charges", service.charges) +
-            renderSpecialServiceSection("Limits", service.limits) +
-            renderSpecialServiceSection("Dimensions", service.dimensions) +
-            renderSpecialServiceSection("Restrictions", service.restrictions) +
-            renderSpecialServiceSection("Required Details", service.requiredDetails) +
+            renderAgentQuickGuide(service) +
+            renderAgentForm(service) +
+            renderAgentEmailActions(service) +
             renderSpecialServiceSection("Agent Process", service.agentProcess) +
-            renderSpecialServiceSection("Supervisor Process", service.supervisorProcess) +
             renderSpecialServiceSection("Customer Advice", service.customerAdvice) +
-            renderSpecialServiceSection("Interline / Codeshare", service.interlineCodeshareRules) +
-            renderSpecialServiceSection("Cancellation Rules", service.cancellationRules) +
-            renderSpecialServiceSection("Emails", service.emails) +
-
-            renderSpecialServiceNote(service.note);
+            renderHiddenDetails(service) +
+            renderSupervisorSection(service);
 
         grid.appendChild(card);
     });
@@ -1876,9 +1866,177 @@ function renderSpecialServiceBadges(service) {
         });
     }
 
+    if (service.agentQuickGuide && service.agentQuickGuide.cutOff) {
+        badges.push('<span class="special-service-badge special-service-badge-orange">Cut-off: ' + escapeHTML(service.agentQuickGuide.cutOff) + "</span>");
+    }
+
+    if (service.agentQuickGuide && service.agentQuickGuide.approval) {
+        badges.push('<span class="special-service-badge special-service-badge-blue">Approval: ' + escapeHTML(service.agentQuickGuide.approval) + "</span>");
+    }
+
     if (!badges.length) return "";
 
     return '<div class="special-service-badges">' + badges.join("") + "</div>";
+}
+
+function renderAgentQuickGuide(service) {
+    const guide = service.agentQuickGuide;
+
+    if (!guide) return "";
+
+    return (
+        '<div class="special-agent-guide">' +
+            '<div class="special-agent-guide-title">' +
+                '<i data-lucide="info"></i>' +
+                '<span>Agent Quick Guide</span>' +
+            "</div>" +
+            '<div class="special-agent-guide-grid">' +
+                renderQuickGuideItem("Cut-off", guide.cutOff) +
+                renderQuickGuideItem("Approval", guide.approval) +
+                renderQuickGuideItem("Charge", guide.charge) +
+                renderQuickGuideItem("Main Action", guide.mainAction) +
+            "</div>" +
+            (guide.warning ? '<div class="special-agent-warning"><strong>Warning:</strong> ' + escapeHTML(guide.warning) + "</div>" : "") +
+        "</div>"
+    );
+}
+
+function renderQuickGuideItem(label, value) {
+    if (!value) return "";
+
+    return (
+        '<div class="special-agent-guide-item">' +
+            "<strong>" + escapeHTML(label) + "</strong>" +
+            "<span>" + escapeHTML(value) + "</span>" +
+        "</div>"
+    );
+}
+
+function renderAgentForm(service) {
+    if (!service.agentForm || !Array.isArray(service.agentForm.fields) || !service.agentForm.fields.length) {
+        return "";
+    }
+
+    const serviceId = escapeHTML(service.id || "");
+
+    const fieldsHtml = service.agentForm.fields.map(function (field) {
+        return renderAgentFormField(service.id, field);
+    }).join("");
+
+    return (
+        '<div class="special-service-form-box">' +
+            '<div class="special-service-form-title">' +
+                '<i data-lucide="clipboard-pen-line"></i>' +
+                '<span>' + escapeHTML(service.agentForm.title || "Request Details") + "</span>" +
+            "</div>" +
+            (service.agentForm.description ? '<p class="special-service-form-desc">' + escapeHTML(service.agentForm.description) + "</p>" : "") +
+            '<div class="special-service-form-grid" data-service-form="' + serviceId + '">' +
+                fieldsHtml +
+            "</div>" +
+        "</div>"
+    );
+}
+
+function renderAgentFormField(serviceId, field) {
+    const safeServiceId = escapeHTML(serviceId || "");
+    const fieldId = escapeHTML(field.id || "");
+    const inputId = "special_" + safeServiceId + "_" + fieldId;
+    const label = escapeHTML(field.label || field.id || "");
+    const requiredMark = field.required ? ' <span class="required-star">*</span>' : "";
+    const placeholder = escapeHTML(field.placeholder || "");
+    const defaultValue = escapeHTML(field.defaultValue || "");
+
+    let inputHtml = "";
+
+    if (field.type === "textarea") {
+        inputHtml =
+            '<textarea id="' + inputId + '" data-field-id="' + fieldId + '" placeholder="' + placeholder + '">' +
+                defaultValue +
+            "</textarea>";
+    } else if (field.type === "select") {
+        const options = Array.isArray(field.options) ? field.options : [];
+
+        inputHtml =
+            '<select id="' + inputId + '" data-field-id="' + fieldId + '">' +
+                '<option value="">Select</option>' +
+                options.map(function (option) {
+                    return '<option value="' + escapeHTML(option) + '">' + escapeHTML(option) + "</option>";
+                }).join("") +
+            "</select>";
+    } else {
+        inputHtml =
+            '<input id="' + inputId + '" data-field-id="' + fieldId + '" type="' + escapeHTML(field.type || "text") + '" placeholder="' + placeholder + '" value="' + defaultValue + '">';
+    }
+
+    return (
+        '<label class="special-service-form-field" for="' + inputId + '">' +
+            '<span>' + label + requiredMark + "</span>" +
+            inputHtml +
+        "</label>"
+    );
+}
+
+function renderAgentEmailActions(service) {
+    if (!service.agentEmail || !service.agentEmail.enabled) return "";
+
+    const serviceId = escapeHTML(service.id || "");
+
+    return (
+        '<div class="special-email-actions">' +
+            '<button type="button" class="special-copy-email-btn" onclick="copySpecialServiceEmail(\'' + serviceId + '\')">' +
+                '<i data-lucide="copy"></i>' +
+                '<span>Copy Email Body</span>' +
+            "</button>" +
+            '<button type="button" class="special-open-email-btn" onclick="openSpecialServiceEmail(\'' + serviceId + '\')">' +
+                '<i data-lucide="mail"></i>' +
+                '<span>Open Email</span>' +
+            "</button>" +
+        "</div>"
+    );
+}
+
+function renderHiddenDetails(service) {
+    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections) || !service.hiddenDetails.sections.length) {
+        return "";
+    }
+
+    const serviceId = escapeHTML(service.id || "");
+
+    const sectionsHtml = service.hiddenDetails.sections.map(function (section) {
+        return renderSpecialServiceSection(section.title, section.items);
+    }).join("");
+
+    return (
+        '<div class="special-hidden-block">' +
+            '<button type="button" class="special-toggle-btn" onclick="toggleSpecialBlock(\'' + serviceId + '\', \'details\')">' +
+                '<i data-lucide="list-checks"></i>' +
+                '<span>Show Conditions / SSR / Restrictions</span>' +
+            "</button>" +
+            '<div class="special-collapsible hidden" data-special-block="' + serviceId + '-details">' +
+                sectionsHtml +
+            "</div>" +
+        "</div>"
+    );
+}
+
+function renderSupervisorSection(service) {
+    if (!service.supervisorSection || !Array.isArray(service.supervisorSection.items) || !service.supervisorSection.items.length) {
+        return "";
+    }
+
+    const serviceId = escapeHTML(service.id || "");
+
+    return (
+        '<div class="special-hidden-block">' +
+            '<button type="button" class="special-toggle-btn special-toggle-supervisor" onclick="toggleSpecialBlock(\'' + serviceId + '\', \'supervisor\')">' +
+                '<i data-lucide="user-check"></i>' +
+                '<span>Show FS / Supervisor Steps</span>' +
+            "</button>" +
+            '<div class="special-collapsible hidden" data-special-block="' + serviceId + '-supervisor">' +
+                renderSpecialServiceSection(service.supervisorSection.title || "FS / Supervisor Steps", service.supervisorSection.items) +
+            "</div>" +
+        "</div>"
+    );
 }
 
 function renderSpecialServiceSection(title, items) {
@@ -1896,14 +2054,130 @@ function renderSpecialServiceSection(title, items) {
     );
 }
 
-function renderSpecialServiceNote(note) {
-    if (!note) return "";
+function toggleSpecialBlock(serviceId, type) {
+    const block = document.querySelector('[data-special-block="' + serviceId + '-' + type + '"]');
 
-    return (
-        '<div class="special-service-note">' +
-            "<strong>Note:</strong> " + escapeHTML(note) +
-        "</div>"
-    );
+    if (!block) return;
+
+    const button = document.querySelector('button[onclick="toggleSpecialBlock(\'' + serviceId + '\', \'' + type + '\')"]');
+    const isHidden = block.classList.contains("hidden");
+
+    block.classList.toggle("hidden", !isHidden);
+
+    if (button) {
+        const span = button.querySelector("span");
+
+        if (span) {
+            if (type === "details") {
+                span.textContent = isHidden ? "Hide Conditions / SSR / Restrictions" : "Show Conditions / SSR / Restrictions";
+            } else if (type === "supervisor") {
+                span.textContent = isHidden ? "Hide FS / Supervisor Steps" : "Show FS / Supervisor Steps";
+            }
+        }
+    }
+}
+
+function getSpecialServiceById(serviceId) {
+    const services = getSpecialServicesData();
+
+    return services.find(function (service) {
+        return service.id === serviceId;
+    });
+}
+
+function getSpecialServiceFormValues(serviceId) {
+    const values = {};
+    const form = document.querySelector('[data-service-form="' + serviceId + '"]');
+
+    if (!form) return values;
+
+    form.querySelectorAll("[data-field-id]").forEach(function (field) {
+        values[field.dataset.fieldId] = field.value || "";
+    });
+
+    return values;
+}
+
+function applySpecialTemplate(template, values) {
+    return String(template || "").replace(/\{\{(.*?)\}\}/g, function (match, key) {
+        const cleanKey = String(key || "").trim();
+        return values[cleanKey] || "";
+    });
+}
+
+function buildSpecialServiceEmail(serviceId) {
+    const service = getSpecialServiceById(serviceId);
+
+    if (!service || !service.agentEmail) return null;
+
+    const values = getSpecialServiceFormValues(serviceId);
+
+    const subject = applySpecialTemplate(service.agentEmail.subjectTemplate, values);
+    const body = applySpecialTemplate(service.agentEmail.bodyTemplate, values);
+
+    return {
+        to: Array.isArray(service.agentEmail.to) ? service.agentEmail.to.join(";") : "",
+        cc: Array.isArray(service.agentEmail.cc) ? service.agentEmail.cc.join(";") : "",
+        subject: subject,
+        body: body
+    };
+}
+
+function copySpecialServiceEmail(serviceId) {
+    const email = buildSpecialServiceEmail(serviceId);
+
+    if (!email) return;
+
+    const fullText =
+        "To: " + email.to + "\n" +
+        (email.cc ? "CC: " + email.cc + "\n" : "") +
+        "Subject: " + email.subject + "\n\n" +
+        email.body;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullText).then(function () {
+            alert("Email body copied successfully.");
+        }).catch(function () {
+            fallbackCopyText(fullText);
+        });
+    } else {
+        fallbackCopyText(fullText);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+        document.execCommand("copy");
+        alert("Email body copied successfully.");
+    } catch (error) {
+        alert("Copy failed. Please copy manually.");
+    }
+
+    document.body.removeChild(textarea);
+}
+
+function openSpecialServiceEmail(serviceId) {
+    const email = buildSpecialServiceEmail(serviceId);
+
+    if (!email) return;
+
+    const mailto =
+        "mailto:" + encodeURIComponent(email.to) +
+        "?subject=" + encodeURIComponent(email.subject) +
+        (email.cc ? "&cc=" + encodeURIComponent(email.cc) : "") +
+        "&body=" + encodeURIComponent(email.body);
+
+    window.location.href = mailto;
 }
 
 function initialiseSpecialServices() {
@@ -1926,6 +2200,7 @@ function initialiseSpecialServices() {
         });
     }
 }
+
 function escapeHTML(value) {
     return String(value || "")
         .replace(/&/g, "&amp;")
