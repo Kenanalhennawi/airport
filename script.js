@@ -2428,7 +2428,8 @@ function initialiseSpecialServices() {
             }
         });
     }
-
+const btn12 = document.getElementById('btn12');
+const btn24 = document.getElementById('btn24');
     if (btn12) {
         btn12.onclick = function () {
             setTimeFormatPreference('12');
