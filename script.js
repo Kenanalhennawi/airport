@@ -684,11 +684,13 @@ function switchView(view) {
     const airportsPanel = document.getElementById('airportsView');
     const interlinePanel = document.getElementById('interlineView');
     const delayPanel = document.getElementById('delayPolicyView');
+    const specialServicesPanel = document.getElementById('specialServicesView');
     const currencyPanel = document.getElementById('currencyView');
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
+    const tabSpecialServices = document.getElementById('tabSpecialServices');
     const tabCurrency = document.getElementById('tabCurrency');
 
     const containerEl = document.querySelector('.container');
@@ -696,14 +698,32 @@ function switchView(view) {
     if (!airportsPanel || !interlinePanel) return;
 
     if (containerEl) {
-        containerEl.classList.toggle('interline-active', view === 'interline' || view === 'delay' || view === 'currency');
+        containerEl.classList.toggle(
+            'interline-active',
+            view === 'interline' ||
+            view === 'delay' ||
+            view === 'specialServices' ||
+            view === 'currency'
+        );
     }
 
-    [airportsPanel, interlinePanel, delayPanel, currencyPanel].forEach(function (p) {
+    [
+        airportsPanel,
+        interlinePanel,
+        delayPanel,
+        specialServicesPanel,
+        currencyPanel
+    ].forEach(function (p) {
         if (p) p.classList.remove('active');
     });
 
-    [tabAirports, tabInterline, tabDelay, tabCurrency].forEach(function (t) {
+    [
+        tabAirports,
+        tabInterline,
+        tabDelay,
+        tabSpecialServices,
+        tabCurrency
+    ].forEach(function (t) {
         if (t) {
             t.classList.remove('active');
             t.setAttribute('aria-pressed', 'false');
@@ -718,12 +738,13 @@ function switchView(view) {
             tabAirports.setAttribute('aria-pressed', 'true');
         }
 
-        if (searchInput) {
+        if (searchInput && searchInput.parentElement) {
             searchInput.placeholder = 'Search IATA, airport, city, country, or region...';
             searchInput.parentElement.style.display = '';
         }
 
         renderCards(searchInput ? searchInput.value : '');
+
     } else if (view === 'interline') {
         interlinePanel.classList.add('active');
 
@@ -732,7 +753,7 @@ function switchView(view) {
             tabInterline.setAttribute('aria-pressed', 'true');
         }
 
-        if (searchInput) {
+        if (searchInput && searchInput.parentElement) {
             searchInput.placeholder = 'Search carrier name or code...';
             searchInput.parentElement.style.display = '';
         }
@@ -743,6 +764,7 @@ function switchView(view) {
         }
 
         filterCarriers(searchInput ? searchInput.value : '');
+
     } else if (view === 'delay') {
         if (delayPanel) delayPanel.classList.add('active');
 
@@ -755,6 +777,20 @@ function switchView(view) {
         if (clearBtn) clearBtn.classList.add('hidden');
 
         populateDelayPolicyTable();
+
+    } else if (view === 'specialServices') {
+        if (specialServicesPanel) specialServicesPanel.classList.add('active');
+
+        if (tabSpecialServices) {
+            tabSpecialServices.classList.add('active');
+            tabSpecialServices.setAttribute('aria-pressed', 'true');
+        }
+
+        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
+        if (clearBtn) clearBtn.classList.add('hidden');
+
+        renderSpecialServices('');
+
     } else if (view === 'currency') {
         if (currencyPanel) currencyPanel.classList.add('active');
 
@@ -1958,14 +1994,16 @@ function init() {
     }
 
     const tabAirports = document.getElementById('tabAirports');
-    const tabInterline = document.getElementById('tabInterline');
-    const tabDelay = document.getElementById('tabDelayPolicy');
-    const tabCurrency = document.getElementById('tabCurrency');
+const tabInterline = document.getElementById('tabInterline');
+const tabDelay = document.getElementById('tabDelayPolicy');
+const tabSpecialServices = document.getElementById('tabSpecialServices');
+const tabCurrency = document.getElementById('tabCurrency');
 
-    if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
-    if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
-    if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
-    if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
+if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
+if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
+if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
+if (tabSpecialServices) tabSpecialServices.onclick = function () { switchView('specialServices'); };
+if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
         btn.onclick = function () {
@@ -2045,7 +2083,7 @@ function init() {
             switchView(currentView);
         };
     }
-
+initialiseSpecialServices();
     function syncFormatButtons() {
         var pref = getTimeFormatPreference();
         var btn12 = document.getElementById('format12h');
