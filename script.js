@@ -1983,11 +1983,11 @@ function renderAgentEmailActions(service) {
 
     return (
         '<div class="special-email-actions">' +
-            '<button type="button" class="special-copy-email-btn" onclick="copySpecialServiceEmail(\'' + serviceId + '\')">' +
+            '<button type="button" class="special-copy-email-btn" data-special-action="copy-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="copy"></i>' +
                 '<span>Copy Email Body</span>' +
             "</button>" +
-            '<button type="button" class="special-open-email-btn" onclick="openSpecialServiceEmail(\'' + serviceId + '\')">' +
+            '<button type="button" class="special-open-email-btn" data-special-action="open-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="mail"></i>' +
                 '<span>Open Email</span>' +
             "</button>" +
@@ -2008,7 +2008,7 @@ function renderHiddenDetails(service) {
 
     return (
         '<div class="special-hidden-block">' +
-            '<button type="button" class="special-toggle-btn" onclick="toggleSpecialBlock(\'' + serviceId + '\', \'details\')">' +
+            '<button type="button" class="special-toggle-btn" data-special-action="toggle-block" data-service-id="' + serviceId + '" data-block-type="details">' +
                 '<i data-lucide="list-checks"></i>' +
                 '<span>Show Conditions / SSR / Restrictions</span>' +
             "</button>" +
@@ -2028,7 +2028,7 @@ function renderSupervisorSection(service) {
 
     return (
         '<div class="special-hidden-block">' +
-            '<button type="button" class="special-toggle-btn special-toggle-supervisor" onclick="toggleSpecialBlock(\'' + serviceId + '\', \'supervisor\')">' +
+            '<button type="button" class="special-toggle-btn special-toggle-supervisor" data-special-action="toggle-block" data-service-id="' + serviceId + '" data-block-type="supervisor">' +
                 '<i data-lucide="user-check"></i>' +
                 '<span>Show FS / Supervisor Steps</span>' +
             "</button>" +
@@ -2054,12 +2054,11 @@ function renderSpecialServiceSection(title, items) {
     );
 }
 
-function toggleSpecialBlock(serviceId, type) {
+function toggleSpecialBlock(serviceId, type, button) {
     const block = document.querySelector('[data-special-block="' + serviceId + '-' + type + '"]');
 
     if (!block) return;
 
-    const button = document.querySelector('button[onclick="toggleSpecialBlock(\'' + serviceId + '\', \'' + type + '\')"]');
     const isHidden = block.classList.contains("hidden");
 
     block.classList.toggle("hidden", !isHidden);
@@ -2358,31 +2357,51 @@ if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
             switchView(currentView);
         };
     }
-initialiseSpecialServices();
-    function syncFormatButtons() {
-        var pref = getTimeFormatPreference();
-        var btn12 = document.getElementById('format12h');
-        var btn24 = document.getElementById('format24h');
+    function handleSpecialServicesClick(event) {
+    const button = event.target.closest("[data-special-action]");
 
-        if (btn12) btn12.classList.toggle('active', pref === '12');
-        if (btn24) btn24.classList.toggle('active', pref === '24');
+    if (!button) return;
+
+    const action = button.dataset.specialAction;
+    const serviceId = button.dataset.serviceId;
+    const blockType = button.dataset.blockType;
+
+    if (!serviceId) return;
+
+    if (action === "copy-email") {
+        copySpecialServiceEmail(serviceId);
+    } else if (action === "open-email") {
+        openSpecialServiceEmail(serviceId);
+    } else if (action === "toggle-block") {
+        toggleSpecialBlock(serviceId, blockType, button);
     }
+}
+function initialiseSpecialServices() {
+    const search = document.getElementById("specialServicesSearch");
+    const clearBtn = document.getElementById("specialServicesClearBtn");
+    const grid = document.getElementById("specialServicesGrid");
 
-    syncFormatButtons();
+    renderSpecialServices("");
 
-    var btn12 = document.getElementById('format12h');
-    var btn24 = document.getElementById('format24h');
-
-    function refreshAllTimes() {
-        updateLiveClock();
-
-        document.querySelectorAll('.time-badge').forEach(function (el) {
-            const tz = el.getAttribute('data-timezone');
-            el.innerHTML = getDayNightIcon(tz) + ' ' + getLocalTime(tz);
+    if (search) {
+        search.addEventListener("input", function () {
+            renderSpecialServices(search.value);
         });
-
-        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
+
+    if (clearBtn && search) {
+        clearBtn.addEventListener("click", function () {
+            search.value = "";
+            renderSpecialServices("");
+            search.focus();
+        });
+    }
+
+    if (grid && !grid.dataset.specialEventsAttached) {
+        grid.addEventListener("click", handleSpecialServicesClick);
+        grid.dataset.specialEventsAttached = "true";
+    }
+}
 
     function updateTimeInputPlaceholders() {
         document.querySelectorAll('.calc-time-input').forEach(function (el) {
