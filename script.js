@@ -1725,7 +1725,179 @@ async function convertCurrencyPayport() {
         console.error("PayPort Error:", error);
     }
 }
+function normalizeSpecialServiceText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+}
 
+function getSpecialServicesData() {
+    if (Array.isArray(window.specialServicesData)) {
+        return window.specialServicesData;
+    }
+
+    if (typeof specialServicesData !== "undefined" && Array.isArray(specialServicesData)) {
+        return specialServicesData;
+    }
+
+    return [];
+}
+
+function buildSpecialServiceSearchText(service) {
+    const parts = [];
+
+    Object.keys(service).forEach(function (key) {
+        const value = service[key];
+
+        if (typeof value === "string") {
+            parts.push(value);
+        } else if (Array.isArray(value)) {
+            parts.push(value.join(" "));
+        }
+    });
+
+    return parts.join(" ").toLowerCase();
+}
+
+function renderSpecialServices(filterText) {
+    const grid = document.getElementById("specialServicesGrid");
+    const clearBtn = document.getElementById("specialServicesClearBtn");
+
+    if (!grid) return;
+
+    const query = normalizeSpecialServiceText(filterText);
+    const services = getSpecialServicesData();
+
+    if (clearBtn) {
+        clearBtn.classList.toggle("hidden", !query);
+    }
+
+    const filtered = services.filter(function (service) {
+        const searchableText = buildSpecialServiceSearchText(service);
+        return !query || searchableText.includes(query);
+    });
+
+    if (!filtered.length) {
+        grid.innerHTML =
+            '<div class="special-services-empty">' +
+                "No special service found. Try searching by service name, SSR, item, keyword, route, or process." +
+            "</div>";
+
+        if (typeof lucide !== "undefined") lucide.createIcons();
+        return;
+    }
+
+    grid.innerHTML = "";
+
+    filtered.forEach(function (service) {
+        const card = document.createElement("div");
+        card.className = "special-service-card";
+
+        card.innerHTML =
+            '<div class="special-service-card-header">' +
+                '<div class="special-service-icon-wrap">' +
+                    '<i data-lucide="' + escapeHTML(service.icon || "clipboard-list") + '"></i>' +
+                "</div>" +
+                "<div>" +
+                    "<h3>" + escapeHTML(service.title || "Untitled Service") + "</h3>" +
+                    '<div class="special-service-category">' + escapeHTML(service.category || "Special Service") + "</div>" +
+                "</div>" +
+            "</div>" +
+
+            renderSpecialServiceBadges(service) +
+
+            '<p class="special-service-summary">' + escapeHTML(service.summary || "") + "</p>" +
+
+            renderSpecialServiceSection("Quick Facts", service.quickFacts) +
+            renderSpecialServiceSection("Timing", service.timing) +
+            renderSpecialServiceSection("Charges", service.charges) +
+            renderSpecialServiceSection("Limits", service.limits) +
+            renderSpecialServiceSection("Dimensions", service.dimensions) +
+            renderSpecialServiceSection("Restrictions", service.restrictions) +
+            renderSpecialServiceSection("Required Details", service.requiredDetails) +
+            renderSpecialServiceSection("Agent Process", service.agentProcess) +
+            renderSpecialServiceSection("Supervisor Process", service.supervisorProcess) +
+            renderSpecialServiceSection("Customer Advice", service.customerAdvice) +
+            renderSpecialServiceSection("Interline / Codeshare", service.interlineCodeshareRules) +
+            renderSpecialServiceSection("Cancellation Rules", service.cancellationRules) +
+            renderSpecialServiceSection("Emails", service.emails) +
+
+            renderSpecialServiceNote(service.note);
+
+        grid.appendChild(card);
+    });
+
+    if (typeof lucide !== "undefined") lucide.createIcons();
+}
+
+function renderSpecialServiceBadges(service) {
+    const badges = [];
+
+    if (Array.isArray(service.ssr)) {
+        service.ssr.forEach(function (item) {
+            badges.push('<span class="special-service-badge">SSR: ' + escapeHTML(item) + "</span>");
+        });
+    }
+
+    if (!badges.length) return "";
+
+    return '<div class="special-service-badges">' + badges.join("") + "</div>";
+}
+
+function renderSpecialServiceSection(title, items) {
+    if (!Array.isArray(items) || !items.length) return "";
+
+    const listItems = items.map(function (item) {
+        return "<li>" + escapeHTML(item) + "</li>";
+    }).join("");
+
+    return (
+        '<div class="special-service-section">' +
+            "<strong>" + escapeHTML(title) + "</strong>" +
+            "<ul>" + listItems + "</ul>" +
+        "</div>"
+    );
+}
+
+function renderSpecialServiceNote(note) {
+    if (!note) return "";
+
+    return (
+        '<div class="special-service-note">' +
+            "<strong>Note:</strong> " + escapeHTML(note) +
+        "</div>"
+    );
+}
+
+function initialiseSpecialServices() {
+    const search = document.getElementById("specialServicesSearch");
+    const clearBtn = document.getElementById("specialServicesClearBtn");
+
+    renderSpecialServices("");
+
+    if (search) {
+        search.addEventListener("input", function () {
+            renderSpecialServices(search.value);
+        });
+    }
+
+    if (clearBtn && search) {
+        clearBtn.addEventListener("click", function () {
+            search.value = "";
+            renderSpecialServices("");
+            search.focus();
+        });
+    }
+}
+function escapeHTML(value) {
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 function init() {
     updateLiveClock();
     populateInterlineTable();
