@@ -2430,28 +2430,29 @@ function initialiseSpecialServices() {
     }
 const btn12 = document.getElementById('btn12');
 const btn24 = document.getElementById('btn24');
-    if (btn12) {
-        btn12.onclick = function () {
-            setTimeFormatPreference('12');
-            syncFormatButtons();
-            refreshAllTimes();
-            updateTimeInputPlaceholders();
-            convertAllTimeInputs();
-        };
-    }
 
-    if (btn24) {
-        btn24.onclick = function () {
-            setTimeFormatPreference('24');
-            syncFormatButtons();
-            refreshAllTimes();
-            updateTimeInputPlaceholders();
-            convertAllTimeInputs();
-        };
-    }
+if (btn12) {
+    btn12.onclick = function () {
+        setTimeFormatPreference('12');
+        syncFormatButtons();
+        updateLiveClock();
+        updateTimeInputPlaceholders();
+        convertAllTimeInputs();
+    };
+}
 
-    setInterval(refreshAllTimes, 1000);
+if (btn24) {
+    btn24.onclick = function () {
+        setTimeFormatPreference('24');
+        syncFormatButtons();
+        updateLiveClock();
+        updateTimeInputPlaceholders();
+        convertAllTimeInputs();
+    };
+}
 
+setInterval(updateLiveClock, 1000);
+    
     switchView('airports');
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
