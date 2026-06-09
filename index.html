@@ -50,6 +50,10 @@
                 <i data-lucide="clock-alert"></i>
                 <span>Flight Delay Check-In Timing</span>
             </button>
+            <button type="button" id="tabSpecialServices" class="view-tab" aria-pressed="false">
+    <i data-lucide="clipboard-list"></i>
+    <span>Special Services</span>
+</button>
             <button type="button" id="tabCurrency" class="view-tab" aria-pressed="false">
                 <i data-lucide="badge-dollar-sign"></i>
                 <span>Currency</span>
@@ -366,7 +370,36 @@
         </div>
     </div>
 </div>
+<div id="specialServicesView" class="view-panel">
+    <div class="special-services-panel">
 
+        <div class="special-services-header">
+            <h2>
+                <i data-lucide="clipboard-list"></i>
+                Special Services
+            </h2>
+            <p>Quick reference for special handling processes and service-related guidance.</p>
+        </div>
+
+        <div class="special-services-search-wrap">
+            <i data-lucide="search" class="special-services-search-icon"></i>
+
+            <input
+                type="text"
+                id="specialServicesSearch"
+                placeholder="Search special service, item, or keyword..."
+                autocomplete="off"
+            >
+
+            <div id="specialServicesClearBtn" class="special-services-clear-btn hidden">
+                <i data-lucide="x"></i>
+            </div>
+        </div>
+
+        <div id="specialServicesGrid" class="special-services-grid"></div>
+
+    </div>
+</div>
 <div id="currencyView" class="view-panel">
     <div class="currency-panel">
         <div class="currency-header">
