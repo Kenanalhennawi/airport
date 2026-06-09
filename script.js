@@ -2112,17 +2112,62 @@ function buildSpecialServiceEmail(serviceId) {
     const values = getSpecialServiceFormValues(serviceId);
 
     const subject = applySpecialTemplate(service.agentEmail.subjectTemplate, values);
-
-    const plainBody = buildSpecialServicePlainEmail(service, values);
-    const htmlBody = buildSpecialServiceHtmlEmail(service, values);
+    const body = buildSpecialServiceTextTableEmail(service, values);
 
     return {
         to: Array.isArray(service.agentEmail.to) ? service.agentEmail.to.join(";") : "",
         cc: Array.isArray(service.agentEmail.cc) ? service.agentEmail.cc.join(";") : "",
         subject: subject,
-        body: plainBody,
-        htmlBody: htmlBody
+        body: body
     };
+}
+
+function buildSpecialServiceTextTableEmail(service, values) {
+    const lines = [];
+    const title = service.title || "Special Service";
+
+    lines.push("Dear Team,");
+    lines.push("");
+    lines.push("Kindly assist with the below " + title + " request.");
+    lines.push("");
+    lines.push(title + " Request Details");
+    lines.push("------------------------------------------------------------");
+
+    if (service.agentForm && Array.isArray(service.agentForm.fields)) {
+        let maxLabelLength = 0;
+
+        service.agentForm.fields.forEach(function (field) {
+            const label = field.label || field.id || "";
+            if (label.length > maxLabelLength) maxLabelLength = label.length;
+        });
+
+        service.agentForm.fields.forEach(function (field) {
+            const label = field.label || field.id || "";
+            const value = values[field.id] || "";
+            const paddedLabel = label.padEnd(maxLabelLength, " ");
+
+            lines.push(paddedLabel + " : " + value);
+        });
+    }
+
+    lines.push("------------------------------------------------------------");
+    lines.push("");
+
+    if (service.id === "falcon") {
+        lines.push("Note:");
+        lines.push("Customer has been advised that this request is subject to approval and is not a confirmation to carry the falcon(s).");
+        lines.push("");
+    }
+
+    if (service.id === "cake-on-board") {
+        lines.push("Note:");
+        lines.push("Payment link has been sent / payment status to be verified as per process.");
+        lines.push("");
+    }
+
+    lines.push("Regards");
+
+    return lines.join("\r\n");
 }
 function buildSpecialServicePlainEmail(service, values) {
     const lines = [];
@@ -2156,60 +2201,7 @@ function buildSpecialServicePlainEmail(service, values) {
     return lines.join("\n");
 }
 
-function buildSpecialServiceHtmlEmail(service, values) {
-    const title = escapeHTML(service.title || "Special Service");
 
-    let rowsHtml = "";
-
-    if (service.agentForm && Array.isArray(service.agentForm.fields)) {
-        service.agentForm.fields.forEach(function (field) {
-            const label = escapeHTML(field.label || field.id || "");
-            const value = escapeHTML(values[field.id] || "");
-
-            rowsHtml +=
-                "<tr>" +
-                    '<td style="border:1px solid #cbd5e1;padding:8px 10px;font-weight:bold;background:#f1f5f9;width:35%;">' + label + "</td>" +
-                    '<td style="border:1px solid #cbd5e1;padding:8px 10px;">' + value + "</td>" +
-                "</tr>";
-        });
-    }
-
-    let processNote = "";
-
-    if (service.id === "falcon") {
-        processNote =
-            '<p style="margin-top:14px;"><strong>Note:</strong> Customer has been advised that this request is subject to approval and is not a confirmation to carry the falcon(s).</p>';
-    }
-
-    if (service.id === "cake-on-board") {
-        processNote =
-            '<p style="margin-top:14px;"><strong>Note:</strong> Payment link has been sent / payment status to be verified as per process.</p>';
-    }
-
-    return (
-        '<div style="font-family:Arial, sans-serif;font-size:14px;color:#111827;">' +
-            "<p>Dear Team,</p>" +
-            "<p>Kindly assist with the below <strong>" + title + "</strong> request.</p>" +
-
-            '<table style="border-collapse:collapse;width:100%;max-width:850px;margin-top:12px;">' +
-                '<thead>' +
-                    '<tr>' +
-                        '<th colspan="2" style="border:1px solid #1d4ed8;padding:10px;background:#1d4ed8;color:#ffffff;text-align:left;">' +
-                            title + " Request Details" +
-                        "</th>" +
-                    "</tr>" +
-                "</thead>" +
-                "<tbody>" +
-                    rowsHtml +
-                "</tbody>" +
-            "</table>" +
-
-            processNote +
-
-            "<p>Regards</p>" +
-        "</div>"
-    );
-}
 function copySpecialServiceEmail(serviceId) {
     const email = buildSpecialServiceEmail(serviceId);
 
@@ -2265,11 +2257,10 @@ function openSpecialServiceEmail(serviceId) {
         "?to=" + encodeURIComponent(email.to || "") +
         (email.cc ? "&cc=" + encodeURIComponent(email.cc) : "") +
         "&subject=" + encodeURIComponent(email.subject || "") +
-        "&body=" + encodeURIComponent(email.htmlBody || email.body || "");
+        "&body=" + encodeURIComponent(email.body || "");
 
     window.open(outlookUrl, "_blank", "noopener,noreferrer");
 }
-
 function initialiseSpecialServices() {
     const search = document.getElementById("specialServicesSearch");
     const clearBtn = document.getElementById("specialServicesClearBtn");
