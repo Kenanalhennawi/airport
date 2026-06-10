@@ -1836,20 +1836,17 @@ function renderSpecialServices(filterText) {
                 '<div class="special-service-icon-wrap">' +
                     '<i data-lucide="' + escapeHTML(service.icon || "clipboard-list") + '"></i>' +
                 "</div>" +
-                "<div>" +
+                '<div class="special-service-heading">' +
                     "<h3>" + escapeHTML(service.title || "Untitled Service") + "</h3>" +
-                    '<div class="special-service-category">' + escapeHTML(service.category || "Special Service") + "</div>" +
+                    renderSsrBadges(service) +
                 "</div>" +
             "</div>" +
 
-            renderSpecialServiceBadges(service) +
             renderAgentQuickGuide(service) +
+            renderWorkflowHint() +
             renderAgentForm(service) +
             renderAgentEmailActions(service) +
-            renderSpecialServiceSection("Agent Process", service.agentProcess) +
-            renderSpecialServiceSection("Customer Advice", service.customerAdvice) +
-            renderHiddenDetails(service) +
-            renderSupervisorSection(service);
+            renderSpecialServiceDisclosureGroup(service);
 
         grid.appendChild(card);
     });
@@ -1857,21 +1854,13 @@ function renderSpecialServices(filterText) {
     if (typeof lucide !== "undefined") lucide.createIcons();
 }
 
-function renderSpecialServiceBadges(service) {
+function renderSsrBadges(service) {
     const badges = [];
 
     if (Array.isArray(service.ssr)) {
         service.ssr.forEach(function (item) {
             badges.push('<span class="special-service-badge">SSR: ' + escapeHTML(item) + "</span>");
         });
-    }
-
-    if (service.agentQuickGuide && service.agentQuickGuide.cutOff) {
-        badges.push('<span class="special-service-badge special-service-badge-orange">Cut-off: ' + escapeHTML(service.agentQuickGuide.cutOff) + "</span>");
-    }
-
-    if (service.agentQuickGuide && service.agentQuickGuide.approval) {
-        badges.push('<span class="special-service-badge special-service-badge-blue">Approval: ' + escapeHTML(service.agentQuickGuide.approval) + "</span>");
     }
 
     if (!badges.length) return "";
@@ -1887,27 +1876,46 @@ function renderAgentQuickGuide(service) {
     return (
         '<div class="special-agent-guide">' +
             '<div class="special-agent-guide-title">' +
-                '<i data-lucide="info"></i>' +
+                '<i data-lucide="gauge"></i>' +
                 '<span>Agent Quick Guide</span>' +
             "</div>" +
             '<div class="special-agent-guide-grid">' +
-                renderQuickGuideItem("Cut-off", guide.cutOff) +
-                renderQuickGuideItem("Approval", guide.approval) +
-                renderQuickGuideItem("Charge", guide.charge) +
-                renderQuickGuideItem("Main Action", guide.mainAction) +
+                renderQuickGuideItem("Cut-off", guide.cutOff, "clock") +
+                renderQuickGuideItem("Charge", guide.charge, "credit-card") +
+                renderQuickGuideItem("Approval", guide.approval, "shield-check") +
+                renderQuickGuideItem("Main Action", guide.mainAction, "list-checks") +
             "</div>" +
-            (guide.warning ? '<div class="special-agent-warning"><strong>Warning:</strong> ' + escapeHTML(guide.warning) + "</div>" : "") +
+            (guide.warning ? '<div class="special-agent-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + "</span></div>" : "") +
         "</div>"
     );
 }
 
-function renderQuickGuideItem(label, value) {
+function renderQuickGuideItem(label, value, icon) {
     if (!value) return "";
 
     return (
         '<div class="special-agent-guide-item">' +
-            "<strong>" + escapeHTML(label) + "</strong>" +
-            "<span>" + escapeHTML(value) + "</span>" +
+            '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
+            "<div>" +
+                "<strong>" + escapeHTML(label) + "</strong>" +
+                "<span>" + escapeHTML(value) + "</span>" +
+            "</div>" +
+        "</div>"
+    );
+}
+
+function renderWorkflowHint() {
+    return (
+        '<div class="special-workflow-strip" aria-label="Contact centre workflow">' +
+            '<span>Request</span>' +
+            '<i data-lucide="chevron-right"></i>' +
+            '<span>Quick Guide</span>' +
+            '<i data-lucide="chevron-right"></i>' +
+            '<span>Fill Form</span>' +
+            '<i data-lucide="chevron-right"></i>' +
+            '<span>Open Outlook</span>' +
+            '<i data-lucide="chevron-right"></i>' +
+            '<span>Update SF / Sprint</span>' +
         "</div>"
     );
 }
@@ -1995,26 +2003,30 @@ function renderAgentEmailActions(service) {
     );
 }
 
-function renderHiddenDetails(service) {
-    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections) || !service.hiddenDetails.sections.length) {
-        return "";
+function renderSpecialServiceDisclosureGroup(service) {
+    const serviceId = escapeHTML(service.id || "");
+    const blocks = [];
+
+    if (Array.isArray(service.agentProcess) && service.agentProcess.length) {
+        blocks.push(renderSpecialDisclosure(serviceId, "agent-process", "Show Agent Process", "route", renderSpecialServiceSection("Agent Process", service.agentProcess)));
     }
 
-    const serviceId = escapeHTML(service.id || "");
+    if (Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
+        blocks.push(renderSpecialDisclosure(serviceId, "customer-advice", "Show Customer Advice", "message-circle", renderSpecialServiceSection("Customer Advice", service.customerAdvice)));
+    }
 
-    const sectionsHtml = service.hiddenDetails.sections.map(function (section) {
-        return renderSpecialServiceSection(section.title, section.items);
-    }).join("");
+    blocks.push(renderHiddenDetailsByCategory(service, "restrictions", "Show Restrictions & Conditions", "ban"));
+    blocks.push(renderHiddenDetailsByCategory(service, "charges", "Show Charges & Limits", "circle-dollar-sign"));
+    blocks.push(renderSupervisorSection(service));
+    blocks.push(renderFullPolicyDetails(service));
+
+    const content = blocks.filter(Boolean).join("");
+
+    if (!content) return "";
 
     return (
-        '<div class="special-hidden-block">' +
-            '<button type="button" class="special-toggle-btn" data-special-action="toggle-block" data-service-id="' + serviceId + '" data-block-type="details">' +
-                '<i data-lucide="list-checks"></i>' +
-                '<span>Show Conditions / SSR / Restrictions</span>' +
-            "</button>" +
-            '<div class="special-collapsible hidden" data-special-block="' + serviceId + '-details">' +
-                sectionsHtml +
-            "</div>" +
+        '<div class="special-disclosure-group">' +
+            content +
         "</div>"
     );
 }
@@ -2026,14 +2038,93 @@ function renderSupervisorSection(service) {
 
     const serviceId = escapeHTML(service.id || "");
 
+    return renderSpecialDisclosure(
+        serviceId,
+        "supervisor",
+        "Show FS / Supervisor Process",
+        "user-check",
+        renderSpecialServiceSection(service.supervisorSection.title || "FS / Supervisor Steps", service.supervisorSection.items),
+        "special-toggle-supervisor"
+    );
+}
+
+function renderHiddenDetailsByCategory(service, category, buttonText, icon) {
+    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections) || !service.hiddenDetails.sections.length) {
+        return "";
+    }
+
+    const serviceId = escapeHTML(service.id || "");
+    const sections = service.hiddenDetails.sections.filter(function (section) {
+        return getSpecialDetailsCategory(section.title) === category;
+    });
+
+    if (!sections.length) return "";
+
+    const sectionsHtml = sections.map(function (section) {
+        return renderSpecialServiceSection(section.title, section.items);
+    }).join("");
+
+    return renderSpecialDisclosure(serviceId, category, buttonText, icon, sectionsHtml);
+}
+
+function renderFullPolicyDetails(service) {
+    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections) || !service.hiddenDetails.sections.length) {
+        return "";
+    }
+
+    const serviceId = escapeHTML(service.id || "");
+    const sectionsHtml = service.hiddenDetails.sections.map(function (section) {
+        return renderSpecialServiceSection(section.title, section.items);
+    }).join("");
+
+    return renderSpecialDisclosure(serviceId, "full-policy", "Show Full Policy", "file-text", sectionsHtml);
+}
+
+function getSpecialDetailsCategory(title) {
+    const t = normalizeSpecialServiceText(title);
+
+    if (
+        t.includes("charge") ||
+        t.includes("fare") ||
+        t.includes("limit") ||
+        t.includes("dimension") ||
+        t.includes("weight") ||
+        t.includes("baggage")
+    ) {
+        return "charges";
+    }
+
+    if (
+        t.includes("restriction") ||
+        t.includes("condition") ||
+        t.includes("timing") ||
+        t.includes("special arrangement") ||
+        t.includes("document") ||
+        t.includes("interline") ||
+        t.includes("codeshare") ||
+        t.includes("seat rule") ||
+        t.includes("refund")
+    ) {
+        return "restrictions";
+    }
+
+    return "full-policy";
+}
+
+function renderSpecialDisclosure(serviceId, type, buttonText, icon, content, extraButtonClass) {
+    if (!content) return "";
+
+    const safeType = escapeHTML(type || "details");
+    const buttonClass = "special-toggle-btn" + (extraButtonClass ? " " + extraButtonClass : "");
+
     return (
         '<div class="special-hidden-block">' +
-            '<button type="button" class="special-toggle-btn special-toggle-supervisor" data-special-action="toggle-block" data-service-id="' + serviceId + '" data-block-type="supervisor">' +
-                '<i data-lucide="user-check"></i>' +
-                '<span>Show FS / Supervisor Steps</span>' +
+            '<button type="button" class="' + buttonClass + '" data-special-action="toggle-block" data-service-id="' + serviceId + '" data-block-type="' + safeType + '" data-show-label="' + escapeHTML(buttonText) + '">' +
+                '<i data-lucide="' + escapeHTML(icon || "chevron-down") + '"></i>' +
+                '<span>' + escapeHTML(buttonText) + "</span>" +
             "</button>" +
-            '<div class="special-collapsible hidden" data-special-block="' + serviceId + '-supervisor">' +
-                renderSpecialServiceSection(service.supervisorSection.title || "FS / Supervisor Steps", service.supervisorSection.items) +
+            '<div class="special-collapsible hidden" data-special-block="' + serviceId + "-" + safeType + '">' +
+                content +
             "</div>" +
         "</div>"
     );
@@ -2067,11 +2158,8 @@ function toggleSpecialBlock(serviceId, type, button) {
         const span = button.querySelector("span");
 
         if (span) {
-            if (type === "details") {
-                span.textContent = isHidden ? "Hide Conditions / SSR / Restrictions" : "Show Conditions / SSR / Restrictions";
-            } else if (type === "supervisor") {
-                span.textContent = isHidden ? "Hide FS / Supervisor Steps" : "Show FS / Supervisor Steps";
-            }
+            const showLabel = button.dataset.showLabel || span.textContent || "Show Details";
+            span.textContent = isHidden ? showLabel.replace(/^Show\b/, "Hide") : showLabel;
         }
     }
 }
