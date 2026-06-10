@@ -2282,9 +2282,29 @@ function handleSpecialServicesClick(event) {
     }
 }
 
+function clearSpecialServiceFormValues() {
+    const grid = document.getElementById("specialServicesGrid");
+
+    if (!grid) return;
+
+    grid.querySelectorAll("input, select, textarea").forEach(function (field) {
+        if (field.type === "checkbox" || field.type === "radio") {
+            field.checked = false;
+        } else if (field.tagName === "SELECT") {
+            field.selectedIndex = 0;
+        } else {
+            field.value = "";
+        }
+
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+}
+
 function initialiseSpecialServices() {
     const search = document.getElementById("specialServicesSearch");
     const clearBtn = document.getElementById("specialServicesClearBtn");
+    const clearFormsBtn = document.getElementById("specialServicesClearFormsBtn");
     const grid = document.getElementById("specialServicesGrid");
 
     renderSpecialServices("");
@@ -2301,6 +2321,11 @@ function initialiseSpecialServices() {
             renderSpecialServices("");
             search.focus();
         });
+    }
+
+    if (clearFormsBtn && !clearFormsBtn.dataset.specialClearAttached) {
+        clearFormsBtn.addEventListener("click", clearSpecialServiceFormValues);
+        clearFormsBtn.dataset.specialClearAttached = "true";
     }
 
     if (grid && !grid.dataset.specialEventsAttached) {
