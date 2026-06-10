@@ -1237,7 +1237,10 @@ footer strong {
 }
 
 .special-services-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     margin-bottom: 24px;
 }
 
@@ -1254,7 +1257,35 @@ footer strong {
     color: #475569;
     font-weight: 600;
     max-width: 750px;
-    margin: 0 auto;
+    margin: 0;
+}
+
+.special-services-reset-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: #ffffff;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(220, 38, 38, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.special-services-reset-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
+}
+
+.special-services-reset-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .special-services-search-wrap {
@@ -1453,6 +1484,20 @@ footer strong {
     .special-services-panel {
         padding: 18px;
         margin: 14px auto;
+    }
+
+    .special-services-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .special-services-header h2 {
+        justify-content: center;
+    }
+
+    .special-services-reset-btn {
+        width: 100%;
     }
 
     .special-services-grid {
