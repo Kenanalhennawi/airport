@@ -2387,6 +2387,24 @@ footer strong {
     background: #fff7ed;
 }
 
+.operations-ssr-table tbody tr.operations-search-selected,
+.operations-fee-table tbody tr.operations-search-selected {
+    background: #dbeafe;
+    box-shadow: inset 5px 0 0 var(--fz-blue);
+}
+
+.operations-ssr-table tbody tr.operations-search-selected td,
+.operations-fee-table tbody tr.operations-search-selected td {
+    border-top-color: #2563eb;
+    border-bottom-color: #2563eb;
+}
+
+.operations-ssr-table tbody tr.operations-search-selected td:first-child,
+.operations-fee-table tbody tr.operations-search-selected td:first-child {
+    background: #bfdbfe;
+    color: #0f3f66;
+}
+
 .operations-ssr-table tbody tr + tr td {
     border-top: 3px solid #7dd3fc;
 }
