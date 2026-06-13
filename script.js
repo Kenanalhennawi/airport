@@ -2897,7 +2897,7 @@ const operationsGuideData = [
             action: "Use SSR-specific cut-off and check whether medical or approval documents are required.",
             warning: "WCHC and medical-sensitive requests may require document verification or approval."
         },
-        classifications: ["WCHR / WCHS / WCHC", "DPNA", "PPOC", "SVAN", "RSTD", "BLND / DEAF"],
+        classifications: ["Wheelchair", "WCHR / WCHS / WCHC", "DPNA", "PPOC", "SVAN", "RSTD", "BLND / DEAF"],
         sections: [
             {
                 title: "Cut-offs",
@@ -3090,16 +3090,106 @@ const operationsGuideData = [
     }
 ];
 
+const operationsCategoryData = [
+    { id: "products", label: "Products", icon: "shopping-bag" },
+    { id: "ssr", label: "SSR / Ancillary", icon: "list-checks" },
+    { id: "airport", label: "Airport / Ops", icon: "plane-takeoff" },
+    { id: "disruption", label: "Disruption", icon: "route" }
+];
+
+let activeOperationsCategory = "products";
+let activeOperationsSearch = "";
+
+function getOperationsTopicCategory(topic) {
+    const id = topic && topic.id;
+
+    if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs"].includes(id)) return "products";
+    if (["ssr-guide", "standard-ssr-cutoffs", "economy-seating-matrix", "baggage-upgrade-matrix", "assistance-medical", "equipment-animals", "travel-shops-cutoffs"].includes(id)) return "ssr";
+    if (["operational-airport-ssrs"].includes(id)) return "airport";
+    if (["auto-split-od", "g-fare-rules"].includes(id)) return "disruption";
+
+    return "products";
+}
+
+function buildOperationsTopicSearchText(topic) {
+    const parts = [
+        topic.id,
+        topic.title,
+        topic.icon,
+        ...(topic.classifications || [])
+    ];
+
+    if (topic.quickGuide) {
+        Object.keys(topic.quickGuide).forEach(function (key) {
+            parts.push(topic.quickGuide[key]);
+        });
+    }
+
+    if (Array.isArray(topic.sections)) {
+        topic.sections.forEach(function (section) {
+            parts.push(section.title);
+            if (Array.isArray(section.items)) parts.push(section.items.join(" "));
+        });
+    }
+
+    if (Array.isArray(topic.ssrRows)) {
+        topic.ssrRows.forEach(function (row) {
+            parts.push(row.join(" "));
+        });
+    }
+
+    return normalizeSpecialServiceText(parts.filter(Boolean).join(" "));
+}
+
+function getFilteredOperationsTopics() {
+    const query = normalizeSpecialServiceText(activeOperationsSearch);
+
+    const filtered = operationsGuideData.filter(function (topic) {
+        const categoryMatch = !query && getOperationsTopicCategory(topic) === activeOperationsCategory;
+        const searchMatch = query && buildOperationsTopicSearchText(topic).includes(query);
+
+        return categoryMatch || searchMatch;
+    });
+
+    if (!query) return filtered;
+
+    return filtered.sort(function (a, b) {
+        return getOperationsSearchScore(b, query) - getOperationsSearchScore(a, query);
+    });
+}
+
+function getOperationsSearchScore(topic, query) {
+    let score = 0;
+    const title = normalizeSpecialServiceText(topic.title || "");
+    const classifications = normalizeSpecialServiceText((topic.classifications || []).join(" "));
+    const quickGuide = normalizeSpecialServiceText(Object.values(topic.quickGuide || {}).join(" "));
+    const sections = normalizeSpecialServiceText((topic.sections || []).map(function (section) {
+        return [section.title, ...(section.items || [])].join(" ");
+    }).join(" "));
+    const ssrRows = normalizeSpecialServiceText((topic.ssrRows || []).map(function (row) {
+        return row.join(" ");
+    }).join(" "));
+
+    if (title.includes(query)) score += 120;
+    if (classifications.includes(query)) score += 90;
+    if (ssrRows.includes(query)) score += 75;
+    if (quickGuide.includes(query)) score += 45;
+    if (sections.includes(query)) score += 25;
+
+    return score;
+}
+
 function renderOperationsGuide(activeId) {
     const tabs = document.getElementById("operationsTabs");
     const content = document.getElementById("operationsContent");
-    const activeTopic = operationsGuideData.find(function (topic) {
+    const visibleTopics = getFilteredOperationsTopics();
+    const activeTopic = visibleTopics.find(function (topic) {
         return topic.id === activeId;
-    }) || operationsGuideData[0];
+    }) || visibleTopics[0] || operationsGuideData[0];
 
     if (!tabs || !content || !activeTopic) return;
 
-    tabs.innerHTML = operationsGuideData.map(function (topic) {
+    tabs.innerHTML = renderOperationsControls() + visibleTopics.map(function (topic) {
         const activeClass = topic.id === activeTopic.id ? " active" : "";
 
         return (
@@ -3108,11 +3198,34 @@ function renderOperationsGuide(activeId) {
                 '<span>' + escapeHTML(topic.title) + "</span>" +
             "</button>"
         );
-    }).join("");
+    }).join("") + (!visibleTopics.length ? '<div class="operations-empty">No operations topic found.</div>' : "");
 
     content.innerHTML = renderOperationsTopic(activeTopic);
 
     if (typeof lucide !== "undefined") lucide.createIcons();
+}
+
+function renderOperationsControls() {
+    const categories = operationsCategoryData.map(function (category) {
+        const activeClass = !activeOperationsSearch && category.id === activeOperationsCategory ? " active" : "";
+
+        return (
+            '<button type="button" class="operations-category-btn' + activeClass + '" data-operations-category="' + escapeHTML(category.id) + '">' +
+                '<i data-lucide="' + escapeHTML(category.icon) + '"></i>' +
+                '<span>' + escapeHTML(category.label) + '</span>' +
+            '</button>'
+        );
+    }).join("");
+
+    return (
+        '<div class="operations-control-bar">' +
+            '<div class="operations-category-list">' + categories + '</div>' +
+            '<div class="operations-search-wrap">' +
+                '<i data-lucide="search"></i>' +
+                '<input type="text" id="operationsSearch" value="' + escapeHTML(activeOperationsSearch) + '" placeholder="Search ops, SSR, channel, or keyword..." autocomplete="off">' +
+            '</div>' +
+        '</div>'
+    );
 }
 
 function renderOperationsTopic(topic) {
@@ -3235,8 +3348,16 @@ function filterOperationsSsrRows(query) {
 }
 
 function handleOperationsClick(event) {
+    const category = event.target.closest("[data-operations-category]");
     const tab = event.target.closest("[data-operations-id]");
     const toggle = event.target.closest("[data-operations-block]");
+
+    if (category) {
+        activeOperationsCategory = category.dataset.operationsCategory || "products";
+        activeOperationsSearch = "";
+        renderOperationsGuide();
+        return;
+    }
 
     if (tab) {
         renderOperationsGuide(tab.dataset.operationsId);
@@ -3259,6 +3380,17 @@ function handleOperationsClick(event) {
 }
 
 function handleOperationsInput(event) {
+    if (event.target && event.target.id === "operationsSearch") {
+        activeOperationsSearch = event.target.value || "";
+        renderOperationsGuide();
+        const search = document.getElementById("operationsSearch");
+        if (search) {
+            search.focus();
+            search.setSelectionRange(search.value.length, search.value.length);
+        }
+        return;
+    }
+
     if (event.target && event.target.id === "operationsSsrSearch") {
         filterOperationsSsrRows(event.target.value);
     }
