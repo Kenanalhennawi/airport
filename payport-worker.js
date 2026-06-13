@@ -62,7 +62,7 @@ export default {
         const amount = requestUrl.searchParams.get("amount") || "10.00";
         const from = requestUrl.searchParams.get("from") || "United States Dollar (USD)";
         const to = requestUrl.searchParams.get("to") || "United Arab Emirates Dirham (AED)";
-        const period = requestUrl.searchParams.get("period") || "07-Jun-2026";
+        const period = requestUrl.searchParams.get("period") || getTodayPayPortPeriod();
 
         if (!isValidAmount(amount)) {
             return json(
@@ -170,6 +170,16 @@ export default {
 function isValidAmount(value) {
     const n = Number(value);
     return Number.isFinite(n) && n > 0 && n <= 1000000;
+}
+
+function getTodayPayPortPeriod() {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const today = new Date();
+    const day = String(today.getUTCDate()).padStart(2, "0");
+    const month = months[today.getUTCMonth()];
+    const year = today.getUTCFullYear();
+
+    return `${day}-${month}-${year}`;
 }
 
 function corsHeaders(request) {
