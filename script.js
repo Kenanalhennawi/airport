@@ -2781,15 +2781,59 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "travel-insurance",
+        title: "Travel Insurance",
+        icon: "shield-check",
+        quickGuide: {
+            channel: "All channels except GDS / OTA; UAE Travel Shop follows D > 4",
+            timing: "Can be added before journey commences through eligible channels",
+            type: "XCover insurance ancillary",
+            action: "Check passenger type, booking type, trip dates, and async status before adding or advising refund.",
+            warning: "Insurance is non-refundable and cannot be added to asynchronous bookings."
+        },
+        classifications: ["INS", "Insurance", "TravelGuard", "Travel Guard", "XCover", "Cover Genius"],
+        sections: [
+            {
+                title: "Eligibility",
+                items: [
+                    "Applicable for adults and children only; infants are out of scope.",
+                    "Available through all channels except GDS and OTA.",
+                    "Supported booking types exclude multicity, interline, and codeshare.",
+                    "Available when adding passengers or segments if the booking remains eligible.",
+                    "Trip coverage must be within 90 days.",
+                    "Trip start date must be within 150 days from booking."
+                ]
+            },
+            {
+                title: "Modification / Refund Rules",
+                items: [
+                    "Insurance is non-refundable.",
+                    "If booking modification creates an asynchronous booking, insurance drops from the entire PNR and is not refunded.",
+                    "Insurance continues to exist with XCover for the original dates after such modification.",
+                    "Insurance cannot be added to asynchronous bookings; consult Shift In Charge for guidance.",
+                    "Refund of difference is possible if insurance is changed to a lower slab."
+                ]
+            },
+            {
+                title: "Policy Email",
+                items: [
+                    "After successful purchase, policy email is triggered from XCover.com to the passenger who made the booking.",
+                    "To resend policy email, Contact Centre escalates through Salesforce with PNR and required action.",
+                    "Supervisor / Floor Support handles the resend request."
+                ]
+            }
+        ]
+    },
+    {
         id: "standard-ssr-cutoffs",
         title: "Standard SSR Cut-offs",
         icon: "timer",
         quickGuide: {
             channel: "Website / Manage Booking, Contact Centre, OLCI, Travel Shop where applicable",
-            timing: "Meal 24h, Seat 3h, Baggage 6h existing booking, Insurance before journey commences",
+            timing: "Meal 24h, Seat 3h, Baggage 6h existing / 2h new or modify, Insurance before journey commences",
             type: "Pre-purchased SSR / ancillary cut-off matrix",
             action: "Check booking scenario first: existing booking, modification, or new booking.",
-            warning: "For new booking requests via Contact Centre, seats, baggage, and insurance can be added up to 2h before departure."
+            warning: "Travel Shop D-rules can be stricter than web / Contact Centre flows; use Travel Shops Cut-offs when the channel is a UAE shop."
         },
         classifications: ["From consolidated GO TO guide", "Lite / Value / Flex / Business"],
         sections: [
@@ -2798,7 +2842,7 @@ const operationsGuideData = [
                 items: [
                     "Special Meal SPML: selected up to 24 hours prior to departure.",
                     "Seat selection: up to 3 hours prior to departure.",
-                    "Travel insurance: added any time before the journey commences.",
+                    "Travel insurance: added any time before the journey commences through eligible channels; UAE Travel Shop requests follow D > 4.",
                     "Baggage add or upgrade for existing booking: up to 6 hours prior via Website, Contact Centre, or OLCI.",
                     "Modifying a flight and adding baggage: Website up to 2 hours prior; Contact Centre must seek Supervisor approval up to 2 hours prior.",
                     "New booking and adding baggage: up to 2 hours prior via Website or Contact Centre; Contact Centre requires Supervisor approval."
@@ -3012,14 +3056,39 @@ const operationsGuideData = [
             {
                 title: "Cut-offs",
                 items: [
+                    "Fare-rule upgrade: Economy passenger can upgrade to Business up to 2 hours before departure by paying applicable fare difference.",
                     "Bidding for upgrades: starts any time.",
                     "Bidding cut-off: 18 hours for outstations.",
                     "Bidding cut-off: 10 hours for Dubai.",
+                    "Successful bidding notification is sent around 6 hours before departure.",
                     "OLCI banner upgrade for Dubai departures: from 48 hours down to 3 hours before departure.",
                     "OLCI banner upgrade for outstation departures: from 48 hours down to 12 hours before departure.",
                     "Airport counter upgrade: up to 2 hours prior to departure.",
                     "Airport Business Class upgrade applies to DXB Terminal 2 and Terminal 3 departure flights.",
-                    "Passenger can purchase upgrade to J class at check-in desk for FZ flights when offered D-2 hours."
+                    "Airport upgrade is handled at airport only and may be offered to FZ, codeshare, and interline bookings when eligible."
+                ]
+            },
+            {
+                title: "OLCI / Bid Restrictions",
+                items: [
+                    "OLCI upgrade applies to all passengers in the booking; one-passenger-only upgrade is restricted.",
+                    "OLCI upgrade payment is by debit or credit card only.",
+                    "Bookings paid using miles are not eligible for OLCI upgrade.",
+                    "Bookings with infants, balance due, codeshare, interline, connection, circular, GDS, group, staff, or asynchronous status are not eligible for OLCI upgrade.",
+                    "If passenger already paid for seat or extra baggage, those amounts are not refunded after upgrade.",
+                    "Lounge access is not included for OLCI or bid upgrades unless the passenger is eligible by tier."
+                ]
+            },
+            {
+                title: "Bidding Notes",
+                items: [
+                    "Credit card is authorized during bidding but charged only if the bid is successful.",
+                    "If authorization fails, upgrade is not triggered and PNR remains untouched.",
+                    "After successful bid, booking is automatically modified to Business Class.",
+                    "Fare basis after bid upgrade is ZOFFER in SPRINT.",
+                    "History shows SSR PGRD with payment amount.",
+                    "Once passenger checks in online, bidding is automatically cancelled.",
+                    "All bid upgrades are non-transferable and non-refundable."
                 ]
             },
             {
@@ -3031,6 +3100,52 @@ const operationsGuideData = [
                     "Product includes free IFE on board.",
                     "Product includes J class meal.",
                     "Use SSR / code BUPZ where applicable for Business Class airport upgrade handling."
+                ]
+            }
+        ]
+    },
+    {
+        id: "masd-meet-assist",
+        title: "MASD Meet & Assist",
+        icon: "user-check",
+        quickGuide: {
+            channel: "Business Class team / OLCI / Contact Centre call handling",
+            timing: "DXB Terminal 2 Business Class departures; default time D-3h if passenger does not select",
+            type: "Meet and Assist Service SSR",
+            action: "Check MASD SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
+            warning: "Not for bid upgrades, OLCI upgrades, airport upgrades, LNGN no-lounge bookings, transit passengers, DXB T3, or outstation departures."
+        },
+        classifications: ["MASD", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
+        sections: [
+            {
+                title: "Eligibility",
+                items: [
+                    "Passenger must be travelling on a commercial Business Class booking.",
+                    "Flight must depart from DXB Terminal 2.",
+                    "MASD SSR is automatically added during booking creation for eligible passengers and flights.",
+                    "Business Class team may contact passenger to introduce the service and encourage OLCI opt-in."
+                ]
+            },
+            {
+                title: "Contact Centre Handling",
+                items: [
+                    "Confirm whether passenger is asking about an email received from flydubai regarding MASD.",
+                    "Retrieve PNR and check SSRs / comments.",
+                    "Verify MASD SSR exists and that Business Team comment is present if outbound call was attempted.",
+                    "Confirm the MASD SSR is associated with the correct eligible flight and that the flight segment was not changed.",
+                    "Advise passenger they can update MASD via OLCI by selecting preferred airport arrival time.",
+                    "If no preference is selected, passenger can access the service at Business Class check-in area near Entrance 3 at DXB T2.",
+                    "Update SPRINT comments after handling the call."
+                ]
+            },
+            {
+                title: "Exclusions",
+                items: [
+                    "Staff, discounted, or rebate bookings.",
+                    "Passengers upgraded through bid upgrade, OLCI upgrade, or airport upgrade.",
+                    "Bookings with SSR UPGJ or SSR LNGN.",
+                    "Transit passengers at DXB Terminal 2.",
+                    "Flights departing from DXB Terminal 3 or any outstation airport."
                 ]
             }
         ]
@@ -3074,12 +3189,27 @@ const operationsGuideData = [
         classifications: ["BHFT", "CCHK", "ID50 baggage", "LRPT / ERPT"],
         sections: [
             {
-                title: "Operational SSRs",
+                title: "BHFT Hold My Fare",
                 items: [
-                    "Hold My Fare BHFT: sale cut-off is 50 hours before departure; hold time limit is 49 hours.",
+                    "Hold fee is AED 29 per PNR and is non-refundable.",
+                    "Economy can be held up to 24h; Business can be held up to 72h depending booking creation time.",
+                    "Sale cut-off is 50 hours before departure and hold time limit cut-off is 49 hours before departure.",
+                    "Interline and codeshare bookings are not eligible.",
+                    "Agent can identify the booking by SSR BHFT in booking history.",
+                    "Contact Centre can help complete payment by payment link, miles/voucher, or payment IVR unless Pay by Cash was selected initially.",
+                    "Refund is only during IROP."
+                ]
+            },
+            {
+                title: "Credit Card / Staff / Reporting SSRs",
+                items: [
                     "Credit Card Verification CCHK: must be done at least 4 hours prior to departure at the airport if not verified elsewhere.",
+                    "Bookings with CCHK cannot complete online check-in until verification is resolved.",
                     "Staff ID50 Waitlist Baggage: added before the 6-hour cut-off.",
-                    "Early / Late Reporting DXB T2 only: LRPT within 6 hours of flight and ERPT within 12 hours of earlier flight."
+                    "Early / Late Reporting applies to DXB T2 departures only and is handled at airport only.",
+                    "LRPT: late reporting after check-in counter closure but before departure; available within 6h of original flight departure.",
+                    "ERPT: early reporting for an earlier flight that is not closed; available within 12h of earlier flight departure.",
+                    "ERPT charge is AED 100 per passenger; LRPT charge is AED 200 per passenger."
                 ]
             }
         ]
@@ -3153,7 +3283,7 @@ const operationsGuideData = [
             ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "Special meal cut-off D > 24", "Meal service", "As per meal / fare product", "Catering exception only", "SPML: special meal must be selected more than 24h before departure. MLIN: meal included where applicable by fare / cabin. Business meal included; special meal selection still follows D > 24 cut-off."],
             ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "Contact Centre, Website / Manage Booking where available, Travel Shop, Airport", "Request as early as possible before departure", "Assistance SSR", "Free service", "WCHC requires medical document verification where applicable", "WCHR: wheelchair for ramp. WCHS: wheelchair for steps. WCHC: wheelchair to cabin seat and only upon verification of medical documents where required. Companion should travel in the same cabin when assistance is required."],
             ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "WCBD: dry battery wheelchair. WCBW: wet battery wheelchair. WCLB: lithium battery wheelchair. Battery type, protection, and airport acceptance checks must be confirmed before travel."],
-            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Travel shop cut-off D > 4", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Add only where the product is eligible and payment can be completed through the available channel."],
+            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Before journey commences through eligible channels; UAE Travel Shop cut-off D > 4", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Available for adults and children only; infants are out of scope. Not available for GDS, OTA, multicity, interline, codeshare, or asynchronous bookings. If modification creates an asynchronous booking, insurance drops from the PNR and is not refunded. Policy email is sent by XCover; resend requests are escalated through Salesforce to Supervisor / Floor Support."],
             ["TRBF", "Transfer Baggage Fee", "Airport / transfer handling flow; Contact Centre can advise", "Applies when baggage through-tagging / retagging is required", "Transfer baggage", "As applicable by airport / transfer process", "Depends itinerary and baggage status", "Dubai: applies to transfer passengers whose baggage needs retagging because it was short-tagged from origin. Outstation: applies for two separate tickets when bags need through-tagging to final destination. Not applicable to connections over 24h. If passenger no-shows the onward connected flight, baggage is offloaded / not transferred."],
             ["Airport J Upgrade", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights on FZ where offered. Includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
             ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "SSR PRNT: AED 25 + VAT per document, maximum 3 papers. Applies to DXB T2 departures only. Applicable to FZ, codeshare, interline, and staff passengers. Handled at airport only."],
@@ -3181,7 +3311,7 @@ function getOperationsTopicCategory(topic) {
 
     if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs"].includes(id)) return "products";
     if (["ssr-guide", "standard-ssr-cutoffs", "economy-seating-matrix", "baggage-upgrade-matrix", "assistance-medical", "equipment-animals", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs", "airport-shop-fees"].includes(id)) return "airport";
+    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist"].includes(id)) return "airport";
     if (["auto-split-od", "g-fare-rules"].includes(id)) return "disruption";
 
     return "products";
