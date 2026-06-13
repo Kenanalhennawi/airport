@@ -404,40 +404,72 @@ function updateLiveClock() {
 }
 
 function populateInterlineTable() {
-    const carrierModal = document.getElementById('carrierModal');
     const carrierTableBody = document.getElementById('carrierTableBody');
-    const modalTable = carrierModal && carrierModal.querySelector('.carrier-table');
+    const carrierModalTableBody = document.getElementById('carrierModalTableBody');
+    const carriers = getUniqueInterlineCarriers();
 
-    if (!modalTable || !modalTable.tBodies[0] || !carrierTableBody) return;
+    if (!carrierTableBody && !carrierModalTableBody) return;
 
-    carrierTableBody.innerHTML = '';
+    if (carrierModalTableBody) {
+        carrierModalTableBody.innerHTML = '';
+        carriers.forEach(function (carrier, i) {
+            carrierModalTableBody.appendChild(createInterlineCarrierRow(carrier, i));
+        });
+    }
 
-    const rows = Array.from(modalTable.tBodies[0].rows).map(function (r) {
-        return r.cloneNode(true);
-    });
+    if (carrierTableBody) {
+        const sortedCarriers = carriers.slice().sort(function (a, b) {
+            const nameA = (a.carrier || '').trim().toLowerCase();
+            const nameB = (b.carrier || '').trim().toLowerCase();
 
+            return nameA.localeCompare(nameB);
+        });
+
+        carrierTableBody.innerHTML = '';
+        sortedCarriers.forEach(function (carrier, i) {
+            carrierTableBody.appendChild(createInterlineCarrierRow(carrier, i));
+        });
+    }
+}
+
+function getUniqueInterlineCarriers() {
+    const data = Array.isArray(window.interlineCarriers) ? window.interlineCarriers : [];
     const seen = new Set();
 
-    const unique = rows.filter(function (r) {
-        const code = (r.cells[2] && r.cells[2].textContent || '').trim();
+    return data.filter(function (carrier) {
+        const code = (carrier.code || '').trim();
 
         if (!code || seen.has(code)) return false;
 
         seen.add(code);
         return true;
     });
+}
 
-    unique.sort(function (a, b) {
-        const nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
-        const nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
+function createInterlineCarrierRow(carrier, index) {
+    const row = document.createElement('tr');
+    const cells = [
+        index + 1,
+        carrier.carrier,
+        carrier.code,
+        carrier.account,
+        carrier.host,
+        carrier.type,
+        carrier.iatci,
+        carrier.iatciType,
+        carrier.throughCheckInBp,
+        carrier.throughCheckInBag,
+        carrier.bpAtTransfer,
+        carrier.remarks
+    ];
 
-        return nameA.localeCompare(nameB);
+    cells.forEach(function (value) {
+        const cell = document.createElement('td');
+        cell.textContent = value || '';
+        row.appendChild(cell);
     });
 
-    unique.forEach(function (row, i) {
-        if (row.cells[0]) row.cells[0].textContent = i + 1;
-        carrierTableBody.appendChild(row);
-    });
+    return row;
 }
 
 var delayPolicyData = [
