@@ -2005,7 +2005,7 @@ function renderSpecialServices(filterText) {
             "</div>" +
 
             renderAgentQuickGuide(service) +
-            renderWorkflowHint() +
+            renderWorkflowHint(service) +
             renderAgentForm(service) +
             renderAgentEmailActions(service) +
             renderSpecialServiceDisclosureGroup(service);
@@ -2066,7 +2066,10 @@ function renderQuickGuideItem(label, value, icon) {
     );
 }
 
-function renderWorkflowHint() {
+function renderWorkflowHint(service) {
+    const hasEmailWorkflow = !!(service && service.agentEmail && service.agentEmail.enabled);
+    const actionStep = hasEmailWorkflow ? "Open Outlook" : "Apply SSR / Escalate";
+
     return (
         '<div class="special-workflow-strip" aria-label="Contact centre workflow">' +
             '<span>Request</span>' +
@@ -2075,7 +2078,7 @@ function renderWorkflowHint() {
             '<i data-lucide="chevron-right"></i>' +
             '<span>Fill Form</span>' +
             '<i data-lucide="chevron-right"></i>' +
-            '<span>Open Outlook</span>' +
+            '<span>' + escapeHTML(actionStep) + "</span>" +
             '<i data-lucide="chevron-right"></i>' +
             '<span>Update SF / Sprint</span>' +
         "</div>"
