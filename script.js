@@ -3414,14 +3414,18 @@ function renderOperationsSsrTable(rows) {
 function renderOperationsSsrCell(cell, index) {
     const text = String(cell || "");
     const lines = splitOperationsSsrCell(text, index);
+    const classNames = ["operations-ssr-col-" + index];
 
     if (lines.length <= 1) {
-        const className = index === 0 ? ' class="operations-ssr-code-cell"' : "";
-        return '<td' + className + '>' + escapeHTML(text) + '</td>';
+        if (index === 0) classNames.push("operations-ssr-code-cell");
+        return '<td class="' + classNames.join(" ") + '">' + escapeHTML(text) + '</td>';
     }
 
+    classNames.push("operations-ssr-lines");
+    if (index === 7) classNames.push("operations-ssr-key-notes");
+
     return (
-        '<td class="operations-ssr-lines">' +
+        '<td class="' + classNames.join(" ") + '">' +
             lines.map(function (line) {
                 const codeMatch = line.match(/^(BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG)\b/i);
                 const label = codeMatch ? '<strong>' + escapeHTML(codeMatch[1].trim()) + '</strong> ' : "";
@@ -3444,6 +3448,20 @@ function splitOperationsSsrCell(text, index) {
         return codeSplit.split("\n").map(function (line) {
             return line.replace(/^,\s*/, "").trim();
         }).filter(Boolean);
+    }
+
+    if (index === 5 && /[,;]/.test(text) && text.length > 45) {
+        return text.split(/[,;]\s+/).map(function (line) {
+            return line.trim().replace(/\.$/, "");
+        }).filter(Boolean);
+    }
+
+    if (index === 7) {
+        const sentenceLines = text.split(/(?<=\.)\s+|;\s+/).map(function (line) {
+            return line.trim();
+        }).filter(Boolean);
+
+        return sentenceLines.length > 1 ? sentenceLines : [text];
     }
 
     if (text.length < 95) return [text];
