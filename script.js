@@ -1619,60 +1619,60 @@ const payportCurrencies = [
 ];
 
 const currencyFlagByCode = {
-    AFN: "🇦🇫",
-    AUD: "🇦🇺",
-    AZN: "🇦🇿",
-    BHD: "🇧🇭",
-    BDT: "🇧🇩",
-    BYN: "🇧🇾",
-    CAD: "🇨🇦",
-    XCG: "🇨🇼",
-    CZK: "🇨🇿",
-    DKK: "🇩🇰",
-    DJF: "🇩🇯",
-    EGP: "🇪🇬",
-    ERN: "🇪🇷",
-    ETB: "🇪🇹",
-    EUR: "🇪🇺",
-    FJD: "🇫🇯",
-    HKD: "🇭🇰",
-    HUF: "🇭🇺",
-    INR: "🇮🇳",
-    IDR: "🇮🇩",
-    IRR: "🇮🇷",
-    JOD: "🇯🇴",
-    KZT: "🇰🇿",
-    KES: "🇰🇪",
-    KWD: "🇰🇼",
-    LYD: "🇱🇾",
-    MYR: "🇲🇾",
-    NPR: "🇳🇵",
-    ILS: "🇮🇱",
-    NZD: "🇳🇿",
-    NOK: "🇳🇴",
-    OMR: "🇴🇲",
-    PKR: "🇵🇰",
-    PLN: "🇵🇱",
-    QAR: "🇶🇦",
-    RUB: "🇷🇺",
-    SAR: "🇸🇦",
-    RSD: "🇷🇸",
-    SGD: "🇸🇬",
-    SSP: "🇸🇸",
-    LKR: "🇱🇰",
-    SDG: "🇸🇩",
-    SEK: "🇸🇪",
-    CHF: "🇨🇭",
-    SYP: "🇸🇾",
-    TZS: "🇹🇿",
-    THB: "🇹🇭",
-    TRY: "🇹🇷",
-    GBP: "🇬🇧",
-    UAH: "🇺🇦",
-    AED: "🇦🇪",
-    USD: "🇺🇸",
-    UZS: "🇺🇿",
-    ZWG: "🇿🇼"
+    AFN: "af",
+    AUD: "au",
+    AZN: "az",
+    BHD: "bh",
+    BDT: "bd",
+    BYN: "by",
+    CAD: "ca",
+    XCG: "cw",
+    CZK: "cz",
+    DKK: "dk",
+    DJF: "dj",
+    EGP: "eg",
+    ERN: "er",
+    ETB: "et",
+    EUR: "eu",
+    FJD: "fj",
+    HKD: "hk",
+    HUF: "hu",
+    INR: "in",
+    IDR: "id",
+    IRR: "ir",
+    JOD: "jo",
+    KZT: "kz",
+    KES: "ke",
+    KWD: "kw",
+    LYD: "ly",
+    MYR: "my",
+    NPR: "np",
+    ILS: "il",
+    NZD: "nz",
+    NOK: "no",
+    OMR: "om",
+    PKR: "pk",
+    PLN: "pl",
+    QAR: "qa",
+    RUB: "ru",
+    SAR: "sa",
+    RSD: "rs",
+    SGD: "sg",
+    SSP: "ss",
+    LKR: "lk",
+    SDG: "sd",
+    SEK: "se",
+    CHF: "ch",
+    SYP: "sy",
+    TZS: "tz",
+    THB: "th",
+    TRY: "tr",
+    GBP: "gb",
+    UAH: "ua",
+    AED: "ae",
+    USD: "us",
+    UZS: "uz",
+    ZWG: "zw"
 };
 
 function getCurrencyCode(currencyName) {
@@ -1680,17 +1680,21 @@ function getCurrencyCode(currencyName) {
     return match ? match[1] : "";
 }
 
-function getCurrencyFlag(currencyName) {
-    return currencyFlagByCode[getCurrencyCode(currencyName)] || "🏳️";
+function getCurrencyFlagUrl(currencyName) {
+    const countryCode = currencyFlagByCode[getCurrencyCode(currencyName)];
+    return countryCode ? `https://flagcdn.com/24x18/${countryCode}.png` : "";
 }
 
 function renderCurrencySelectOption(data, escape) {
     const label = data.text || data.value || "";
-    const flag = getCurrencyFlag(label);
+    const flagUrl = getCurrencyFlagUrl(label);
+    const flagMarkup = flagUrl
+        ? `<img class="currency-select-flag" src="${flagUrl}" alt="">`
+        : '<span class="currency-select-flag currency-select-flag-fallback" aria-hidden="true"></span>';
 
     return [
         '<div class="currency-select-option">',
-        '<span class="currency-select-flag" aria-hidden="true">', flag, '</span>',
+        flagMarkup,
         '<span class="currency-select-label">', escape(label), '</span>',
         '</div>'
     ].join("");
