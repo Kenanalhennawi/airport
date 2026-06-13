@@ -1373,7 +1373,7 @@ function renderCards(filterText) {
                     '<div>' +
                         '<div class="iata-code">' + safeIata + '</div>' +
                         '<div class="city-name">' +
-                            '<img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '" onerror="this.style.display=\'none\';">' +
+                            '<img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '">' +
                             '<span>' + safeCity + '</span>' +
                         '</div>' +
                         '<div class="country-name"><span class="meta-label">Country:</span> ' + safeCountry + '</div>' +
@@ -1403,6 +1403,13 @@ function renderCards(filterText) {
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
         const timeIn = card.querySelector('#timeIn-' + airport.iata);
+        const flagImg = card.querySelector('.flag-icon');
+
+        if (flagImg) {
+            flagImg.addEventListener('error', function () {
+                flagImg.style.display = 'none';
+            });
+        }
 
         const runCalc = function () {
             if (dateIn) formatDateInput(dateIn);
