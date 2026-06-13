@@ -2304,8 +2304,8 @@ footer strong {
 
 .operations-ssr-table th,
 .operations-ssr-table td {
-    padding: 9px 10px;
-    border-bottom: 1px solid #dbeafe;
+    padding: 11px 10px;
+    border-bottom: 1px solid #bfdbfe;
     border-right: 1px solid rgba(226, 232, 240, 0.8);
     text-align: left;
     vertical-align: top;
@@ -2331,6 +2331,18 @@ footer strong {
 
 .operations-ssr-table tbody tr:hover {
     background: #fff7ed;
+}
+
+.operations-ssr-table tbody tr + tr td {
+    border-top: 3px solid #7dd3fc;
+}
+
+.operations-ssr-table tbody tr + tr td:first-child {
+    border-top-color: #0284c7;
+}
+
+.operations-ssr-table tbody tr + tr td:last-child {
+    border-top-color: #fb923c;
 }
 
 .operations-ssr-table td:first-child {
