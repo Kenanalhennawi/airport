@@ -1223,9 +1223,46 @@ footer strong {
         font-size: 2rem;
     }
 
+    .view-tabs {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 8px;
+        margin-left: -14px;
+        margin-right: -14px;
+        padding: 0 14px 10px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .view-tabs::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .view-tabs::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+    }
+
+    .view-tabs::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.55);
+        border-radius: 999px;
+    }
+
     .view-tab {
-        width: 100%;
+        flex: 0 0 auto;
+        width: auto;
+        min-width: max-content;
         justify-content: center;
+        padding: 10px 14px;
+        scroll-snap-align: start;
+        white-space: nowrap;
+    }
+
+    .view-tab svg {
+        width: 18px;
+        height: 18px;
     }
 
     .cards-grid {
