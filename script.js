@@ -2783,17 +2783,21 @@ const operationsGuideData = [
             warning: "Some rows are ancillary/service actions rather than technical SSRs; open the full policy or SPRINT flow before applying."
         },
         ssrRows: [
-            ["PETC", "Falcon", "Salesforce / Supervisor / Reservations Support", "48h+", "Approval request", "AED 1500 per falcon per direction", "Yes"],
-            ["CAKE", "Cake on Board", "Email + Supervisor / FS", "48h+", "Catering request", "As per cake option", "Special stations require Shift In Charge"],
-            ["FRBS", "Fruit Basket", "SPRINT", "48h", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned"],
-            ["EXST / CBBG", "Extra Seat / Cabin Baggage", "SPRINT / agent handling", "2h", "Seat / cabin baggage", "Equal fare + seat charges", "Depends booking type"],
-            ["SPEQ / SPEX", "Sporting Equipment", "SPRINT / FS", "24h", "Special baggage", "AED 150 / AED 270", "Restricted / oversized cases"],
-            ["WEAP / SPEX", "Sporting Weapons", "letstalk + Supervisor", "96h / 4 working days", "Security approval", "AED 300 + SPEX AED 270", "Yes"],
-            ["BAG / XBAG", "Baggage / Baggage Upgrade", "SPRINT", "Before flight closure / as allowed by booking flow", "Ancillary service", "As per baggage product / route", "No, unless exception or disrupted booking"],
-            ["SEAT", "Seat Selection", "SPRINT seat map", "Before flight closure / as allowed by booking flow", "Ancillary service", "As per selected seat", "No, unless seat restriction applies"],
-            ["MEAL", "Special Meals", "SPRINT", "Use meal cut-off shown in booking flow", "Ancillary / meal service", "As per meal option", "No, unless catering exception"],
-            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "SPRINT", "As early as possible before departure", "Assistance SSR", "Free service", "No, unless medical / operational exception"],
-            ["INS", "Insurance", "SPRINT / insurance flow", "At purchase / as allowed by product rules", "Ancillary service", "As per insurance product", "No, subject to product eligibility"]
+            ["PETC", "Falcon", "Contact Centre, Salesforce, Supervisor / FS, Reservations Support", "More than 48h before departure", "Approval request", "AED 1500 per falcon per direction", "Yes", "Create unpaid booking, collect falcon details, escalate case, update SPRINT. Do not confirm until approved."],
+            ["CAKE", "Cake on Board", "Contact Centre, email request, Supervisor / FS", "More than 48h before departure", "Catering request", "As per cake option", "Special stations need Shift In Charge", "Add SSR CAKE, collect cake details, send request email, send payment link, update Salesforce / SPRINT."],
+            ["FRBS", "Fruit Basket", "Contact Centre / SPRINT", "Up to 48h before departure", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned", "Use SPRINT flow. Apply service cut-off and payment rules."],
+            ["EXST / CBBG", "Extra Seat / Cabin Baggage", "Contact Centre / SPRINT; GDS requires separate handling", "At least 2h before departure", "Seat / cabin baggage", "Equal fare + standard seat assignment charges", "Depends booking type", "Add adult extra seat, add SSR EXST or CBBG to requesting passenger, assign adjoining seats, update remarks."],
+            ["SPEQ / SPEX", "Sporting Equipment", "Contact Centre / SPRINT / FS", "At least 24h before departure", "Special baggage", "SPEQ AED 150 / SPEX AED 270", "Restricted / oversized cases", "Max 32kg. SPEQ 160-189cm, SPEX 190-350cm. Beyond 350cm requires pre-authorization 48h."],
+            ["WEAP / SPEX", "Sporting Weapons", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h / 4 working days before travel", "Security approval", "WEAP AED 300 + SPEX AED 270", "Yes", "Customer must email documents first or provide case number. Do not confirm without security approval."],
+            ["BAG / XBAG", "Baggage / Baggage Upgrade", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Existing booking: 6h before departure. New booking / modification: Website 2h; Contact Centre up to D-2 via Shift In Charge, subject to availability.", "Ancillary service", "As per baggage product / route", "Usually no", "GO TO: baggage can be added through all flydubai channels for FZ leg. Baggage move/cancel allowed only 24h prior to departure."],
+            ["SEAT", "Seat Selection", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Up to 3h before departure", "Ancillary service", "As per selected seat", "Usually no", "Seats can be added up to 3h prior. Moving/cancellation of optional extras such as seat is allowed only 24h prior."],
+            ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "SPML up to 24h before departure. MLIN included where applicable.", "Meal service", "As per meal / fare product", "Catering exception only", "Lite/Value/Flex: MLIN included, SPML selectable up to 24h. Business: meal included, SPML selectable up to 24h."],
+            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "Contact Centre, Website / Manage Booking where available, Travel Shop, Airport", "Request as early as possible before departure", "Assistance SSR", "Free service", "WCHC may require medical document verification", "GO TO lists WCHR, WCHS, WCHC and battery wheelchair SSRs WCBD, WCBW, WCLB. WCHC only upon verification of medical docs."],
+            ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "Dry, wet, and lithium battery wheelchairs require acceptance checks and battery rules."],
+            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Any time before journey commences", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Can be added any time before the journey commences."],
+            ["TRBF", "Transfer Baggage Fee", "Contact Centre / Airport / transfer handling flow", "Connection handling dependent", "Transfer baggage", "As applicable", "Depends itinerary", "Applies where transfer baggage fee is required for separate tickets / connection handling."],
+            ["STPN", "Stopover / Re-accommodation SSR", "Supervisor / FS / Reservations Support", "After reaccommodation where applicable", "Disruption handling SSR", "Override may be AED 100 when system not picking charge", "Senior Manager approval if overridden", "Used after reaccommodation when applicable. Senior Manager approval required only if STPN charge is overridden."],
+            ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor", "Within 48h when balance due risk applies", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "For partially paid booking only. Escalate for Supervisor to add KEEP if paid service / balance due issue may trigger auto cancellation."]
         ]
     }
 ];
@@ -2904,20 +2908,42 @@ function renderOperationsSection(title, items) {
 function renderOperationsSsrTable(rows) {
     const body = rows.map(function (row) {
         return (
-            '<tr>' +
+            '<tr data-ssr-row="' + escapeHTML(row.join(" ")) + '">' +
                 row.map(function (cell) { return '<td>' + escapeHTML(cell) + '</td>'; }).join("") +
             '</tr>'
         );
     }).join("");
 
     return (
+        '<div class="operations-ssr-search-wrap">' +
+            '<i data-lucide="search"></i>' +
+            '<input type="text" id="operationsSsrSearch" placeholder="Search SSR, service, channel, cut-off, or keyword..." autocomplete="off">' +
+        '</div>' +
         '<div class="operations-ssr-wrap">' +
             '<table class="operations-ssr-table">' +
-                '<thead><tr><th>SSR / Code</th><th>Service</th><th>Channel</th><th>Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th></tr></thead>' +
+                '<thead><tr><th>SSR / Code</th><th>Service</th><th>Channels</th><th>Add Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th><th>Key Notes</th></tr></thead>' +
                 '<tbody>' + body + '</tbody>' +
             '</table>' +
-        '</div>'
+        '</div>' +
+        '<div id="operationsSsrEmpty" class="operations-ssr-empty hidden">No matching SSR / ancillary found.</div>'
     );
+}
+
+function filterOperationsSsrRows(query) {
+    const normalized = normalizeSpecialServiceText(query || "");
+    const rows = Array.from(document.querySelectorAll(".operations-ssr-table tbody tr"));
+    const empty = document.getElementById("operationsSsrEmpty");
+    let visible = 0;
+
+    rows.forEach(function (row) {
+        const text = normalizeSpecialServiceText(row.dataset.ssrRow || row.textContent || "");
+        const match = !normalized || text.includes(normalized);
+
+        row.style.display = match ? "" : "none";
+        if (match) visible += 1;
+    });
+
+    if (empty) empty.classList.toggle("hidden", visible !== 0);
 }
 
 function handleOperationsClick(event) {
@@ -2944,6 +2970,12 @@ function handleOperationsClick(event) {
     }
 }
 
+function handleOperationsInput(event) {
+    if (event.target && event.target.id === "operationsSsrSearch") {
+        filterOperationsSsrRows(event.target.value);
+    }
+}
+
 function initialiseOperationsGuide() {
     const panel = document.getElementById("operationsView");
 
@@ -2951,6 +2983,7 @@ function initialiseOperationsGuide() {
 
     if (panel && !panel.dataset.operationsReady) {
         panel.addEventListener("click", handleOperationsClick);
+        panel.addEventListener("input", handleOperationsInput);
         panel.dataset.operationsReady = "true";
     }
 }
