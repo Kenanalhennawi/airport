@@ -3288,6 +3288,10 @@ function renderOperationsGuide(activeId) {
 
     content.innerHTML = renderOperationsTopic(activeTopic);
 
+    if (activeOperationsSearch) {
+        filterOperationsFeeRows(activeOperationsSearch);
+    }
+
     if (typeof lucide !== "undefined") lucide.createIcons();
 }
 
@@ -3397,7 +3401,7 @@ function renderOperationsSection(title, items) {
 function renderOperationsFeeTable(rows) {
     const body = rows.map(function (row) {
         return (
-            '<tr>' +
+            '<tr data-fee-row="' + escapeHTML(row.join(" ")) + '">' +
                 '<td class="operations-fee-service">' + escapeHTML(row[0] || "") + '</td>' +
                 '<td>' + formatOperationsFeeCell(row[1] || "") + '</td>' +
                 '<td>' + formatOperationsFeeCell(row[2] || "") + '</td>' +
@@ -3411,7 +3415,8 @@ function renderOperationsFeeTable(rows) {
                 '<thead><tr><th>Service</th><th>Airport Sales Desk</th><th>UAE Retail Shops</th></tr></thead>' +
                 '<tbody>' + body + '</tbody>' +
             '</table>' +
-        '</div>'
+        '</div>' +
+        '<div id="operationsFeeEmpty" class="operations-ssr-empty hidden">No matching fee row found.</div>'
     );
 }
 
@@ -3535,6 +3540,25 @@ function filterOperationsSsrRows(query) {
 
     rows.forEach(function (row) {
         const text = normalizeSpecialServiceText(row.dataset.ssrRow || row.textContent || "");
+        const match = !normalized || text.includes(normalized);
+
+        row.style.display = match ? "" : "none";
+        if (match) visible += 1;
+    });
+
+    if (empty) empty.classList.toggle("hidden", visible !== 0);
+}
+
+function filterOperationsFeeRows(query) {
+    const normalized = normalizeSpecialServiceText(query || "");
+    const rows = Array.from(document.querySelectorAll(".operations-fee-table tbody tr"));
+    const empty = document.getElementById("operationsFeeEmpty");
+    let visible = 0;
+
+    if (!rows.length) return;
+
+    rows.forEach(function (row) {
+        const text = normalizeSpecialServiceText(row.dataset.feeRow || row.textContent || "");
         const match = !normalized || text.includes(normalized);
 
         row.style.display = match ? "" : "none";
