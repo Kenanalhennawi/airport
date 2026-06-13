@@ -2773,14 +2773,14 @@ const operationsGuideData = [
     },
     {
         id: "ssr-guide",
-        title: "SSR Guide",
+        title: "SSR / Ancillary Guide",
         icon: "list-checks",
         quickGuide: {
             channel: "SPRINT / Salesforce / email as applicable",
             timing: "Use service-specific cut-off",
-            type: "SSR quick reference",
-            action: "Use this table to choose the correct SSR, channel, charge, and approval path.",
-            warning: "This is a quick index only; open the full Special Services tab for detailed policy."
+            type: "SSR and common ancillary quick reference",
+            action: "Use this table to choose the correct SSR or service code, channel, charge, and approval path.",
+            warning: "Some rows are ancillary/service actions rather than technical SSRs; open the full policy or SPRINT flow before applying."
         },
         ssrRows: [
             ["PETC", "Falcon", "Salesforce / Supervisor / Reservations Support", "48h+", "Approval request", "AED 1500 per falcon per direction", "Yes"],
@@ -2788,7 +2788,12 @@ const operationsGuideData = [
             ["FRBS", "Fruit Basket", "SPRINT", "48h", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned"],
             ["EXST / CBBG", "Extra Seat / Cabin Baggage", "SPRINT / agent handling", "2h", "Seat / cabin baggage", "Equal fare + seat charges", "Depends booking type"],
             ["SPEQ / SPEX", "Sporting Equipment", "SPRINT / FS", "24h", "Special baggage", "AED 150 / AED 270", "Restricted / oversized cases"],
-            ["WEAP / SPEX", "Sporting Weapons", "letstalk + Supervisor", "96h / 4 working days", "Security approval", "AED 300 + SPEX AED 270", "Yes"]
+            ["WEAP / SPEX", "Sporting Weapons", "letstalk + Supervisor", "96h / 4 working days", "Security approval", "AED 300 + SPEX AED 270", "Yes"],
+            ["BAG / XBAG", "Baggage / Baggage Upgrade", "SPRINT", "Before flight closure / as allowed by booking flow", "Ancillary service", "As per baggage product / route", "No, unless exception or disrupted booking"],
+            ["SEAT", "Seat Selection", "SPRINT seat map", "Before flight closure / as allowed by booking flow", "Ancillary service", "As per selected seat", "No, unless seat restriction applies"],
+            ["MEAL", "Special Meals", "SPRINT", "Use meal cut-off shown in booking flow", "Ancillary / meal service", "As per meal option", "No, unless catering exception"],
+            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "SPRINT", "As early as possible before departure", "Assistance SSR", "Free service", "No, unless medical / operational exception"],
+            ["INS", "Insurance", "SPRINT / insurance flow", "At purchase / as allowed by product rules", "Ancillary service", "As per insurance product", "No, subject to product eligibility"]
         ]
     }
 ];
@@ -2908,7 +2913,7 @@ function renderOperationsSsrTable(rows) {
     return (
         '<div class="operations-ssr-wrap">' +
             '<table class="operations-ssr-table">' +
-                '<thead><tr><th>SSR</th><th>Service</th><th>Channel</th><th>Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th></tr></thead>' +
+                '<thead><tr><th>SSR / Code</th><th>Service</th><th>Channel</th><th>Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th></tr></thead>' +
                 '<tbody>' + body + '</tbody>' +
             '</table>' +
         '</div>'
