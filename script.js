@@ -3149,19 +3149,19 @@ const operationsGuideData = [
             ["EXPC", "Extra Checked Baggage Piece", "Sprint DCS / Airport handling", "At airport / check-in handling", "Baggage handling SSR", "Approx AED 200 per extra piece, subject to change + airport service fee", "Subject to availability", "For passengers with more than three checked baggage pieces. Each piece still must comply with baggage rules."],
             ["OOGS / OOGL", "Out of Gauge / Oversize Bag", "Airport / check-in handling", "At check-in", "Oversize baggage SSR", "Additional airport handling charge", "Airport acceptance", "OOGS small 160-189cm; OOGL large 190-300cm by L+W+H."],
             ["EXBG", "Excess Baggage Waiver", "SPRINT ENT / authorized waiver", "Pre-approved only", "Waiver / allowance SSR", "Authorized by Chief / SVP", "Yes", "EXBG uses values like EB1.0 extra 10kg, EB1.5 extra 15kg, EB2.0 extra 20kg, or PC concept. If customer wants normal upgrade, follow normal baggage upgrade process."],
-            ["SEAT", "Seat Selection", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Up to 3h before departure", "Ancillary service", "As per selected seat", "Usually no", "Seats can be added up to 3h prior. Moving/cancellation of optional extras such as seat is allowed only 24h prior."],
-            ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "SPML up to 24h before departure. MLIN included where applicable.", "Meal service", "As per meal / fare product", "Catering exception only", "Lite/Value/Flex: MLIN included, SPML selectable up to 24h. Business: meal included, SPML selectable up to 24h."],
-            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "Contact Centre, Website / Manage Booking where available, Travel Shop, Airport", "Request as early as possible before departure", "Assistance SSR", "Free service", "WCHC may require medical document verification", "GO TO lists WCHR, WCHS, WCHC and battery wheelchair SSRs WCBD, WCBW, WCLB. WCHC only upon verification of medical docs."],
-            ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "Dry, wet, and lithium battery wheelchairs require acceptance checks and battery rules."],
-            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Any time before journey commences", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Can be added any time before the journey commences."],
-            ["TRBF", "Transfer Baggage Fee", "Contact Centre / Airport / transfer handling flow", "Connection handling dependent", "Transfer baggage", "As applicable", "Depends itinerary", "Applies where transfer baggage fee is required for separate tickets / connection handling."],
+            ["SEAT", "Seat Selection", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Travel shop cut-off D > 4; online / OLCI availability as per system", "Ancillary service", "As per selected seat", "Usually no", "Lite / Value: paid seat selection. Flex: free seat selection except XLGR requires payment. Business: free seat selection within Business cabin. Group bookings allow free seats and block paid seats during OLCI. Visa check restrictions may block seat selection. IRROP seat change is charged only when moving to a higher priced seat."],
+            ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "Special meal cut-off D > 24", "Meal service", "As per meal / fare product", "Catering exception only", "SPML: special meal must be selected more than 24h before departure. MLIN: meal included where applicable by fare / cabin. Business meal included; special meal selection still follows D > 24 cut-off."],
+            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "Contact Centre, Website / Manage Booking where available, Travel Shop, Airport", "Request as early as possible before departure", "Assistance SSR", "Free service", "WCHC requires medical document verification where applicable", "WCHR: wheelchair for ramp. WCHS: wheelchair for steps. WCHC: wheelchair to cabin seat and only upon verification of medical documents where required. Companion should travel in the same cabin when assistance is required."],
+            ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "WCBD: dry battery wheelchair. WCBW: wet battery wheelchair. WCLB: lithium battery wheelchair. Battery type, protection, and airport acceptance checks must be confirmed before travel."],
+            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Travel shop cut-off D > 4", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Add only where the product is eligible and payment can be completed through the available channel."],
+            ["TRBF", "Transfer Baggage Fee", "Airport / transfer handling flow; Contact Centre can advise", "Applies when baggage through-tagging / retagging is required", "Transfer baggage", "As applicable by airport / transfer process", "Depends itinerary and baggage status", "Dubai: applies to transfer passengers whose baggage needs retagging because it was short-tagged from origin. Outstation: applies for two separate tickets when bags need through-tagging to final destination. Not applicable to connections over 24h. If passenger no-shows the onward connected flight, baggage is offloaded / not transferred."],
             ["Airport J Upgrade", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights on FZ where offered. Includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
-            ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "For missing printouts required as travel documents. Applies per document of maximum 3 papers."],
+            ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "SSR PRNT: AED 25 + VAT per document, maximum 3 papers. Applies to DXB T2 departures only. Applicable to FZ, codeshare, interline, and staff passengers. Handled at airport only."],
             ["NCFB / NCFE", "Name Correction Fees", "Contact Centre with Supervisor / FS confirmation, Airport Sales Desk, UAE Travel Shops", "Not permitted within 6h before departure; fully active PNR only", "Name correction service", "FOC up to 3 characters/title/space/gender. Name swap USD 30. More than 3 characters or full first/middle/last correction USD 100 / AED 367. NCFB = name change fee 2 characters. NCFE = fee charges for name change. Airport and shop service fees may also apply.", "Supervisor / FS confirmation required", "Use only for genuine corrections, not different passengers. Only once per passenger. Not for GDS/codeshare/interline, TA block fare, checked-in/OLCI, utilized, or no-show bookings. If at check-in desk and Res Support is called, apply USD 100 even for one character/title/space. No charges for name changes involving extra seat purchase for falcon, EXST, or CBBG."],
-            ["VIOK", "Visa OK to Board", "UAE Travel Shops / Airport Sales Desk where applicable", "Travel shop cut-off D > 4", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "Use for Visa OK to Board service handling."],
+            ["VIOK", "Visa OK to Board", "UAE Travel Shops / Airport Sales Desk where applicable", "Travel shop cut-off D > 4", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "VIOK: use only when Visa OK to Board handling is required for the destination / document scenario. Apply the correct airport or UAE shop service fee."],
             ["CCOK / CCHK", "Credit Card Verification", "Airport / Travel Shop / operational verification", "Travel shop cut-off D > 4; airport verification must be completed before travel", "Payment verification", "Airport AED 80 per PNR; UAE shops AED 30 per PNR", "May be required", "CCHK means passenger must verify credit card for smooth travel. CCOK means credit card is verified and passenger may travel. If payer is flydubai staff, supervisor may remove CCHK if present and add CCOK at zero cost after verification. Bookings with CCHK cannot complete online check-in."],
             ["STPN", "Stopover / Re-accommodation SSR", "Supervisor / FS / Reservations Support", "After reaccommodation where applicable", "Disruption handling SSR", "Override may be AED 100 when system not picking charge", "Senior Manager approval if overridden", "Used after reaccommodation when applicable. Senior Manager approval required only if STPN charge is overridden."],
-            ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor", "Within 48h when balance due risk applies", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "For partially paid booking only. Escalate for Supervisor to add KEEP if paid service / balance due issue may trigger auto cancellation."]
+            ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor via Salesforce", "Flight within 48h and balance due AED 200 or more", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "KEEP is for existing bookings with pending payment / balance due risk. Agent escalates with details in Salesforce. Supervisor verifies balance due and flight within 48h before adding SSR KEEP to avoid auto cancellation."]
         ]
     }
 ];
@@ -3434,9 +3434,9 @@ function formatOperationsFeeCell(value) {
 }
 
 function renderOperationsSsrTable(rows) {
-    const body = rows.map(function (row) {
+    const body = rows.map(function (row, index) {
         return (
-            '<tr data-ssr-row="' + escapeHTML(row.join(" ")) + '">' +
+            '<tr data-ssr-row="' + escapeHTML(row.join(" ")) + '" data-ssr-code="' + escapeHTML(row[0] || "") + '" data-ssr-service="' + escapeHTML(row[1] || "") + '" data-ssr-index="' + index + '">' +
                 row.map(function (cell, index) { return renderOperationsSsrCell(cell, index); }).join("") +
             '</tr>'
         );
@@ -3535,16 +3535,54 @@ function splitOperationsSsrCell(text, index) {
 function filterOperationsSsrRows(query) {
     const normalized = normalizeSpecialServiceText(query || "");
     const rows = Array.from(document.querySelectorAll(".operations-ssr-table tbody tr"));
+    const tbody = rows.length ? rows[0].parentNode : null;
     const empty = document.getElementById("operationsSsrEmpty");
     let visible = 0;
+    const rankedRows = [];
 
     rows.forEach(function (row) {
         const text = normalizeSpecialServiceText(row.dataset.ssrRow || row.textContent || "");
+        const code = normalizeSpecialServiceText(row.dataset.ssrCode || "");
+        const service = normalizeSpecialServiceText(row.dataset.ssrService || "");
+        const codes = code.split(/\s*\/\s*|\s+/).filter(Boolean);
+        const exactCodeMatch = codes.indexOf(normalized) >= 0;
+        let rank = Number(row.dataset.ssrIndex || 0);
+
+        if (normalized) {
+            if (exactCodeMatch) rank = 0;
+            else if (service.indexOf(normalized) === 0) rank = 1;
+            else if (code.includes(normalized)) rank = 2;
+            else if (service.includes(normalized)) rank = 3;
+            else rank = 4;
+        }
+
         const match = !normalized || text.includes(normalized);
 
         row.style.display = match ? "" : "none";
-        if (match) visible += 1;
+        if (match) {
+            visible += 1;
+            rankedRows.push({
+                row: row,
+                rank: rank,
+                index: Number(row.dataset.ssrIndex || 0)
+            });
+        }
     });
+
+    if (tbody && normalized) {
+        rankedRows.sort(function (a, b) {
+            if (a.rank !== b.rank) return a.rank - b.rank;
+            return a.index - b.index;
+        }).forEach(function (item) {
+            tbody.appendChild(item.row);
+        });
+    } else if (tbody) {
+        rankedRows.sort(function (a, b) {
+            return a.index - b.index;
+        }).forEach(function (item) {
+            tbody.appendChild(item.row);
+        });
+    }
 
     if (empty) empty.classList.toggle("hidden", visible !== 0);
 }
