@@ -1585,6 +1585,7 @@ function initialiseCurrencyConverter() {
     const dateInput = document.getElementById("currencyDate");
     const swapBtn = document.getElementById("currencySwapBtn");
     const convertBtn = document.getElementById("currencyConvertBtn");
+    const clearBtn = document.getElementById("currencyClearBtn");
     const amountInput = document.getElementById("currencyAmount");
 
     if (!from || !to || !dateInput || !swapBtn || !convertBtn || !amountInput) return;
@@ -1625,12 +1626,7 @@ function initialiseCurrencyConverter() {
     window.currencyFromTom.setValue("United States Dollar (USD)");
     window.currencyToTom.setValue("United Arab Emirates Dirham (AED)");
 
-    const today = new Date();
-
-    dateInput.value =
-        today.getFullYear() + "-" +
-        String(today.getMonth() + 1).padStart(2, "0") + "-" +
-        String(today.getDate()).padStart(2, "0");
+    setCurrencyDateToToday();
 
     swapBtn.onclick = function () {
         const temp = window.currencyFromTom.getValue();
@@ -1642,6 +1638,10 @@ function initialiseCurrencyConverter() {
     };
 
     convertBtn.onclick = convertCurrencyPayport;
+
+    if (clearBtn) {
+        clearBtn.onclick = clearCurrencyConverter;
+    }
 
     amountInput.onkeydown = function (e) {
         if (e.key === "Enter") {
@@ -1674,6 +1674,39 @@ function initialiseCurrencyConverter() {
 
     window.currencyEnterListenerAdded = true;
 }
+}
+
+function setCurrencyDateToToday() {
+    const dateInput = document.getElementById("currencyDate");
+    const today = new Date();
+
+    if (!dateInput) return;
+
+    dateInput.value =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+}
+
+function clearCurrencyConverter() {
+    const amountInput = document.getElementById("currencyAmount");
+    const resultEl = document.getElementById("currencyResult");
+    const rateEl = document.getElementById("currencyRate");
+
+    if (amountInput) amountInput.value = "1";
+
+    if (window.currencyFromTom) {
+        window.currencyFromTom.setValue("United States Dollar (USD)");
+    }
+
+    if (window.currencyToTom) {
+        window.currencyToTom.setValue("United Arab Emirates Dirham (AED)");
+    }
+
+    setCurrencyDateToToday();
+
+    if (resultEl) resultEl.textContent = "--";
+    if (rateEl) rateEl.textContent = "Rate: --";
 }
    
 async function convertCurrencyPayport() {
