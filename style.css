@@ -2395,13 +2395,33 @@ footer strong {
 
 .operations-ssr-table tbody tr.operations-search-selected td,
 .operations-fee-table tbody tr.operations-search-selected td {
-    border-top-color: #2563eb;
-    border-bottom-color: #2563eb;
+    background: #dbeafe !important;
+    color: #0f172a;
+    border-top-color: #2563eb !important;
+    border-bottom-color: #2563eb !important;
 }
 
 .operations-ssr-table tbody tr.operations-search-selected td:first-child,
 .operations-fee-table tbody tr.operations-search-selected td:first-child {
-    background: #bfdbfe;
+    background: #93c5fd !important;
+    color: #0f3f66 !important;
+}
+
+.operations-ssr-table tbody tr.operations-search-selected .operations-code-badges span {
+    background: #003d73;
+    border-color: #002b54;
+    color: #ffffff;
+}
+
+.operations-ssr-table tbody tr.operations-search-selected .operations-ssr-lines span {
+    background: #eff6ff;
+    border-color: #60a5fa;
+}
+
+.operations-ssr-table tbody tr.operations-search-selected .operations-ssr-key-notes span {
+    background: #dbeafe;
+    border-color: #2563eb;
+    border-left-color: #005eb8;
     color: #0f3f66;
 }
 
