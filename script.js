@@ -717,12 +717,14 @@ function switchView(view) {
     const interlinePanel = document.getElementById('interlineView');
     const delayPanel = document.getElementById('delayPolicyView');
     const specialServicesPanel = document.getElementById('specialServicesView');
+    const operationsPanel = document.getElementById('operationsView');
     const currencyPanel = document.getElementById('currencyView');
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
     const tabSpecialServices = document.getElementById('tabSpecialServices');
+    const tabOperations = document.getElementById('tabOperations');
     const tabCurrency = document.getElementById('tabCurrency');
 
     const containerEl = document.querySelector('.container');
@@ -735,6 +737,7 @@ function switchView(view) {
             view === 'interline' ||
             view === 'delay' ||
             view === 'specialServices' ||
+            view === 'operations' ||
             view === 'currency'
         );
     }
@@ -744,6 +747,7 @@ function switchView(view) {
         interlinePanel,
         delayPanel,
         specialServicesPanel,
+        operationsPanel,
         currencyPanel
     ].forEach(function (p) {
         if (p) p.classList.remove('active');
@@ -754,6 +758,7 @@ function switchView(view) {
         tabInterline,
         tabDelay,
         tabSpecialServices,
+        tabOperations,
         tabCurrency
     ].forEach(function (t) {
         if (t) {
@@ -822,6 +827,19 @@ function switchView(view) {
         if (clearBtn) clearBtn.classList.add('hidden');
 
         renderSpecialServices('');
+
+    } else if (view === 'operations') {
+        if (operationsPanel) operationsPanel.classList.add('active');
+
+        if (tabOperations) {
+            tabOperations.classList.add('active');
+            tabOperations.setAttribute('aria-pressed', 'true');
+        }
+
+        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
+        if (clearBtn) clearBtn.classList.add('hidden');
+
+        renderOperationsGuide();
 
     } else if (view === 'currency') {
         if (currencyPanel) currencyPanel.classList.add('active');
@@ -2555,6 +2573,383 @@ function clearSpecialServiceFormValues() {
     });
 }
 
+const operationsGuideData = [
+    {
+        id: "holidays",
+        title: "Holidays Bookings",
+        icon: "palmtree",
+        quickGuide: {
+            channel: "PureCloud transfer / Supervisor callback",
+            timing: "Mon-Thu 09:00-20:00, Fri-Sun 09:00-18:00",
+            type: "Holiday package / existing holiday booking",
+            action: "During working hours transfer to Holidays Team; outside hours collect details or use emergency flow for urgent existing bookings.",
+            warning: "Do not use the Holidays emergency number for new package enquiries during working hours."
+        },
+        classifications: [
+            "General holidays enquiry / quotation request",
+            "New holidays package booking",
+            "Amend / cancel existing holidays booking"
+        ],
+        sections: [
+            {
+                title: "Agent Process",
+                items: [
+                    "General information: guide customer to https://holidays.flydubai.com/en/ and assist with basic navigation.",
+                    "New package within working hours: transfer caller to Holidays Team via PureCloud.",
+                    "New package outside working hours: collect caller name, mobile number, and preferred communication language AR / EN / RU, then escalate to Supervisor for callback.",
+                    "Existing booking within working hours: transfer caller to Holidays Team via PureCloud.",
+                    "Existing booking outside working hours with travel within 48 hours: transfer via PureCloud to Holidays emergency number."
+                ]
+            },
+            {
+                title: "Customer Advice",
+                items: [
+                    "Holiday packages include flights and hotels, with activities, transfers, insurance, and UAE visa services if available.",
+                    "Holiday packages can be purchased on codeshare flights.",
+                    "Miles points are accrued for flights only.",
+                    "Payment option is credit card only.",
+                    "Contact Centre can assist through SPRINT for existing flight services only: baggage, seats, special meals, baggage upgrade, wheelchair, insurance, and similar services."
+                ]
+            },
+            {
+                title: "Contacts",
+                items: [
+                    "Holidays by flydubai: holidays@flydubai.com",
+                    "Group inquiries, 10 or more passengers: holidaysgroups@flydubai.com",
+                    "Travel Agent: holidaysoperation@flydubai.com",
+                    "UAE retail shops can assist with Holidays enquiries within retail shop working hours."
+                ]
+            }
+        ]
+    },
+    {
+        id: "auto-split-od",
+        title: "Auto Split OD",
+        icon: "git-branch",
+        quickGuide: {
+            channel: "SPRINT",
+            timing: "After flight closure when connection legs have different statuses",
+            type: "FZ-FZ connection booking handling",
+            action: "Check leg status order, then follow allowed / not allowed modify or cancellation flow.",
+            warning: "Interline, codeshare, circular flights, and unsupported segment statuses are excluded."
+        },
+        classifications: [
+            "Boarded then No-show",
+            "No-show then Boarded",
+            "Connection modification / cancellation"
+        ],
+        sections: [
+            {
+                title: "Applies To",
+                items: [
+                    "FZ-FZ connection bookings only.",
+                    "Fare types: Lite, Value, Flex, and Business Class.",
+                    "OD split occurs only when flight legs have different statuses.",
+                    "After flight closure, SPRINT automatically updates each leg status."
+                ]
+            },
+            {
+                title: "Core Rules",
+                items: [
+                    "Leg 1 boarded and Leg 2 no-show: customer can cancel or modify the no-show leg as per fare rules.",
+                    "Leg 1 no-show and Leg 2 boarded: modification or cancellation is not permitted.",
+                    "One-way connection, boarded then no-show: modification or cancellation on no-show leg may be allowed as per fare rules.",
+                    "Round-trip connection: inbound segment changes may be allowed as per fare rules; no-show leg handling depends on leg status order and system flow.",
+                    "Cancellation of no-show segment must be completed by Supervisor / FS in-charge when applicable."
+                ]
+            },
+            {
+                title: "Exclusions",
+                items: [
+                    "Interline bookings.",
+                    "Codeshare bookings.",
+                    "Circular flights.",
+                    "Any segment status outside Leg 1 Boarded / Leg 2 No-show or Leg 1 No-show / Leg 2 Boarded."
+                ]
+            }
+        ]
+    },
+    {
+        id: "olci-lounge",
+        title: "OLCI Lounge",
+        icon: "armchair",
+        quickGuide: {
+            channel: "Online Check-In via flydubai website",
+            timing: "Within 48 hours before departure when OLCI is open",
+            type: "Business Class lounge access purchase",
+            action: "Explain eligibility and expected SSR handling; classify case as Online check-in > Lounge when needed.",
+            warning: "Only 4-hour access remains available online; 8-hour online access is disabled."
+        },
+        classifications: [
+            "Case reason: Online check-in",
+            "Sub reason: Lounge",
+            "Use for pricing complaints, unavailable access due to peak hours, or unsuccessful payment."
+        ],
+        sections: [
+            {
+                title: "Eligibility",
+                items: [
+                    "Available for passengers travelling or connecting with flydubai from DXB Terminal 2.",
+                    "Available during OLCI via flydubai website if OLCI is open for the flight.",
+                    "Supported for Economy passengers.",
+                    "Supported for passengers upgraded to J class via OLCI or Plusgrade.",
+                    "Supported for ID50 bookings in J and Y class.",
+                    "Infants receive complimentary access when accompanied by an eligible adult."
+                ]
+            },
+            {
+                title: "Restrictions",
+                items: [
+                    "Group bookings are excluded from online lounge purchase.",
+                    "Infant passengers cannot purchase lounge access independently.",
+                    "Passengers already eligible for lounge access, such as Business Class or loyalty tier entitlement, are restricted.",
+                    "All charges are non-refundable and non-transferable.",
+                    "If OLCI is cancelled, the SSR remains retained."
+                ]
+            },
+            {
+                title: "Expected Handling",
+                items: [
+                    "Economy voluntary modification: SSR is non-refundable and agents should drop the SSR.",
+                    "Economy voluntary cancellation: drop SSR and do not offer refund.",
+                    "Economy upgraded to J class: SSR is dropped and no refund offered.",
+                    "FDIS re-accommodation to new flight: SSR is moved to the new flight.",
+                    "FDIS cancellation and refund to FOP or voucher: SSR refund follows FOP or voucher.",
+                    "Flight reinstatement, no-show change or cancel, terminal change: refer to Shift In Charge for manual SSR handling."
+                ]
+            }
+        ]
+    },
+    {
+        id: "dubai-stopover",
+        title: "Dubai Stopover",
+        icon: "hotel",
+        quickGuide: {
+            channel: "flydubai.com / Travel Agency portal",
+            timing: "Book at least 5 days before travel; connection in Dubai 12-24 hours",
+            type: "Complimentary 24-hour Dubai hotel stay",
+            action: "Check eligibility at initial booking and explain hotel voucher / exclusion rules.",
+            warning: "Dubai Stopover cannot be added later and is not available for one-way, Pay Later, interline, codeshare, group, GDS PNRs."
+        },
+        classifications: [
+            "Dubai stopover > Terms and conditions",
+            "Dubai stopover > Cleanliness/service"
+        ],
+        sections: [
+            {
+                title: "Eligibility",
+                items: [
+                    "Return bookings only with a Dubai connection between 12 and 24 hours.",
+                    "Economy and Business cabins are eligible.",
+                    "Both flights in the itinerary must be operated by flydubai.",
+                    "Offer can be used once per booking, either outbound or inbound.",
+                    "Available only on selected origin-destination routes.",
+                    "Eligible flights show a Complementary Dubai hotel tag during booking."
+                ]
+            },
+            {
+                title: "Hotel Rules",
+                items: [
+                    "Hotel is auto-assigned based on availability; passenger cannot choose or change preference.",
+                    "Hotel details are shown on the review page before payment.",
+                    "After booking confirmation, hotel voucher is sent to the registered email ID.",
+                    "Room is complimentary.",
+                    "Meals, transfers, upgrades, incidental charges, and UAE visa are not included.",
+                    "Passenger is responsible for visa eligibility and compliance."
+                ]
+            },
+            {
+                title: "Modification / Cancellation / FDIS",
+                items: [
+                    "DSO is removed if passenger cancels booking.",
+                    "DSO is removed if passenger modifies the DSO segment.",
+                    "DSO is removed if travel sector is changed via TA portal.",
+                    "DSO is removed if a no-show segment is modified via TA portal.",
+                    "DSO is removed if passenger experiences flight disruption and opts for rebooking or cancellation.",
+                    "DSO is retained for adding or removing passenger, cabin upgrade or downgrade, adding or removing SSRs, non-DSO date changes, schedule changes, and aircraft changes."
+                ]
+            }
+        ]
+    },
+    {
+        id: "ssr-guide",
+        title: "SSR Guide",
+        icon: "list-checks",
+        quickGuide: {
+            channel: "SPRINT / Salesforce / email as applicable",
+            timing: "Use service-specific cut-off",
+            type: "SSR quick reference",
+            action: "Use this table to choose the correct SSR, channel, charge, and approval path.",
+            warning: "This is a quick index only; open the full Special Services tab for detailed policy."
+        },
+        ssrRows: [
+            ["PETC", "Falcon", "Salesforce / Supervisor / Reservations Support", "48h+", "Approval request", "AED 1500 per falcon per direction", "Yes"],
+            ["CAKE", "Cake on Board", "Email + Supervisor / FS", "48h+", "Catering request", "As per cake option", "Special stations require Shift In Charge"],
+            ["FRBS", "Fruit Basket", "SPRINT", "48h", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned"],
+            ["EXST / CBBG", "Extra Seat / Cabin Baggage", "SPRINT / agent handling", "2h", "Seat / cabin baggage", "Equal fare + seat charges", "Depends booking type"],
+            ["SPEQ / SPEX", "Sporting Equipment", "SPRINT / FS", "24h", "Special baggage", "AED 150 / AED 270", "Restricted / oversized cases"],
+            ["WEAP / SPEX", "Sporting Weapons", "letstalk + Supervisor", "96h / 4 working days", "Security approval", "AED 300 + SPEX AED 270", "Yes"]
+        ]
+    }
+];
+
+function renderOperationsGuide(activeId) {
+    const tabs = document.getElementById("operationsTabs");
+    const content = document.getElementById("operationsContent");
+    const activeTopic = operationsGuideData.find(function (topic) {
+        return topic.id === activeId;
+    }) || operationsGuideData[0];
+
+    if (!tabs || !content || !activeTopic) return;
+
+    tabs.innerHTML = operationsGuideData.map(function (topic) {
+        const activeClass = topic.id === activeTopic.id ? " active" : "";
+
+        return (
+            '<button type="button" class="operations-tab' + activeClass + '" data-operations-id="' + escapeHTML(topic.id) + '">' +
+                '<i data-lucide="' + escapeHTML(topic.icon || "circle") + '"></i>' +
+                '<span>' + escapeHTML(topic.title) + "</span>" +
+            "</button>"
+        );
+    }).join("");
+
+    content.innerHTML = renderOperationsTopic(activeTopic);
+
+    if (typeof lucide !== "undefined") lucide.createIcons();
+}
+
+function renderOperationsTopic(topic) {
+    const guide = topic.quickGuide || {};
+    const sections = Array.isArray(topic.sections) ? topic.sections : [];
+
+    return (
+        '<article class="operations-card">' +
+            '<div class="operations-card-header">' +
+                '<div class="operations-icon-wrap"><i data-lucide="' + escapeHTML(topic.icon || "workflow") + '"></i></div>' +
+                '<div>' +
+                    '<h3>' + escapeHTML(topic.title) + '</h3>' +
+                    renderOperationsClassifications(topic.classifications) +
+                '</div>' +
+            '</div>' +
+            '<div class="operations-quick-grid">' +
+                renderOperationsQuickItem("Channel", guide.channel, "radio-tower") +
+                renderOperationsQuickItem("Time / Window", guide.timing, "clock") +
+                renderOperationsQuickItem("Type", guide.type, "tag") +
+                renderOperationsQuickItem("Main Action", guide.action, "list-checks") +
+            '</div>' +
+            (guide.warning ? '<div class="operations-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + '</span></div>' : '') +
+            (Array.isArray(topic.ssrRows) ? renderOperationsSsrTable(topic.ssrRows) : '') +
+            sections.map(function (section, index) {
+                return renderOperationsDisclosure(topic.id, index, section);
+            }).join("") +
+        '</article>'
+    );
+}
+
+function renderOperationsQuickItem(label, value, icon) {
+    if (!value) return "";
+
+    return (
+        '<div class="operations-quick-item">' +
+            '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
+            '<div><strong>' + escapeHTML(label) + '</strong><span>' + escapeHTML(value) + '</span></div>' +
+        '</div>'
+    );
+}
+
+function renderOperationsClassifications(items) {
+    if (!Array.isArray(items) || !items.length) return "";
+
+    return (
+        '<div class="operations-classifications">' +
+            items.map(function (item) {
+                return '<span>' + escapeHTML(item) + '</span>';
+            }).join("") +
+        '</div>'
+    );
+}
+
+function renderOperationsDisclosure(topicId, index, section) {
+    const blockId = escapeHTML(topicId + "-" + index);
+
+    return (
+        '<div class="operations-disclosure">' +
+            '<button type="button" class="operations-toggle-btn" data-operations-block="' + blockId + '">' +
+                '<i data-lucide="chevron-down"></i>' +
+                '<span>Show ' + escapeHTML(section.title || "Details") + '</span>' +
+            '</button>' +
+            '<div class="operations-collapsible hidden" id="operations-block-' + blockId + '">' +
+                renderOperationsSection(section.title, section.items) +
+            '</div>' +
+        '</div>'
+    );
+}
+
+function renderOperationsSection(title, items) {
+    if (!Array.isArray(items) || !items.length) return "";
+
+    return (
+        '<div class="operations-section">' +
+            '<strong>' + escapeHTML(title || "Details") + '</strong>' +
+            '<ul>' + items.map(function (item) { return '<li>' + escapeHTML(item) + '</li>'; }).join("") + '</ul>' +
+        '</div>'
+    );
+}
+
+function renderOperationsSsrTable(rows) {
+    const body = rows.map(function (row) {
+        return (
+            '<tr>' +
+                row.map(function (cell) { return '<td>' + escapeHTML(cell) + '</td>'; }).join("") +
+            '</tr>'
+        );
+    }).join("");
+
+    return (
+        '<div class="operations-ssr-wrap">' +
+            '<table class="operations-ssr-table">' +
+                '<thead><tr><th>SSR</th><th>Service</th><th>Channel</th><th>Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th></tr></thead>' +
+                '<tbody>' + body + '</tbody>' +
+            '</table>' +
+        '</div>'
+    );
+}
+
+function handleOperationsClick(event) {
+    const tab = event.target.closest("[data-operations-id]");
+    const toggle = event.target.closest("[data-operations-block]");
+
+    if (tab) {
+        renderOperationsGuide(tab.dataset.operationsId);
+        return;
+    }
+
+    if (toggle) {
+        const block = document.getElementById("operations-block-" + toggle.dataset.operationsBlock);
+        const label = toggle.querySelector("span");
+        const isHidden = block && block.classList.contains("hidden");
+
+        if (!block) return;
+
+        block.classList.toggle("hidden", !isHidden);
+
+        if (label) {
+            label.textContent = label.textContent.replace(isHidden ? /^Show\b/ : /^Hide\b/, isHidden ? "Hide" : "Show");
+        }
+    }
+}
+
+function initialiseOperationsGuide() {
+    const panel = document.getElementById("operationsView");
+
+    renderOperationsGuide();
+
+    if (panel && !panel.dataset.operationsReady) {
+        panel.addEventListener("click", handleOperationsClick);
+        panel.dataset.operationsReady = "true";
+    }
+}
+
 function initialiseSpecialServices() {
     const search = document.getElementById("specialServicesSearch");
     const clearBtn = document.getElementById("specialServicesClearBtn");
@@ -2601,6 +2996,7 @@ function init() {
     populateInterlineTable();
     initialiseCurrencyConverter();
     initialiseSpecialServices();
+    initialiseOperationsGuide();
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -2660,12 +3056,14 @@ function init() {
 const tabInterline = document.getElementById('tabInterline');
 const tabDelay = document.getElementById('tabDelayPolicy');
 const tabSpecialServices = document.getElementById('tabSpecialServices');
+const tabOperations = document.getElementById('tabOperations');
 const tabCurrency = document.getElementById('tabCurrency');
 
 if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
 if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
 if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
 if (tabSpecialServices) tabSpecialServices.onclick = function () { switchView('specialServices'); };
+if (tabOperations) tabOperations.onclick = function () { switchView('operations'); };
 if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
