@@ -2871,7 +2871,9 @@ const operationsGuideData = [
                 items: [
                     "FZ Prime point-to-point: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
                     "FZ Prime connection: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
-                    "OLCI baggage upgrade is not available for passengers from Non-DCS stations."
+                    "OLCI baggage upgrade is not available for passengers from Non-DCS stations.",
+                    "Eligible booking channels for OLCI baggage upgrade include Web / ENT / mobile app bookings, Travel Agent portal bookings, Staff ID50 bookings, and eligible GDS point-to-point bookings at SPRINT stations.",
+                    "Codeshare baggage upgrade is available only for point-to-point bookings in weight concept, with no additional purchase allowed for bookings with BAGC 25kg."
                 ]
             },
             {
@@ -2882,6 +2884,16 @@ const operationsGuideData = [
                     "169 / 275 / 365 FZ Prime PTP / CNX: Web NO, TA Portal NO, SPRINT YES, OLCI YES.",
                     "176 FZ Prime or EK: Web NO, TA Portal NO, SPRINT NO, OLCI YES using weight concept.",
                     "016 / 014 EK / UA / AC: Web NO, TA Portal NO, SPRINT NO, OLCI NO."
+                ]
+            },
+            {
+                title: "Baggage Code Notes",
+                items: [
+                    "KRT deal example: BAGX included 40kg; BUPD upgrades to 50kg; BUPE upgrades to 60kg.",
+                    "EXBG is an excess baggage waiver authorized by Chief or SVP and can use EB1.0, EB1.5, EB2.0, or PC values.",
+                    "BUPX may be used in normal upgrade examples when adding allowance on top of existing baggage and waiver.",
+                    "EXPC is extra piece handling for more than three checked pieces, subject to availability.",
+                    "OOGS / OOGL are airport oversize baggage SSRs based on dimensions."
                 ]
             }
         ]
@@ -3005,7 +3017,20 @@ const operationsGuideData = [
                     "Bidding cut-off: 10 hours for Dubai.",
                     "OLCI banner upgrade for Dubai departures: from 48 hours down to 3 hours before departure.",
                     "OLCI banner upgrade for outstation departures: from 48 hours down to 12 hours before departure.",
-                    "Airport counter upgrade: up to 2 hours prior to departure."
+                    "Airport counter upgrade: up to 2 hours prior to departure.",
+                    "Airport Business Class upgrade applies to DXB Terminal 2 and Terminal 3 departure flights.",
+                    "Passenger can purchase upgrade to J class at check-in desk for FZ flights when offered D-2 hours."
+                ]
+            },
+            {
+                title: "Airport Upgrade Product",
+                items: [
+                    "Product includes J class seat.",
+                    "Product includes priority baggage.",
+                    "Product includes priority boarding.",
+                    "Product includes free IFE on board.",
+                    "Product includes J class meal.",
+                    "Use SSR / code BUPZ where applicable for Business Class airport upgrade handling."
                 ]
             }
         ]
@@ -3060,6 +3085,48 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "airport-shop-fees",
+        title: "Airport / Shop Fees",
+        icon: "receipt",
+        quickGuide: {
+            channel: "Airport Sales Desk / UAE Retail Shops",
+            timing: "At point of service / payment",
+            type: "Service fee and administrative fee reference",
+            action: "Check service type, location, and whether exception applies before quoting fee.",
+            warning: "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except Deira Travel Shop and Airport Sales Desk."
+        },
+        classifications: ["Airport Sales Desk", "UAE Travel Shops", "3% admin fee", "PRNT"],
+        sections: [
+            {
+                title: "Service Fees",
+                items: [
+                    "New booking Economy: Airport Sales Desk AED 80 per passenger per segment; UAE retail shops AED 60 per passenger per segment.",
+                    "New booking Business: Airport Sales Desk AED 100 per passenger per segment; UAE retail shops AED 100 per passenger per segment.",
+                    "Modification of flights including upgrade to J class: Airport Sales Desk AED 80 per passenger irrespective of segments; UAE retail shops AED 30 per passenger irrespective of segments.",
+                    "Baggage / seat / ancillary addition: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per passenger irrespective of segments.",
+                    "Ticket print out: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per PNR.",
+                    "Name correction: Airport Sales Desk AED 80 per passenger plus applicable NC SSR; UAE retail shops AED 30 per passenger plus applicable NC SSR.",
+                    "Visa OK to board: Airport Sales Desk AED 80 per passenger; UAE retail shops AED 30 per passenger.",
+                    "Rebate ticket issuance / rebooking: Airport Sales Desk AED 80 per passenger irrespective of segments; UAE retail shops AED 60 per passenger irrespective of segments.",
+                    "Credit card verification: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per PNR.",
+                    "Book online / call centre complete payment: Airport Sales Desk AED 80 per PNR irrespective of class, segments, or number of passengers; UAE retail shops AED 60 per PNR irrespective of class, segments, or number of passengers.",
+                    "Issuing fee IFEE, rarely used in AUH for TA: UAE retail shops AED 45 per passenger per segment."
+                ]
+            },
+            {
+                title: "Special Local Deals / Airport Only",
+                items: [
+                    "DXB POL / ESAAD Card Deal: regular charges at all UAE shops; Deira charges AED 120 for Y class return and AED 200 for J class return ticket per passenger.",
+                    "DXB IMG COR Deal: regular charges at all UAE shops; Deira charges AED 120 for Y class return and AED 200 for J class return ticket per passenger.",
+                    "GOSHOW fee: applies to last-minute booking requests at check-in desk, including adding infants to an existing booking.",
+                    "GOSHOW applies to DXB Terminal 2 departures only, subject to capacity restrictions and approval, handled at airport only.",
+                    "Balance payment completion applies to DXB Terminal 2 departures only. Balance due plus Airport Sales Desk service fee AED 80; UAE retail shops AED 30 per PNR.",
+                    "Printing fee at DXB T2: SSR PRNT AED 25 plus VAT per document of max 3 papers."
+                ]
+            }
+        ]
+    },
+    {
         id: "ssr-guide",
         title: "SSR / Ancillary Guide",
         icon: "list-checks",
@@ -3077,13 +3144,23 @@ const operationsGuideData = [
             ["EXST / CBBG", "Extra Seat / Cabin Baggage", "Contact Centre / SPRINT; GDS requires separate handling", "At least 2h before departure", "Seat / cabin baggage", "Equal fare + standard seat assignment charges", "Depends booking type", "Add adult extra seat, add SSR EXST or CBBG to requesting passenger, assign adjoining seats, update remarks."],
             ["SPEQ / SPEX", "Sporting Equipment", "Contact Centre / SPRINT / FS", "At least 24h before departure", "Special baggage", "SPEQ AED 150 / SPEX AED 270", "Restricted / oversized cases", "Max 32kg. SPEQ 160-189cm, SPEX 190-350cm. Beyond 350cm requires pre-authorization 48h."],
             ["WEAP / SPEX", "Sporting Weapons", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h / 4 working days before travel", "Security approval", "WEAP AED 300 + SPEX AED 270", "Yes", "Customer must email documents first or provide case number. Do not confirm without security approval."],
-            ["BAG / XBAG", "Baggage / Baggage Upgrade", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Existing booking: 6h before departure. New booking / modification: Website 2h; Contact Centre up to D-2 via Shift In Charge, subject to availability.", "Ancillary service", "As per baggage product / route", "Usually no", "GO TO: baggage can be added through all flydubai channels for FZ leg. Baggage move/cancel allowed only 24h prior to departure."],
+            ["BAG / BAGX / BUP*", "Baggage / Baggage Upgrade", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI, SPRINT, Airport where applicable", "Existing booking: 6h before departure. New booking / modification: Website 2h; Contact Centre up to D-2 via Shift In Charge, subject to availability.", "Ancillary service", "As per system / baggage product / route", "Usually no", "Baggage upgrade is multi-channel, not airport-only. OLCI supported for eligible bookings; interline baggage upgrade is not available before departure."],
+            ["BAGX / BUPD / BUPE / BUPX", "Baggage Upgrade SSR Codes", "Website, Contact Centre, Travel Shop, OLCI, SPRINT as eligible", "Use baggage upgrade cut-off: 6h existing booking, 2h new booking/modification where allowed", "Baggage upgrade", "Example KRT deal: BAGX included 40kg, BUPD 50kg AED 100, BUPE 60kg AED 200. BUPX used for additional upgrade examples.", "Depends eligibility", "Codes vary by allowance/deal/system flow. Use SPRINT/system price and route rules before quoting."],
+            ["BAGI", "Infant Baggage Allowance", "SPRINT / applicable booking flow", "As per infant/baggage handling rules", "Baggage SSR", "Included only when baggage-inclusive fare applies", "No", "GO TO: 10kg checked-in baggage allowance SSR on SPRINT is BAGI."],
+            ["EXPC", "Extra Checked Baggage Piece", "Sprint DCS / Airport handling", "At airport / check-in handling", "Baggage handling SSR", "Approx AED 200 per extra piece, subject to change + airport service fee", "Subject to availability", "For passengers with more than three checked baggage pieces. Each piece still must comply with baggage rules."],
+            ["OOGS / OOGL", "Out of Gauge / Oversize Bag", "Airport / check-in handling", "At check-in", "Oversize baggage SSR", "Additional airport handling charge", "Airport acceptance", "OOGS small 160-189cm; OOGL large 190-300cm by L+W+H."],
+            ["EXBG", "Excess Baggage Waiver", "SPRINT ENT / authorized waiver", "Pre-approved only", "Waiver / allowance SSR", "Authorized by Chief / SVP", "Yes", "EXBG uses values like EB1.0 extra 10kg, EB1.5 extra 15kg, EB2.0 extra 20kg, or PC concept. If customer wants normal upgrade, follow normal baggage upgrade process."],
             ["SEAT", "Seat Selection", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Up to 3h before departure", "Ancillary service", "As per selected seat", "Usually no", "Seats can be added up to 3h prior. Moving/cancellation of optional extras such as seat is allowed only 24h prior."],
             ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "SPML up to 24h before departure. MLIN included where applicable.", "Meal service", "As per meal / fare product", "Catering exception only", "Lite/Value/Flex: MLIN included, SPML selectable up to 24h. Business: meal included, SPML selectable up to 24h."],
             ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "Contact Centre, Website / Manage Booking where available, Travel Shop, Airport", "Request as early as possible before departure", "Assistance SSR", "Free service", "WCHC may require medical document verification", "GO TO lists WCHR, WCHS, WCHC and battery wheelchair SSRs WCBD, WCBW, WCLB. WCHC only upon verification of medical docs."],
             ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "Dry, wet, and lithium battery wheelchairs require acceptance checks and battery rules."],
             ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Any time before journey commences", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Can be added any time before the journey commences."],
             ["TRBF", "Transfer Baggage Fee", "Contact Centre / Airport / transfer handling flow", "Connection handling dependent", "Transfer baggage", "As applicable", "Depends itinerary", "Applies where transfer baggage fee is required for separate tickets / connection handling."],
+            ["BUPZ", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
+            ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "For missing printouts required as travel documents. Applies per document of maximum 3 papers."],
+            ["NC SSR", "Name Correction", "Contact Centre / Airport Sales Desk / UAE Travel Shops", "Use applicable name correction policy and channel cut-off", "Name correction service", "Applicable NC SSR + service fee", "Depends correction type", "Airport Sales Desk AED 80 per passenger + applicable NC SSR; UAE shops AED 30 per passenger + applicable NC SSR."],
+            ["VIOK", "Visa OK to Board", "UAE Travel Shops / Airport Sales Desk where applicable", "Travel shop cut-off D > 4", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "Use for Visa OK to Board service handling."],
+            ["CCOK / CCHK", "Credit Card Verification", "Airport / Travel Shop / operational verification", "At least 4h prior if airport verification required", "Payment verification", "Airport AED 80 per PNR; UAE shops AED 30 per PNR", "May be required", "CCHK must be done at least 4h prior at airport if not verified elsewhere."],
             ["STPN", "Stopover / Re-accommodation SSR", "Supervisor / FS / Reservations Support", "After reaccommodation where applicable", "Disruption handling SSR", "Override may be AED 100 when system not picking charge", "Senior Manager approval if overridden", "Used after reaccommodation when applicable. Senior Manager approval required only if STPN charge is overridden."],
             ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor", "Within 48h when balance due risk applies", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "For partially paid booking only. Escalate for Supervisor to add KEEP if paid service / balance due issue may trigger auto cancellation."]
         ]
@@ -3105,7 +3182,7 @@ function getOperationsTopicCategory(topic) {
 
     if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs"].includes(id)) return "products";
     if (["ssr-guide", "standard-ssr-cutoffs", "economy-seating-matrix", "baggage-upgrade-matrix", "assistance-medical", "equipment-animals", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs"].includes(id)) return "airport";
+    if (["operational-airport-ssrs", "airport-shop-fees"].includes(id)) return "airport";
     if (["auto-split-od", "g-fare-rules"].includes(id)) return "disruption";
 
     return "products";
