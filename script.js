@@ -3302,6 +3302,7 @@ function renderOperationsControls() {
             '<div class="operations-search-wrap">' +
                 '<i data-lucide="search"></i>' +
                 '<input type="text" id="operationsSearch" value="' + escapeHTML(activeOperationsSearch) + '" placeholder="Search ops, SSR, channel, or keyword..." autocomplete="off">' +
+                '<button type="button" id="operationsSearchClear" class="operations-clear-btn" aria-label="Clear operations search"><i data-lucide="x"></i><span>Clear</span></button>' +
             '</div>' +
         '</div>'
     );
@@ -3389,7 +3390,7 @@ function renderOperationsSsrTable(rows) {
     const body = rows.map(function (row) {
         return (
             '<tr data-ssr-row="' + escapeHTML(row.join(" ")) + '">' +
-                row.map(function (cell) { return '<td>' + escapeHTML(cell) + '</td>'; }).join("") +
+                row.map(function (cell, index) { return renderOperationsSsrCell(cell, index); }).join("") +
             '</tr>'
         );
     }).join("");
@@ -3398,6 +3399,7 @@ function renderOperationsSsrTable(rows) {
         '<div class="operations-ssr-search-wrap">' +
             '<i data-lucide="search"></i>' +
             '<input type="text" id="operationsSsrSearch" placeholder="Search SSR, service, channel, cut-off, or keyword..." autocomplete="off">' +
+            '<button type="button" id="operationsSsrSearchClear" class="operations-clear-btn operations-ssr-clear-btn" aria-label="Clear SSR search"><i data-lucide="x"></i><span>Clear</span></button>' +
         '</div>' +
         '<div class="operations-ssr-wrap">' +
             '<table class="operations-ssr-table">' +
@@ -3407,6 +3409,48 @@ function renderOperationsSsrTable(rows) {
         '</div>' +
         '<div id="operationsSsrEmpty" class="operations-ssr-empty hidden">No matching SSR / ancillary found.</div>'
     );
+}
+
+function renderOperationsSsrCell(cell, index) {
+    const text = String(cell || "");
+    const lines = splitOperationsSsrCell(text, index);
+
+    if (lines.length <= 1) {
+        const className = index === 0 ? ' class="operations-ssr-code-cell"' : "";
+        return '<td' + className + '>' + escapeHTML(text) + '</td>';
+    }
+
+    return (
+        '<td class="operations-ssr-lines">' +
+            lines.map(function (line) {
+                const codeMatch = line.match(/^(BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG)\b/i);
+                const label = codeMatch ? '<strong>' + escapeHTML(codeMatch[1].trim()) + '</strong> ' : "";
+                const body = codeMatch ? line.replace(codeMatch[1], "").trim() : line;
+
+                return '<span>' + label + escapeHTML(body) + '</span>';
+            }).join("") +
+        '</td>'
+    );
+}
+
+function splitOperationsSsrCell(text, index) {
+    if (!text || index < 4) return [text];
+
+    const codeSplit = text
+        .replace(/,\s+(BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG)\s+/g, "\n$1 ")
+        .replace(/\.\s+(BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG)\s+/g, ".\n$1 ");
+
+    if (codeSplit.includes("\n")) {
+        return codeSplit.split("\n").map(function (line) {
+            return line.replace(/^,\s*/, "").trim();
+        }).filter(Boolean);
+    }
+
+    if (text.length < 95) return [text];
+
+    return text.split(/(?<=\.)\s+/).map(function (line) {
+        return line.trim();
+    }).filter(Boolean);
 }
 
 function filterOperationsSsrRows(query) {
@@ -3430,6 +3474,24 @@ function handleOperationsClick(event) {
     const category = event.target.closest("[data-operations-category]");
     const tab = event.target.closest("[data-operations-id]");
     const toggle = event.target.closest("[data-operations-block]");
+    const clearOperationsSearch = event.target.closest("#operationsSearchClear");
+    const clearSsrSearch = event.target.closest("#operationsSsrSearchClear");
+
+    if (clearOperationsSearch) {
+        activeOperationsSearch = "";
+        renderOperationsGuide();
+        return;
+    }
+
+    if (clearSsrSearch) {
+        const search = document.getElementById("operationsSsrSearch");
+        if (search) {
+            search.value = "";
+            filterOperationsSsrRows("");
+            search.focus();
+        }
+        return;
+    }
 
     if (category) {
         activeOperationsCategory = category.dataset.operationsCategory || "products";
