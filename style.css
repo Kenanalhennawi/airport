@@ -1023,6 +1023,33 @@ input {
     font-weight: 600;
 }
 
+.currency-select-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.currency-select-flag {
+    flex: 0 0 auto;
+    width: 24px;
+    font-size: 18px;
+    line-height: 1;
+    text-align: center;
+}
+
+.currency-select-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ts-dropdown .currency-select-option {
+    display: flex;
+}
+
 .ts-dropdown .active {
     background: #e0f2fe !important;
     color: var(--fz-blue) !important;
