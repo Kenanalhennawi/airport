@@ -1948,6 +1948,7 @@ function renderAgentForm(service) {
 function renderAgentFormField(serviceId, field) {
     const safeServiceId = escapeHTML(serviceId || "");
     const fieldId = escapeHTML(field.id || "");
+    const fieldType = String(field.type || "text").replace(/[^a-z0-9-]/gi, "").toLowerCase() || "text";
     const inputId = "special_" + safeServiceId + "_" + fieldId;
     const label = escapeHTML(field.label || field.id || "");
     const requiredMark = field.required ? ' <span class="required-star">*</span>' : "";
@@ -1977,7 +1978,7 @@ function renderAgentFormField(serviceId, field) {
     }
 
     return (
-        '<label class="special-service-form-field" for="' + inputId + '">' +
+        '<label class="special-service-form-field special-service-form-field-' + escapeHTML(fieldType) + '" for="' + inputId + '">' +
             '<span>' + label + requiredMark + "</span>" +
             inputHtml +
         "</label>"
