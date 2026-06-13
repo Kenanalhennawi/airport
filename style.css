@@ -238,7 +238,7 @@ input {
 .view-tabs {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
 }
@@ -246,13 +246,13 @@ input {
 .view-tab {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 7px;
+    padding: 11px 18px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
     border: 2px solid rgba(255, 255, 255, 0.6);
     border-radius: 50px;
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.25s ease;
@@ -274,8 +274,8 @@ input {
 }
 
 .view-tab svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 }
 
 .view-panel {
@@ -2067,9 +2067,38 @@ footer strong {
     margin-top: 10px;
 }
 
+.operations-ssr-search-wrap {
+    position: relative;
+    margin: 12px 0 10px;
+}
+
+.operations-ssr-search-wrap svg {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fz-blue);
+}
+
+.operations-ssr-search-wrap input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 12px 14px 12px 42px;
+    font-weight: 750;
+    color: #0f172a;
+    background: #ffffff;
+}
+
+.operations-ssr-search-wrap input:focus {
+    outline: none;
+    border-color: var(--fz-orange);
+    box-shadow: 0 0 0 4px rgba(246, 136, 31, 0.14);
+}
+
 .operations-ssr-table {
     width: 100%;
-    min-width: 880px;
+    min-width: 1180px;
     border-collapse: collapse;
     background: #ffffff;
 }
@@ -2092,6 +2121,20 @@ footer strong {
 .operations-ssr-table td:first-child {
     font-weight: 900;
     color: var(--fz-blue);
+}
+
+.operations-ssr-empty {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #64748b;
+    text-align: center;
+    font-weight: 850;
+}
+
+.operations-ssr-empty.hidden {
+    display: none;
 }
 
 .special-hidden-block {
