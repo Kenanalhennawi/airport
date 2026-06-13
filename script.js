@@ -3408,6 +3408,97 @@ function getOperationsSearchScore(topic, query) {
     return score;
 }
 
+function getOperationsTopicMatches(topic, query) {
+    const matches = [];
+
+    function addMatch(type, text) {
+        if (!text || matches.length >= 4) return;
+        matches.push({
+            type: type,
+            text: String(text).replace(/\s+/g, " ").trim()
+        });
+    }
+
+    if (normalizeSpecialServiceText(topic.title || "").includes(query)) {
+        addMatch("Topic", topic.title);
+    }
+
+    (topic.classifications || []).forEach(function (item) {
+        if (normalizeSpecialServiceText(item).includes(query)) addMatch("Tag", item);
+    });
+
+    Object.keys(topic.quickGuide || {}).forEach(function (key) {
+        const value = topic.quickGuide[key];
+        if (normalizeSpecialServiceText(value).includes(query)) addMatch("Quick Guide", value);
+    });
+
+    (topic.sections || []).forEach(function (section) {
+        if (normalizeSpecialServiceText(section.title || "").includes(query)) {
+            addMatch("Section", section.title);
+        }
+
+        (section.items || []).forEach(function (item) {
+            if (normalizeSpecialServiceText(item).includes(query)) addMatch(section.title || "Policy", item);
+        });
+    });
+
+    (topic.ssrRows || []).forEach(function (row) {
+        if (normalizeSpecialServiceText(row.join(" ")).includes(query)) {
+            addMatch("SSR / Ancillary", [row[0], row[1]].filter(Boolean).join(" - "));
+        }
+    });
+
+    (topic.feeRows || []).forEach(function (row) {
+        if (normalizeSpecialServiceText(row.join(" ")).includes(query)) {
+            addMatch("Airport / Shop Fees", row[0] || row.join(" "));
+        }
+    });
+
+    return matches;
+}
+
+function renderOperationsSearchResults(topics, activeId) {
+    const query = normalizeSpecialServiceText(activeOperationsSearch);
+    if (!query) return "";
+
+    const results = topics.map(function (topic) {
+        return {
+            topic: topic,
+            matches: getOperationsTopicMatches(topic, query)
+        };
+    }).filter(function (result) {
+        return result.matches.length;
+    });
+
+    if (!results.length) return "";
+
+    return (
+        '<div class="operations-search-results">' +
+            '<div class="operations-search-results-title">' +
+                '<i data-lucide="search-check"></i>' +
+                '<span>' + results.length + ' matching topic' + (results.length === 1 ? '' : 's') + ' for "' + escapeHTML(activeOperationsSearch.trim()) + '"</span>' +
+            '</div>' +
+            '<div class="operations-search-result-list">' +
+                results.map(function (result) {
+                    const topic = result.topic;
+                    const activeClass = topic.id === activeId ? " active" : "";
+
+                    return (
+                        '<button type="button" class="operations-search-result' + activeClass + '" data-operations-id="' + escapeHTML(topic.id) + '">' +
+                            '<span class="operations-search-result-topic">' + escapeHTML(topic.title) + '</span>' +
+                            '<span class="operations-search-result-snippets">' +
+                                result.matches.map(function (match) {
+                                    return '<span><strong>' + escapeHTML(match.type) + ':</strong> ' + escapeHTML(match.text) + '</span>';
+                                }).join("") +
+                            '</span>' +
+                        '</button>'
+                    );
+                }).join("") +
+            '</div>' +
+        '</div>'
+    );
+}
+
 function renderOperationsGuide(activeId) {
     const tabs = document.getElementById("operationsTabs");
     const content = document.getElementById("operationsContent");
@@ -3429,7 +3520,7 @@ function renderOperationsGuide(activeId) {
         );
     }).join("") + (!visibleTopics.length ? '<div class="operations-empty">No operations topic found.</div>' : "");
 
-    content.innerHTML = renderOperationsTopic(activeTopic);
+    content.innerHTML = renderOperationsSearchResults(visibleTopics, activeTopic.id) + renderOperationsTopic(activeTopic);
 
     if (activeOperationsSearch) {
         filterOperationsSsrRows(activeOperationsSearch);
