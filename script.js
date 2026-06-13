@@ -3389,7 +3389,15 @@ function getOperationsSearchScore(topic, query) {
     const feeRows = normalizeSpecialServiceText((topic.feeRows || []).map(function (row) {
         return row.join(" ");
     }).join(" "));
+    const exactSsrCodeMatch = (topic.ssrRows || []).some(function (row) {
+        return normalizeSpecialServiceText(row[0] || "").split(/\s+/).includes(query);
+    });
+    const exactFeeServiceMatch = (topic.feeRows || []).some(function (row) {
+        return normalizeSpecialServiceText(row[0] || "").includes(query);
+    });
 
+    if (exactSsrCodeMatch) score += 260;
+    if (exactFeeServiceMatch) score += 160;
     if (title.includes(query)) score += 120;
     if (classifications.includes(query)) score += 90;
     if (feeRows.includes(query)) score += 85;
@@ -3424,6 +3432,7 @@ function renderOperationsGuide(activeId) {
     content.innerHTML = renderOperationsTopic(activeTopic);
 
     if (activeOperationsSearch) {
+        filterOperationsSsrRows(activeOperationsSearch);
         filterOperationsFeeRows(activeOperationsSearch);
     }
 
@@ -3580,7 +3589,7 @@ function renderOperationsSsrTable(rows) {
     return (
         '<div class="operations-ssr-search-wrap">' +
             '<i data-lucide="search"></i>' +
-            '<input type="text" id="operationsSsrSearch" placeholder="Search SSR, service, channel, cut-off, or keyword..." autocomplete="off">' +
+            '<input type="text" id="operationsSsrSearch" value="' + escapeHTML(activeOperationsSearch) + '" placeholder="Search SSR, service, channel, cut-off, or keyword..." autocomplete="off">' +
             '<button type="button" id="operationsSsrSearchClear" class="operations-clear-btn operations-ssr-clear-btn" aria-label="Clear SSR search"><i data-lucide="x"></i><span>Clear</span></button>' +
         '</div>' +
         '<div class="operations-ssr-wrap">' +
