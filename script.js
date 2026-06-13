@@ -3176,6 +3176,50 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "ok-to-board",
+        title: "OKTB / OK to Board",
+        icon: "badge-check",
+        quickGuide: {
+            channel: "Official website for policy; FS / Supervisor for EK* handling",
+            timing: "Check latest travel requirements before advising",
+            type: "Travel document / OK to Board guidance",
+            action: "Direct customer to current OKTB policy; FS/Supervisor handles EK* OKTB service when required.",
+            warning: "Travel requirements may change without prior notice; passenger must check relevant authorities before travel."
+        },
+        classifications: ["OKTB", "OK to Board", "Visa OK to Board", "VIOK", "EK*", "UAE Visit Visa", "Floor Support", "Supervisor"],
+        sections: [
+            {
+                title: "Agent Rules",
+                items: [
+                    "For the most current OKTB policy, refer to the official flydubai OK to Board page.",
+                    "Travel requirements are subject to change without prior notice.",
+                    "Passenger must check with the relevant authorities before travel for latest entry and exit requirements.",
+                    "Use VIOK only when Visa OK to Board handling is required for the destination or document scenario.",
+                    "For UAE Travel Shops, Visa OK to Board VIOK cut-off is more than 4 days before departure."
+                ]
+            },
+            {
+                title: "EK* OKTB - FS / Supervisor Only",
+                items: [
+                    "The EK* OKTB flow is for Floor Support and Supervisors only.",
+                    "Take control over the booking.",
+                    "Open Add services.",
+                    "Select Carrier EK*, Category UAE VISIT VISA, then Services and OKTB, and click Add.",
+                    "Update PNR comments with the action taken.",
+                    "Release control of the reservation after completing the action."
+                ]
+            },
+            {
+                title: "Customer Advice",
+                items: [
+                    "Advise customer that OKTB or visa document acceptance is not a substitute for meeting immigration requirements.",
+                    "Customer remains responsible for valid documents, visa eligibility, entry requirements, and authority approvals.",
+                    "If unsure, escalate to Supervisor / FS before confirming the handling path."
+                ]
+            }
+        ]
+    },
+    {
         id: "operational-airport-ssrs",
         title: "Operational SSRs",
         icon: "plane-takeoff",
@@ -3287,7 +3331,7 @@ const operationsGuideData = [
             ["UPGJ", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights when offered. Eligible for passengers travelling on FZ flight, codeshare, and interline bookings. Handled at airport only. Product includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
             ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "SSR PRNT: AED 25 + VAT per document, maximum 3 papers. Applies to DXB T2 departures only. Applicable to FZ, codeshare, interline, and staff passengers. Handled at airport only."],
             ["NCFB / NCFE", "Name Correction Fees", "Contact Centre with Supervisor / FS confirmation, Airport Sales Desk, UAE Travel Shops", "Not permitted within 6h before departure; fully active PNR only", "Name correction service", "FOC up to 3 characters/title/space/gender. Name swap USD 30. More than 3 characters or full first/middle/last correction USD 100 / AED 367. NCFB = name change fee 2 characters. NCFE = fee charges for name change. Airport and shop service fees may also apply.", "Supervisor / FS confirmation required", "Use only for genuine corrections, not different passengers. Only once per passenger. Not for GDS/codeshare/interline, TA block fare, checked-in/OLCI, utilized, or no-show bookings. If at check-in desk and Res Support is called, apply USD 100 even for one character/title/space. No charges for name changes involving extra seat purchase for falcon, EXST, or CBBG."],
-            ["VIOK", "Visa OK to Board", "UAE Travel Shops / Airport Sales Desk where applicable", "Travel shop cut-off D > 4", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "VIOK: use only when Visa OK to Board handling is required for the destination / document scenario. Apply the correct airport or UAE shop service fee."],
+            ["VIOK", "Visa OK to Board / OKTB", "UAE Travel Shops / Airport Sales Desk where applicable; FS / Supervisor for EK* OKTB", "Travel shop cut-off D > 4; check latest authority requirements before advising", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "VIOK: use only when Visa OK to Board handling is required for the destination / document scenario. OKTB policy must be checked against the official website/current authority rules. EK* OKTB handling is FS/Supervisor only."],
             ["CCOK / CCHK", "Credit Card Verification", "Airport / Travel Shop / operational verification", "Travel shop cut-off D > 4; airport verification must be completed before travel", "Payment verification", "Airport AED 80 per PNR; UAE shops AED 30 per PNR", "May be required", "CCHK means passenger must verify credit card for smooth travel. CCOK means credit card is verified and passenger may travel. If payer is flydubai staff, supervisor may remove CCHK if present and add CCOK at zero cost after verification. Bookings with CCHK cannot complete online check-in."],
             ["STPN", "Stopover / Re-accommodation SSR", "Supervisor / FS / Reservations Support", "After reaccommodation where applicable", "Disruption handling SSR", "Override may be AED 100 when system not picking charge", "Senior Manager approval if overridden", "Used after reaccommodation when applicable. Senior Manager approval required only if STPN charge is overridden."],
             ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor via Salesforce", "Flight within 48h and balance due AED 200 or more", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "KEEP is for existing bookings with pending payment / balance due risk. Agent escalates with details in Salesforce. Supervisor verifies balance due and flight within 48h before adding SSR KEEP to avoid auto cancellation."]
@@ -3315,7 +3359,7 @@ function getOperationsTopicCategory(topic) {
 
     if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
     if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist"].includes(id)) return "airport";
+    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist", "ok-to-board"].includes(id)) return "airport";
 
     return "products";
 }
