@@ -912,6 +912,25 @@ input {
     font-weight: 700;
 }
 
+#currencyClearBtn {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#currencyClearBtn svg {
+    width: 17px;
+    height: 17px;
+}
+
 #currencySwapBtn {
     margin-top: 28px;
     height: 45px;
