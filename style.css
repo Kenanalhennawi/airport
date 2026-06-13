@@ -1377,6 +1377,51 @@ footer strong {
     box-shadow: 0 0 0 4px rgba(246, 136, 31, 0.15);
 }
 
+.special-services-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 18px;
+}
+
+.special-service-tab {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 9px;
+    padding: 9px 11px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 900;
+    transition: all 0.2s ease;
+}
+
+.special-service-tab small {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 850;
+}
+
+.special-service-tab.active,
+.special-service-tab:hover {
+    background: var(--fz-blue);
+    color: #ffffff;
+    border-color: var(--fz-blue);
+    box-shadow: 0 8px 18px rgba(0, 94, 184, 0.18);
+}
+
+.special-service-tab.active small,
+.special-service-tab:hover small {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.special-service-tab svg {
+    width: 17px;
+    height: 17px;
+}
+
 .special-services-clear-btn {
     position: absolute;
     right: 12px;
