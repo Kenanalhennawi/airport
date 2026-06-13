@@ -3095,7 +3095,7 @@ const operationsGuideData = [
             action: "Check service type, location, and whether exception applies before quoting fee.",
             warning: "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except Deira Travel Shop and Airport Sales Desk."
         },
-        classifications: ["Airport Sales Desk", "UAE Travel Shops", "3% admin fee", "PRNT"],
+        classifications: ["Airport Sales Desk", "UAE Travel Shops", "3% admin fee", "PRNT", "GOSHOW", "IFEE", "Balance payment", "Deira", "Name correction", "Credit card verification"],
         feeRows: [
             ["New booking - Economy", "AED 80 per passenger per segment", "AED 60 per passenger per segment"],
             ["New booking - Business", "AED 100 per passenger per segment", "AED 100 per passenger per segment"],
@@ -3214,6 +3214,12 @@ function buildOperationsTopicSearchText(topic) {
         });
     }
 
+    if (Array.isArray(topic.feeRows)) {
+        topic.feeRows.forEach(function (row) {
+            parts.push(row.join(" "));
+        });
+    }
+
     return normalizeSpecialServiceText(parts.filter(Boolean).join(" "));
 }
 
@@ -3245,9 +3251,13 @@ function getOperationsSearchScore(topic, query) {
     const ssrRows = normalizeSpecialServiceText((topic.ssrRows || []).map(function (row) {
         return row.join(" ");
     }).join(" "));
+    const feeRows = normalizeSpecialServiceText((topic.feeRows || []).map(function (row) {
+        return row.join(" ");
+    }).join(" "));
 
     if (title.includes(query)) score += 120;
     if (classifications.includes(query)) score += 90;
+    if (feeRows.includes(query)) score += 85;
     if (ssrRows.includes(query)) score += 75;
     if (quickGuide.includes(query)) score += 45;
     if (sections.includes(query)) score += 25;
