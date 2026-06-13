@@ -2860,7 +2860,7 @@ const operationsGuideData = [
     },
     {
         id: "economy-seating-matrix",
-        title: "Economy Seating Matrix",
+        title: "Economy Seating",
         icon: "armchair",
         quickGuide: {
             channel: "Manage Booking, OLCI, SPRINT",
@@ -3051,7 +3051,7 @@ const operationsGuideData = [
             action: "Choose the correct upgrade path by departure point and channel.",
             warning: "OLCI upgrade window differs for Dubai and outstation departures."
         },
-        classifications: ["Bid upgrade", "OLCI banner upgrade", "Airport counter upgrade"],
+        classifications: ["Bid upgrade", "OLCI banner upgrade", "Airport counter upgrade", "Airport upgrade", "UPGJ"],
         sections: [
             {
                 title: "Cut-offs",
@@ -3099,41 +3099,41 @@ const operationsGuideData = [
                     "Product includes priority boarding.",
                     "Product includes free IFE on board.",
                     "Product includes J class meal.",
-                    "Use SSR / code BUPZ where applicable for Business Class airport upgrade handling."
+                    "Airport upgrade bookings may show SSR UPGJ. BUPZ is a baggage upgrade code, not a Business Class upgrade code."
                 ]
             }
         ]
     },
     {
         id: "masd-meet-assist",
-        title: "MASD Meet & Assist",
+        title: "MAAS Meet & Assist",
         icon: "user-check",
         quickGuide: {
             channel: "Business Class team / OLCI / Contact Centre call handling",
             timing: "DXB Terminal 2 Business Class departures; default time D-3h if passenger does not select",
             type: "Meet and Assist Service SSR",
-            action: "Check MASD SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
+            action: "Check MAAS SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
             warning: "Not for bid upgrades, OLCI upgrades, airport upgrades, LNGN no-lounge bookings, transit passengers, DXB T3, or outstation departures."
         },
-        classifications: ["MASD", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
+        classifications: ["MAAS", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
         sections: [
             {
                 title: "Eligibility",
                 items: [
                     "Passenger must be travelling on a commercial Business Class booking.",
                     "Flight must depart from DXB Terminal 2.",
-                    "MASD SSR is automatically added during booking creation for eligible passengers and flights.",
+                    "MAAS SSR is automatically added during booking creation for eligible passengers and flights.",
                     "Business Class team may contact passenger to introduce the service and encourage OLCI opt-in."
                 ]
             },
             {
                 title: "Contact Centre Handling",
                 items: [
-                    "Confirm whether passenger is asking about an email received from flydubai regarding MASD.",
+                    "Confirm whether passenger is asking about an email received from flydubai regarding MAAS.",
                     "Retrieve PNR and check SSRs / comments.",
-                    "Verify MASD SSR exists and that Business Team comment is present if outbound call was attempted.",
-                    "Confirm the MASD SSR is associated with the correct eligible flight and that the flight segment was not changed.",
-                    "Advise passenger they can update MASD via OLCI by selecting preferred airport arrival time.",
+                    "Verify MAAS SSR exists and that Business Team comment is present if outbound call was attempted.",
+                    "Confirm the MAAS SSR is associated with the correct eligible flight and that the flight segment was not changed.",
+                    "Advise passenger they can update MAAS via OLCI by selecting preferred airport arrival time.",
                     "If no preference is selected, passenger can access the service at Business Class check-in area near Entrance 3 at DXB T2.",
                     "Update SPRINT comments after handling the call."
                 ]
@@ -3181,7 +3181,7 @@ const operationsGuideData = [
         icon: "plane-takeoff",
         quickGuide: {
             channel: "Contact Centre, Supervisor / FS, Airport as applicable",
-            timing: "BHFT 50h, CCHK 4h, baggage 6h, LRPT/ERPT by DXB T2 timing",
+            timing: "BHFT 50h / 49h, CCOK Travel Shop D>4, ID50 baggage 6h, LRPT/ERPT by DXB T2 timing",
             type: "Operational and airport SSRs",
             action: "Use only for the operational scenario described; escalate unclear cases.",
             warning: "These SSRs are operational controls and should not be treated like normal paid ancillaries."
@@ -3203,7 +3203,8 @@ const operationsGuideData = [
             {
                 title: "Credit Card / Staff / Reporting SSRs",
                 items: [
-                    "Credit Card Verification CCHK: must be done at least 4 hours prior to departure at the airport if not verified elsewhere.",
+                    "CCHK means passenger must verify credit card for smooth travel; CCOK means credit card is verified and passenger may travel.",
+                    "For UAE Travel Shops, CCOK card verification follows D > 4 cut-off.",
                     "Bookings with CCHK cannot complete online check-in until verification is resolved.",
                     "Staff ID50 Waitlist Baggage: added before the 6-hour cut-off.",
                     "Early / Late Reporting applies to DXB T2 departures only and is handled at airport only.",
@@ -3285,7 +3286,7 @@ const operationsGuideData = [
             ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request as early as possible before departure", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "WCBD: dry battery wheelchair. WCBW: wet battery wheelchair. WCLB: lithium battery wheelchair. Battery type, protection, and airport acceptance checks must be confirmed before travel."],
             ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Before journey commences through eligible channels; UAE Travel Shop cut-off D > 4", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Available for adults and children only; infants are out of scope. Not available for GDS, OTA, multicity, interline, codeshare, or asynchronous bookings. If modification creates an asynchronous booking, insurance drops from the PNR and is not refunded. Policy email is sent by XCover; resend requests are escalated through Salesforce to Supervisor / Floor Support."],
             ["TRBF", "Transfer Baggage Fee", "Airport / transfer handling flow; Contact Centre can advise", "Applies when baggage through-tagging / retagging is required", "Transfer baggage", "As applicable by airport / transfer process", "Depends itinerary and baggage status", "Dubai: applies to transfer passengers whose baggage needs retagging because it was short-tagged from origin. Outstation: applies for two separate tickets when bags need through-tagging to final destination. Not applicable to connections over 24h. If passenger no-shows the onward connected flight, baggage is offloaded / not transferred."],
-            ["Airport J Upgrade", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights on FZ where offered. Includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
+            ["UPGJ", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights when offered. Eligible for passengers travelling on FZ flight, codeshare, and interline bookings. Handled at airport only. Product includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
             ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "SSR PRNT: AED 25 + VAT per document, maximum 3 papers. Applies to DXB T2 departures only. Applicable to FZ, codeshare, interline, and staff passengers. Handled at airport only."],
             ["NCFB / NCFE", "Name Correction Fees", "Contact Centre with Supervisor / FS confirmation, Airport Sales Desk, UAE Travel Shops", "Not permitted within 6h before departure; fully active PNR only", "Name correction service", "FOC up to 3 characters/title/space/gender. Name swap USD 30. More than 3 characters or full first/middle/last correction USD 100 / AED 367. NCFB = name change fee 2 characters. NCFE = fee charges for name change. Airport and shop service fees may also apply.", "Supervisor / FS confirmation required", "Use only for genuine corrections, not different passengers. Only once per passenger. Not for GDS/codeshare/interline, TA block fare, checked-in/OLCI, utilized, or no-show bookings. If at check-in desk and Res Support is called, apply USD 100 even for one character/title/space. No charges for name changes involving extra seat purchase for falcon, EXST, or CBBG."],
             ["VIOK", "Visa OK to Board", "UAE Travel Shops / Airport Sales Desk where applicable", "Travel shop cut-off D > 4", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "VIOK: use only when Visa OK to Board handling is required for the destination / document scenario. Apply the correct airport or UAE shop service fee."],
@@ -3299,20 +3300,24 @@ const operationsGuideData = [
 const operationsCategoryData = [
     { id: "products", label: "Products", icon: "shopping-bag" },
     { id: "ssr", label: "SSR / Ancillary", icon: "list-checks" },
-    { id: "airport", label: "Airport / Ops", icon: "plane-takeoff" },
-    { id: "disruption", label: "Disruption", icon: "route" }
+    { id: "airport", label: "Airport / Ops", icon: "plane-takeoff" }
 ];
 
 let activeOperationsCategory = "products";
 let activeOperationsSearch = "";
+const hiddenOperationsTopicIds = [
+    "standard-ssr-cutoffs",
+    "baggage-upgrade-matrix",
+    "assistance-medical",
+    "equipment-animals"
+];
 
 function getOperationsTopicCategory(topic) {
     const id = topic && topic.id;
 
-    if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs"].includes(id)) return "products";
-    if (["ssr-guide", "standard-ssr-cutoffs", "economy-seating-matrix", "baggage-upgrade-matrix", "assistance-medical", "equipment-animals", "travel-shops-cutoffs"].includes(id)) return "ssr";
+    if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
+    if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
     if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist"].includes(id)) return "airport";
-    if (["auto-split-od", "g-fare-rules"].includes(id)) return "disruption";
 
     return "products";
 }
@@ -3357,6 +3362,8 @@ function getFilteredOperationsTopics() {
     const query = normalizeSpecialServiceText(activeOperationsSearch);
 
     const filtered = operationsGuideData.filter(function (topic) {
+        if (hiddenOperationsTopicIds.includes(topic.id)) return false;
+
         const categoryMatch = !query && getOperationsTopicCategory(topic) === activeOperationsCategory;
         const searchMatch = query && buildOperationsTopicSearchText(topic).includes(query);
 
@@ -3607,7 +3614,7 @@ function renderOperationsSsrCell(cell, index) {
     return (
         '<td class="' + classNames.join(" ") + '">' +
             lines.map(function (line) {
-                const codeMatch = line.match(/^(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK)\b/i);
+                const codeMatch = line.match(/^(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ)\b/i);
                 const label = codeMatch ? '<strong>' + escapeHTML(codeMatch[1].trim()) + '</strong> ' : "";
                 const body = codeMatch ? line.replace(codeMatch[1], "").trim() : line;
 
@@ -3632,8 +3639,8 @@ function splitOperationsSsrCell(text, index) {
     if (!text || index < 4) return [text];
 
     const codeSplit = text
-        .replace(/,\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK)\s+/g, "\n$1 ")
-        .replace(/\.\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK)\s+/g, ".\n$1 ");
+        .replace(/,\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ)\s+/g, "\n$1 ")
+        .replace(/\.\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ)\s+/g, ".\n$1 ");
 
     if (codeSplit.includes("\n")) {
         return codeSplit.split("\n").map(function (line) {
@@ -3689,6 +3696,8 @@ function filterOperationsSsrRows(query) {
         const match = !normalized || text.includes(normalized);
 
         row.style.display = match ? "" : "none";
+        row.classList.toggle("operations-search-selected", !!normalized && match);
+
         if (match) {
             visible += 1;
             rankedRows.push({
@@ -3730,6 +3739,7 @@ function filterOperationsFeeRows(query) {
         const match = !normalized || text.includes(normalized);
 
         row.style.display = match ? "" : "none";
+        row.classList.toggle("operations-search-selected", !!normalized && match);
         if (match) visible += 1;
     });
 
