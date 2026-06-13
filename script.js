@@ -1618,6 +1618,84 @@ const payportCurrencies = [
     "Zimbabwe's ZWG (ZWG)"
 ];
 
+const currencyFlagByCode = {
+    AFN: "🇦🇫",
+    AUD: "🇦🇺",
+    AZN: "🇦🇿",
+    BHD: "🇧🇭",
+    BDT: "🇧🇩",
+    BYN: "🇧🇾",
+    CAD: "🇨🇦",
+    XCG: "🇨🇼",
+    CZK: "🇨🇿",
+    DKK: "🇩🇰",
+    DJF: "🇩🇯",
+    EGP: "🇪🇬",
+    ERN: "🇪🇷",
+    ETB: "🇪🇹",
+    EUR: "🇪🇺",
+    FJD: "🇫🇯",
+    HKD: "🇭🇰",
+    HUF: "🇭🇺",
+    INR: "🇮🇳",
+    IDR: "🇮🇩",
+    IRR: "🇮🇷",
+    JOD: "🇯🇴",
+    KZT: "🇰🇿",
+    KES: "🇰🇪",
+    KWD: "🇰🇼",
+    LYD: "🇱🇾",
+    MYR: "🇲🇾",
+    NPR: "🇳🇵",
+    ILS: "🇮🇱",
+    NZD: "🇳🇿",
+    NOK: "🇳🇴",
+    OMR: "🇴🇲",
+    PKR: "🇵🇰",
+    PLN: "🇵🇱",
+    QAR: "🇶🇦",
+    RUB: "🇷🇺",
+    SAR: "🇸🇦",
+    RSD: "🇷🇸",
+    SGD: "🇸🇬",
+    SSP: "🇸🇸",
+    LKR: "🇱🇰",
+    SDG: "🇸🇩",
+    SEK: "🇸🇪",
+    CHF: "🇨🇭",
+    SYP: "🇸🇾",
+    TZS: "🇹🇿",
+    THB: "🇹🇭",
+    TRY: "🇹🇷",
+    GBP: "🇬🇧",
+    UAH: "🇺🇦",
+    AED: "🇦🇪",
+    USD: "🇺🇸",
+    UZS: "🇺🇿",
+    ZWG: "🇿🇼"
+};
+
+function getCurrencyCode(currencyName) {
+    const match = String(currencyName || "").match(/\(([A-Z]{3})\)$/);
+    return match ? match[1] : "";
+}
+
+function getCurrencyFlag(currencyName) {
+    return currencyFlagByCode[getCurrencyCode(currencyName)] || "🏳️";
+}
+
+function renderCurrencySelectOption(data, escape) {
+    const label = data.text || data.value || "";
+    const flag = getCurrencyFlag(label);
+
+    return [
+        '<div class="currency-select-option">',
+        '<span class="currency-select-flag" aria-hidden="true">', flag, '</span>',
+        '<span class="currency-select-label">', escape(label), '</span>',
+        '</div>'
+    ].join("");
+}
+
 function initialiseCurrencyConverter() {
     const from = document.getElementById("currencyFrom");
     const to = document.getElementById("currencyTo");
@@ -1648,7 +1726,11 @@ function initialiseCurrencyConverter() {
             field: "text",
             direction: "asc"
         },
-        placeholder: "Search currency..."
+        placeholder: "Search currency...",
+        render: {
+            option: renderCurrencySelectOption,
+            item: renderCurrencySelectOption
+        }
     });
 
     window.currencyToTom = new TomSelect("#currencyTo", {
@@ -1659,7 +1741,11 @@ function initialiseCurrencyConverter() {
             field: "text",
             direction: "asc"
         },
-        placeholder: "Search currency..."
+        placeholder: "Search currency...",
+        render: {
+            option: renderCurrencySelectOption,
+            item: renderCurrencySelectOption
+        }
     });
 
     window.currencyFromTom.setValue("United States Dollar (USD)");
