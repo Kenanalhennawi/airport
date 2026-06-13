@@ -50,10 +50,14 @@
                 <i data-lucide="clock-alert"></i>
                 <span>Flight Delay Check-In Timing</span>
             </button>
-            <button type="button" id="tabSpecialServices" class="view-tab" aria-pressed="false">
+<button type="button" id="tabSpecialServices" class="view-tab" aria-pressed="false">
     <i data-lucide="clipboard-list"></i>
     <span>Special Services</span>
 </button>
+            <button type="button" id="tabOperations" class="view-tab" aria-pressed="false">
+                <i data-lucide="workflow"></i>
+                <span>Operations</span>
+            </button>
             <button type="button" id="tabCurrency" class="view-tab" aria-pressed="false">
                 <i data-lucide="badge-dollar-sign"></i>
                 <span>Currency</span>
@@ -404,6 +408,20 @@
 
         <div id="specialServicesGrid" class="special-services-grid"></div>
 
+    </div>
+</div>
+<div id="operationsView" class="view-panel">
+    <div class="operations-panel">
+        <div class="operations-header">
+            <h2>
+                <i data-lucide="workflow"></i>
+                Operations Guide
+            </h2>
+            <p>Fast contact centre guidance for product, booking, and disruption processes.</p>
+        </div>
+
+        <div id="operationsTabs" class="operations-tabs" role="tablist" aria-label="Operations topics"></div>
+        <div id="operationsContent" class="operations-content"></div>
     </div>
 </div>
 <div id="currencyView" class="view-panel">
