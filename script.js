@@ -1976,37 +1976,40 @@ function buildSpecialServiceSearchText(service) {
     return parts.join(" ").toLowerCase();
 }
 
-function renderSpecialServices(filterText) {
+function renderSpecialServices(activeServiceId) {
     const grid = document.getElementById("specialServicesGrid");
-    const clearBtn = document.getElementById("specialServicesClearBtn");
+    const tabs = document.getElementById("specialServicesTabs");
 
     if (!grid) return;
 
-    const query = normalizeSpecialServiceText(filterText);
     const services = getSpecialServicesData();
+    const activeService = services.find(function (service) {
+        return service.id === activeServiceId;
+    }) || services[0];
 
-    if (clearBtn) {
-        clearBtn.classList.toggle("hidden", !query);
+    if (!activeService) {
+        grid.innerHTML = '<div class="special-services-empty">No special services available.</div>';
+        return;
     }
 
-    const filtered = services.filter(function (service) {
-        const searchableText = buildSpecialServiceSearchText(service);
-        return !query || searchableText.includes(query);
-    });
+    if (tabs) {
+        tabs.innerHTML = services.map(function (service) {
+            const activeClass = service.id === activeService.id ? " active" : "";
+            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " · " + service.ssr.join("/") : "";
 
-    if (!filtered.length) {
-        grid.innerHTML =
-            '<div class="special-services-empty">' +
-                "No special service found. Try searching by service name, SSR, item, keyword, route, or process." +
-            "</div>";
-
-        if (typeof lucide !== "undefined") lucide.createIcons();
-        return;
+            return (
+                '<button type="button" class="special-service-tab' + activeClass + '" data-special-service-tab="' + escapeHTML(service.id || "") + '">' +
+                    '<i data-lucide="' + escapeHTML(service.icon || "clipboard-list") + '"></i>' +
+                    '<span>' + escapeHTML(service.title || "Service") + '</span>' +
+                    '<small>' + escapeHTML(ssr) + '</small>' +
+                '</button>'
+            );
+        }).join("");
     }
 
     grid.innerHTML = "";
 
-    filtered.forEach(function (service) {
+    [activeService].forEach(function (service) {
         const card = document.createElement("div");
         card.className = "special-service-card";
         card.setAttribute("data-service-id", service.id || "");
@@ -2535,7 +2538,13 @@ function openSpecialServiceEmail(serviceId) {
 }
 
 function handleSpecialServicesClick(event) {
+    const serviceTab = event.target.closest("[data-special-service-tab]");
     const button = event.target.closest("[data-special-action]");
+
+    if (serviceTab) {
+        renderSpecialServices(serviceTab.dataset.specialServiceTab);
+        return;
+    }
 
     if (!button) return;
 
@@ -2772,6 +2781,285 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "standard-ssr-cutoffs",
+        title: "Standard SSR Cut-offs",
+        icon: "timer",
+        quickGuide: {
+            channel: "Website / Manage Booking, Contact Centre, OLCI, Travel Shop where applicable",
+            timing: "Meal 24h, Seat 3h, Baggage 6h existing booking, Insurance before journey commences",
+            type: "Pre-purchased SSR / ancillary cut-off matrix",
+            action: "Check booking scenario first: existing booking, modification, or new booking.",
+            warning: "For new booking requests via Contact Centre, seats, baggage, and insurance can be added up to 2h before departure."
+        },
+        classifications: ["From consolidated GO TO guide", "Lite / Value / Flex / Business"],
+        sections: [
+            {
+                title: "General Cut-offs",
+                items: [
+                    "Special Meal SPML: selected up to 24 hours prior to departure.",
+                    "Seat selection: up to 3 hours prior to departure.",
+                    "Travel insurance: added any time before the journey commences.",
+                    "Baggage add or upgrade for existing booking: up to 6 hours prior via Website, Contact Centre, or OLCI.",
+                    "Modifying a flight and adding baggage: Website up to 2 hours prior; Contact Centre must seek Supervisor approval up to 2 hours prior.",
+                    "New booking and adding baggage: up to 2 hours prior via Website or Contact Centre; Contact Centre requires Supervisor approval."
+                ]
+            },
+            {
+                title: "Important Rules",
+                items: [
+                    "Moving or cancellation of optional extras such as baggage and seat is allowed only 24 hours prior to departure.",
+                    "Insurance is non-refundable.",
+                    "If modification is done within the last 24 hours before departure, already paid SSR charges may not be carried forward or adjusted."
+                ]
+            }
+        ]
+    },
+    {
+        id: "economy-seating-matrix",
+        title: "Economy Seating Matrix",
+        icon: "armchair",
+        quickGuide: {
+            channel: "Manage Booking, OLCI, SPRINT",
+            timing: "Seat selection up to 3 hours prior to departure",
+            type: "Seat availability by booking type and channel",
+            action: "Check booking type first, then use the allowed channel for seat purchase or complimentary seat.",
+            warning: "Rows 11-32 excluding 15 and 16 may be complimentary for some EK codeshare cases; rows 1-10 and 15-16 are purchasable."
+        },
+        classifications: ["Seat", "XLGR / FRST / SPST", "Web / OLCI / SPRINT"],
+        sections: [
+            {
+                title: "FZ Prime Direct",
+                items: [
+                    "Manage Booking: Lite / Value all seats paid; Flex standard free and XLGR paid.",
+                    "OLCI: auto-seat is free; specific selection available for purchase.",
+                    "SPRINT: Lite / Value all seats paid; Flex standard free and XLGR paid."
+                ]
+            },
+            {
+                title: "FZ Prime GDS",
+                items: [
+                    "Manage Booking: all seats available for pre-purchase, none complimentary.",
+                    "OLCI: SPST can be booked directly from GDS for free.",
+                    "SPRINT: all seats available for pre-purchase, none complimentary."
+                ]
+            },
+            {
+                title: "Codeshare Notes",
+                items: [
+                    "EK codeshare: XLGR / FRST available for purchase, SPST is free.",
+                    "UA / AC codeshare: XLGR / FRST purchasable, SPST is free.",
+                    "Use exact booking channel and aircraft/seat map availability before advising."
+                ]
+            }
+        ]
+    },
+    {
+        id: "baggage-upgrade-matrix",
+        title: "Baggage Upgrade Matrix",
+        icon: "luggage",
+        quickGuide: {
+            channel: "Website, TA Portal, SPRINT, OLCI, Airport check-in for excluded cases",
+            timing: "Existing booking 6h; new booking or modification 2h where allowed",
+            type: "Baggage add / upgrade channel matrix",
+            action: "Check itinerary type and ticket document number before advising channel.",
+            warning: "Interline booking baggage upgrades are never permitted prior to departure; must be done at airport check-in counter."
+        },
+        classifications: ["Baggage", "Web / TA / SPRINT / OLCI", "GDS document matrix"],
+        sections: [
+            {
+                title: "FZ Prime Direct / TA Portal Non-GDS",
+                items: [
+                    "FZ Prime point-to-point: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
+                    "FZ Prime connection: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
+                    "OLCI baggage upgrade is not available for passengers from Non-DCS stations."
+                ]
+            },
+            {
+                title: "GDS Matrix By Document",
+                items: [
+                    "141 FZ Prime PTP / CNX: Web NO, TA Portal NO, SPRINT YES but Contact Centre will not add, OLCI YES.",
+                    "141 FZ DCI: Web NO, TA Portal NO, SPRINT NO, OLCI NO.",
+                    "169 / 275 / 365 FZ Prime PTP / CNX: Web NO, TA Portal NO, SPRINT YES, OLCI YES.",
+                    "176 FZ Prime or EK: Web NO, TA Portal NO, SPRINT NO, OLCI YES using weight concept.",
+                    "016 / 014 EK / UA / AC: Web NO, TA Portal NO, SPRINT NO, OLCI NO."
+                ]
+            }
+        ]
+    },
+    {
+        id: "assistance-medical",
+        title: "Assistance / Medical",
+        icon: "accessibility",
+        quickGuide: {
+            channel: "Contact Centre, Manage Booking where available, Travel Shop, Airport support",
+            timing: "12h to 72h depending SSR",
+            type: "Assistance, medical, and special requests",
+            action: "Use SSR-specific cut-off and check whether medical or approval documents are required.",
+            warning: "WCHC and medical-sensitive requests may require document verification or approval."
+        },
+        classifications: ["WCHR / WCHS / WCHC", "DPNA", "PPOC", "SVAN", "RSTD", "BLND / DEAF"],
+        sections: [
+            {
+                title: "Cut-offs",
+                items: [
+                    "Wheelchair WCHR: at least 12 hours prior to departure.",
+                    "Wheelchair WCHS / WCHC: at least 24 hours prior to departure.",
+                    "Disabled Passenger DPNA: added up to 12 hours prior to departure.",
+                    "Portable Oxygen PPOC: Contact Centre can add up to 4 hours prior to departure.",
+                    "Service Animal SVAN: pre-approval required no less than 72 hours prior.",
+                    "Restraint Device RSTD: clearance required at least 48 hours before flight.",
+                    "Visual / Hearing BLND / DEAF: added up to 48 hours prior to departure."
+                ]
+            },
+            {
+                title: "Catering / Gift Requests",
+                items: [
+                    "Cake and Fruit Basket: requested at least 48 hours prior to departure.",
+                    "Flower arrangements: 48 hours prior, currently suspended."
+                ]
+            }
+        ]
+    },
+    {
+        id: "equipment-animals",
+        title: "Equipment / Animals",
+        icon: "package-check",
+        quickGuide: {
+            channel: "Contact Centre, SPRINT, Supervisor / FS, Security approval where applicable",
+            timing: "Sporting 24h, Weapons 96h, Falcon 48h+",
+            type: "Equipment, weapons, and animal carriage",
+            action: "Check item type, dimensions, weight, documents, approval, and applicable charge.",
+            warning: "Weapons and falcons must not be confirmed before required approval is received."
+        },
+        classifications: ["SPEQ / SPEX", "WEAP", "PETC"],
+        sections: [
+            {
+                title: "Cut-offs",
+                items: [
+                    "Sporting Equipment SPEQ / SPEX: pre-booked at least 24 hours prior.",
+                    "Supervisors can add sporting equipment up to 12 hours prior if the limit is not reached.",
+                    "Sporting Weapons WEAP: documents must be provided at least 96 hours / 4 working days prior.",
+                    "Falcon PETC: booking requests must be more than 48 hours before departure."
+                ]
+            },
+            {
+                title: "Agent Warning",
+                items: [
+                    "Sporting equipment over 32 kg is not accepted.",
+                    "Sporting weapons require documents and security approval.",
+                    "Falcon carriage is subject to airline and destination approval."
+                ]
+            }
+        ]
+    },
+    {
+        id: "travel-shops-cutoffs",
+        title: "Travel Shops Cut-offs",
+        icon: "store",
+        quickGuide: {
+            channel: "UAE Travel Shops",
+            timing: "D > 6, D > 4, D > 72h, D > 24 depending service",
+            type: "Travel shop service cut-offs",
+            action: "Use Travel Shop D-rules before accepting the request.",
+            warning: "Travel Shop cut-offs are stricter than some Contact Centre / Web flows."
+        },
+        classifications: ["UAE Travel Shops", "D-rule cut-offs"],
+        sections: [
+            {
+                title: "Cut-off Rules",
+                items: [
+                    "Name Change / Correction: more than 6 days before departure.",
+                    "New Ticket Government Deals: more than 6 days before departure.",
+                    "Visa OK to Board VIOK: more than 4 days before departure.",
+                    "Credit Card Verification CCOK: more than 4 days before departure.",
+                    "Baggage Add / Upgrade: more than 4 days before departure.",
+                    "Seat Assignment: more than 4 days before departure.",
+                    "Insurance: more than 4 days before departure.",
+                    "Business Class Upgrade: more than 4 days before departure.",
+                    "New Ticket Normal: more than 4 days before departure.",
+                    "Iraq OK to Board: more than 72 hours before departure.",
+                    "Special Meal SPML: more than 24 hours before departure.",
+                    "Cancelling extras seat / bag: more than 24 hours before departure."
+                ]
+            }
+        ]
+    },
+    {
+        id: "upgrade-cutoffs",
+        title: "Upgrade Cut-offs",
+        icon: "arrow-up-circle",
+        quickGuide: {
+            channel: "Bidding, OLCI banner, Airport counter",
+            timing: "Bidding 18h outstations / 10h Dubai; OLCI 48h to 3h or 12h; airport up to 2h",
+            type: "Business Class upgrade cut-offs",
+            action: "Choose the correct upgrade path by departure point and channel.",
+            warning: "OLCI upgrade window differs for Dubai and outstation departures."
+        },
+        classifications: ["Bid upgrade", "OLCI banner upgrade", "Airport counter upgrade"],
+        sections: [
+            {
+                title: "Cut-offs",
+                items: [
+                    "Bidding for upgrades: starts any time.",
+                    "Bidding cut-off: 18 hours for outstations.",
+                    "Bidding cut-off: 10 hours for Dubai.",
+                    "OLCI banner upgrade for Dubai departures: from 48 hours down to 3 hours before departure.",
+                    "OLCI banner upgrade for outstation departures: from 48 hours down to 12 hours before departure.",
+                    "Airport counter upgrade: up to 2 hours prior to departure."
+                ]
+            }
+        ]
+    },
+    {
+        id: "g-fare-rules",
+        title: "G Fare Rules",
+        icon: "ticket",
+        quickGuide: {
+            channel: "Web / Mobile / SPRINT / TA Portal depending G fare type",
+            timing: "Follow fare and channel rules",
+            type: "G fare modification and SSR action rules",
+            action: "Identify G fare type and booking channel before modifying or adding SSR.",
+            warning: "For Group Booking through TA Portal, Contact Centre must refer to issuer and cannot modify, name change, or add SSR."
+        },
+        classifications: ["Block Fare", "Group Booking", "TA Portal"],
+        sections: [
+            {
+                title: "Rules By Channel",
+                items: [
+                    "Block Fare through Web / Mobile / SPRINT: permitted through direct channels; name change permitted.",
+                    "Group Booking through TA Portal: refer to issuer; Contact Centre cannot modify, name change, or add SSRs.",
+                    "Block Fare through TA Portal: refer to issuer for modification.",
+                    "Block Fare through TA Portal: customer can add SSRs via Manage Booking.",
+                    "Contact Centre can cancel SSR only if it was added via Web."
+                ]
+            }
+        ]
+    },
+    {
+        id: "operational-airport-ssrs",
+        title: "Operational SSRs",
+        icon: "plane-takeoff",
+        quickGuide: {
+            channel: "Contact Centre, Supervisor / FS, Airport as applicable",
+            timing: "BHFT 50h, CCHK 4h, baggage 6h, LRPT/ERPT by DXB T2 timing",
+            type: "Operational and airport SSRs",
+            action: "Use only for the operational scenario described; escalate unclear cases.",
+            warning: "These SSRs are operational controls and should not be treated like normal paid ancillaries."
+        },
+        classifications: ["BHFT", "CCHK", "ID50 baggage", "LRPT / ERPT"],
+        sections: [
+            {
+                title: "Operational SSRs",
+                items: [
+                    "Hold My Fare BHFT: sale cut-off is 50 hours before departure; hold time limit is 49 hours.",
+                    "Credit Card Verification CCHK: must be done at least 4 hours prior to departure at the airport if not verified elsewhere.",
+                    "Staff ID50 Waitlist Baggage: added before the 6-hour cut-off.",
+                    "Early / Late Reporting DXB T2 only: LRPT within 6 hours of flight and ERPT within 12 hours of earlier flight."
+                ]
+            }
+        ]
+    },
+    {
         id: "ssr-guide",
         title: "SSR / Ancillary Guide",
         icon: "list-checks",
@@ -2989,35 +3277,19 @@ function initialiseOperationsGuide() {
 }
 
 function initialiseSpecialServices() {
-    const search = document.getElementById("specialServicesSearch");
-    const clearBtn = document.getElementById("specialServicesClearBtn");
     const clearFormsBtn = document.getElementById("specialServicesClearFormsBtn");
-    const grid = document.getElementById("specialServicesGrid");
+    const panel = document.getElementById("specialServicesView");
 
-    renderSpecialServices("");
-
-    if (search) {
-        search.addEventListener("input", function () {
-            renderSpecialServices(search.value);
-        });
-    }
-
-    if (clearBtn && search) {
-        clearBtn.addEventListener("click", function () {
-            search.value = "";
-            renderSpecialServices("");
-            search.focus();
-        });
-    }
+    renderSpecialServices();
 
     if (clearFormsBtn && !clearFormsBtn.dataset.specialClearAttached) {
         clearFormsBtn.addEventListener("click", clearSpecialServiceFormValues);
         clearFormsBtn.dataset.specialClearAttached = "true";
     }
 
-    if (grid && !grid.dataset.specialEventsAttached) {
-        grid.addEventListener("click", handleSpecialServicesClick);
-        grid.dataset.specialEventsAttached = "true";
+    if (panel && !panel.dataset.specialEventsAttached) {
+        panel.addEventListener("click", handleSpecialServicesClick);
+        panel.dataset.specialEventsAttached = "true";
     }
 }
 
