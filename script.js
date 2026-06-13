@@ -3096,32 +3096,29 @@ const operationsGuideData = [
             warning: "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except Deira Travel Shop and Airport Sales Desk."
         },
         classifications: ["Airport Sales Desk", "UAE Travel Shops", "3% admin fee", "PRNT"],
+        feeRows: [
+            ["New booking - Economy", "AED 80 per passenger per segment", "AED 60 per passenger per segment"],
+            ["New booking - Business", "AED 100 per passenger per segment", "AED 100 per passenger per segment"],
+            ["Modification of flights including upgrade to J class", "AED 80 per passenger irrespective of the segments", "AED 30 per passenger irrespective of the segments"],
+            ["Baggage / seat / ancillary addition", "AED 80 per PNR", "AED 30 per passenger irrespective of the segments"],
+            ["Ticket print out", "AED 80 per PNR", "AED 30 per PNR"],
+            ["Name correction", "AED 80 per passenger + applicable NC SSR", "AED 30 per passenger irrespective of the segments + applicable NC SSR"],
+            ["Visa OK to board", "AED 80 per passenger", "AED 30 per passenger"],
+            ["Rebate ticket issuance / rebooking", "AED 80 per passenger irrespective of segment", "AED 60 per passenger irrespective of segment"],
+            ["Credit card verification", "AED 80 per PNR", "AED 30 per PNR"],
+            ["Book online / call centre complete payment", "AED 80 per PNR irrespective of class / segments / number of pax", "AED 60 per PNR irrespective of class / segments / number of pax"],
+            ["Issuing fee IFEE, rarely used in AUH for TA", "NA", "AED 45 per passenger per segment"],
+            ["DXB POL / ESAAD CARD DEAL", "NA", "Regular charges at all UAE shops. Deira charges AED 120 for Y class return ticket and AED 200 for J class return ticket per pax."],
+            ["DXB IMG COR DEAL", "NA", "Regular charges at all UAE shops. Deira charges AED 120 for Y class return ticket and AED 200 for J class return ticket per pax."],
+            ["GOSHOW FEE", "NIL", "Passengers may request last-minute booking at the check-in desk, including addition of infants to an existing booking. Applies to DXB T2 departures only. Acceptance and carriage is subject to capacity restrictions and approval. Handled at airport only."],
+            ["Balance payment completion", "Balance due + service fee of AED 80", "AED 30 per PNR. Applies to DXB T2 departures only. Passengers with balance payment that cannot be cleared at check-in desk will be directed to Sales Desk. Agent may inform customer with this service."],
+            ["Printing fee", "SSR: PRNT AED 25 + VAT", "Passengers need missing printouts as part of travel document requirements. Nominal fee per document of max 3 papers. Applies to DXB T2 departures only and all passenger types flying on FZ flights, codeshare, interline, staff. Handled at airport only."]
+        ],
         sections: [
             {
-                title: "Service Fees",
+                title: "Important Note",
                 items: [
-                    "New booking Economy: Airport Sales Desk AED 80 per passenger per segment; UAE retail shops AED 60 per passenger per segment.",
-                    "New booking Business: Airport Sales Desk AED 100 per passenger per segment; UAE retail shops AED 100 per passenger per segment.",
-                    "Modification of flights including upgrade to J class: Airport Sales Desk AED 80 per passenger irrespective of segments; UAE retail shops AED 30 per passenger irrespective of segments.",
-                    "Baggage / seat / ancillary addition: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per passenger irrespective of segments.",
-                    "Ticket print out: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per PNR.",
-                    "Name correction: Airport Sales Desk AED 80 per passenger plus applicable NC SSR; UAE retail shops AED 30 per passenger plus applicable NC SSR.",
-                    "Visa OK to board: Airport Sales Desk AED 80 per passenger; UAE retail shops AED 30 per passenger.",
-                    "Rebate ticket issuance / rebooking: Airport Sales Desk AED 80 per passenger irrespective of segments; UAE retail shops AED 60 per passenger irrespective of segments.",
-                    "Credit card verification: Airport Sales Desk AED 80 per PNR; UAE retail shops AED 30 per PNR.",
-                    "Book online / call centre complete payment: Airport Sales Desk AED 80 per PNR irrespective of class, segments, or number of passengers; UAE retail shops AED 60 per PNR irrespective of class, segments, or number of passengers.",
-                    "Issuing fee IFEE, rarely used in AUH for TA: UAE retail shops AED 45 per passenger per segment."
-                ]
-            },
-            {
-                title: "Special Local Deals / Airport Only",
-                items: [
-                    "DXB POL / ESAAD Card Deal: regular charges at all UAE shops; Deira charges AED 120 for Y class return and AED 200 for J class return ticket per passenger.",
-                    "DXB IMG COR Deal: regular charges at all UAE shops; Deira charges AED 120 for Y class return and AED 200 for J class return ticket per passenger.",
-                    "GOSHOW fee: applies to last-minute booking requests at check-in desk, including adding infants to an existing booking.",
-                    "GOSHOW applies to DXB Terminal 2 departures only, subject to capacity restrictions and approval, handled at airport only.",
-                    "Balance payment completion applies to DXB Terminal 2 departures only. Balance due plus Airport Sales Desk service fee AED 80; UAE retail shops AED 30 per PNR.",
-                    "Printing fee at DXB T2: SSR PRNT AED 25 plus VAT per document of max 3 papers."
+                    "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except for Deira Travel Shop and the Airport Sales Desk."
                 ]
             }
         ]
@@ -3141,8 +3138,8 @@ const operationsGuideData = [
             ["PETC", "Falcon", "Contact Centre, Salesforce, Supervisor / FS, Reservations Support", "More than 48h before departure", "Approval request", "AED 1500 per falcon per direction", "Yes", "Create unpaid booking, collect falcon details, escalate case, update SPRINT. Do not confirm until approved."],
             ["CAKE", "Cake on Board", "Contact Centre, email request, Supervisor / FS", "More than 48h before departure", "Catering request", "As per cake option", "Special stations need Shift In Charge", "Add SSR CAKE, collect cake details, send request email, send payment link, update Salesforce / SPRINT."],
             ["FRBS", "Fruit Basket", "Contact Centre / SPRINT", "Up to 48h before departure", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned", "Use SPRINT flow. Apply service cut-off and payment rules."],
-            ["EXST", "Extra Seat for Comfort", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Seat ancillary", "Equal fare + standard seat assignment charges", "Depends booking type", "FZ prime only, not interline/codeshare. Add adult extra seat, add zero-value SSR EXST to requesting passenger, assign adjoining seats. Max 2 EXST per passenger; not emergency exit rows 15/16."],
-            ["CBBG", "Cabin Baggage on Seat", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Cabin baggage / seat ancillary", "Equal fare + standard seat assignment charges", "Depends booking type", "FZ prime only, not interline/codeshare. CBBG is not available in Business Class. Add zero-value SSR CBBG to requesting passenger, assign adjoining seats, avoid rows 14/15/16/17. Max 1 CBBG seat; max baggage on blocked seat 75kg; no extra checked baggage allowance."],
+            ["EXST", "Extra Seat for Comfort", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Seat ancillary", "Equal fare + standard seat assignment charges", "Depends booking type", "EXST is available in both Economy and Business Class. FZ prime only, not interline/codeshare. Add adult extra seat, add zero-value SSR EXST to requesting passenger, assign adjoining seats. Max 2 EXST per passenger; not emergency exit rows 15/16."],
+            ["CBBG", "Cabin Baggage on Seat", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Cabin baggage / seat ancillary", "Equal fare + standard seat assignment charges", "Depends booking type", "CBBG is available only in Economy Class. CBBG is not available in Business Class. FZ prime only, not interline/codeshare. Add zero-value SSR CBBG to requesting passenger, assign adjoining seats, avoid rows 14/15/16/17. Max 1 CBBG seat; max baggage on blocked seat 75kg; no extra checked baggage allowance."],
             ["SPEQ", "Sporting Equipment 160-189cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may check possibility up to 12h if limit not reached", "Special baggage", "AED 150 per flight / sector", "Restricted / capacity controlled", "Max 32kg and max 10 equipment per flight. Add SPEQ per leg for 160-189cm by L+W+H. Cancellation allowed up to 24h before departure with refund to voucher where applicable."],
             ["SPEX", "Sporting Equipment 190-350cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may check possibility up to 12h if limit not reached", "Special baggage", "AED 270 per flight / sector", "Restricted / capacity controlled", "Max 32kg and max 10 equipment per flight. Add SPEX per leg for 190-350cm by L+W+H. Beyond 350cm requires pre-authorization. Cancellation allowed up to 24h before departure with refund to voucher where applicable."],
             ["WEAP / SPEX", "Sporting Weapons", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h / 4 working days before travel", "Security approval", "WEAP AED 300 + SPEX AED 270 per passenger per segment", "Yes", "Customer must email documents first or provide case number. Sporting weapons need WEAP plus SPEX charges. Do not confirm without security approval."],
@@ -3329,6 +3326,7 @@ function renderOperationsTopic(topic) {
             '</div>' +
             (guide.warning ? '<div class="operations-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + '</span></div>' : '') +
             (Array.isArray(topic.ssrRows) ? renderOperationsSsrTable(topic.ssrRows) : '') +
+            (Array.isArray(topic.feeRows) ? renderOperationsFeeTable(topic.feeRows) : '') +
             sections.map(function (section, index) {
                 return renderOperationsDisclosure(topic.id, index, section);
             }).join("") +
@@ -3386,6 +3384,40 @@ function renderOperationsSection(title, items) {
     );
 }
 
+function renderOperationsFeeTable(rows) {
+    const body = rows.map(function (row) {
+        return (
+            '<tr>' +
+                '<td class="operations-fee-service">' + escapeHTML(row[0] || "") + '</td>' +
+                '<td>' + formatOperationsFeeCell(row[1] || "") + '</td>' +
+                '<td>' + formatOperationsFeeCell(row[2] || "") + '</td>' +
+            '</tr>'
+        );
+    }).join("");
+
+    return (
+        '<div class="operations-fee-table-wrap">' +
+            '<table class="operations-fee-table">' +
+                '<thead><tr><th>Service</th><th>Airport Sales Desk</th><th>UAE Retail Shops</th></tr></thead>' +
+                '<tbody>' + body + '</tbody>' +
+            '</table>' +
+        '</div>'
+    );
+}
+
+function formatOperationsFeeCell(value) {
+    const text = String(value || "");
+    const lines = text.split(/(?<=\.)\s+|;\s+/).map(function (line) {
+        return line.trim();
+    }).filter(Boolean);
+
+    if (lines.length <= 1) return '<span class="operations-fee-pill">' + escapeHTML(text) + '</span>';
+
+    return lines.map(function (line) {
+        return '<span class="operations-fee-pill">' + escapeHTML(line) + '</span>';
+    }).join("");
+}
+
 function renderOperationsSsrTable(rows) {
     const body = rows.map(function (row) {
         return (
@@ -3416,8 +3448,11 @@ function renderOperationsSsrCell(cell, index) {
     const lines = splitOperationsSsrCell(text, index);
     const classNames = ["operations-ssr-col-" + index];
 
+    if (index === 0) {
+        return '<td class="' + classNames.concat("operations-ssr-code-cell").join(" ") + '">' + renderOperationsCodeBadges(text) + '</td>';
+    }
+
     if (lines.length <= 1) {
-        if (index === 0) classNames.push("operations-ssr-code-cell");
         return '<td class="' + classNames.join(" ") + '">' + escapeHTML(text) + '</td>';
     }
 
@@ -3434,6 +3469,17 @@ function renderOperationsSsrCell(cell, index) {
                 return '<span>' + label + escapeHTML(body) + '</span>';
             }).join("") +
         '</td>'
+    );
+}
+
+function renderOperationsCodeBadges(text) {
+    return (
+        '<div class="operations-code-badges">' +
+            String(text || "").split("/").map(function (part) {
+                const code = part.trim();
+                return code ? '<span>' + escapeHTML(code) + '</span>' : "";
+            }).join("") +
+        '</div>'
     );
 }
 
@@ -3461,7 +3507,7 @@ function splitOperationsSsrCell(text, index) {
             return line.trim();
         }).filter(Boolean);
 
-        return sentenceLines.length > 1 ? sentenceLines : [text];
+        return sentenceLines.length ? sentenceLines : [text];
     }
 
     if (text.length < 95) return [text];
