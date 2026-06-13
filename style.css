@@ -1034,9 +1034,15 @@ input {
 .currency-select-flag {
     flex: 0 0 auto;
     width: 24px;
-    font-size: 18px;
-    line-height: 1;
-    text-align: center;
+    height: 18px;
+    border-radius: 3px;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+.currency-select-flag-fallback {
+    display: inline-block;
+    background: #e5e7eb;
 }
 
 .currency-select-label {
