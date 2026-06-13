@@ -32,7 +32,7 @@ const specialServicesData = [
             approval: "Prior airline approval required",
             charge: "AED 1500 per falcon per direction",
             mainAction: "Create unpaid booking, collect details, escalate Salesforce case, and update SPRINT comments.",
-            warning: "Do not confirm falcon carriage to the customer until approval is received."
+            warning: "This is not a confirmation until approved. Do not confirm falcon carriage to the customer until approval is received."
         },
 
         agentForm: {
@@ -611,7 +611,7 @@ const specialServicesData = [
             approval: "Agent can process eligible direct / TA booking; GDS requires separate handling",
             charge: "Equal fare amount for extra seat + standard seat assignment charges",
             mainAction: "Confirm reason, add extra adult passenger, add SSR EXST/CBBG to requesting passenger, assign adjoining seats, and update remarks.",
-            warning: "EXST/CBBG is not supported for interline / codeshare bookings and is available only on FZ prime booked flights."
+            warning: "CBBG is available only in Economy Class. EXST can be booked in Economy or Business Class. Not supported for interline / codeshare and available only on FZ prime booked flights."
         },
 
         agentForm: {
