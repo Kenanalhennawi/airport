@@ -278,4 +278,68 @@ const airportsData = [
     { region: "Central Asia", iata: "ASB", city: "Ashgabat", country: "Turkmenistan", airport: "Ashgabat International Airport", terminal: "Main Terminal", timezone: "Asia/Ashgabat", distanceCenter: "10 km to Center", nearbyAirports: "None", phone: "+993 12 256064", website: "https://ashgabatairport.gov.tm", locationUrl: "https://www.google.com/maps/search/?api=1&query=Ashgabat+Airport" },
     { region: "Central Asia", iata: "DYU", city: "Dushanbe", country: "Tajikistan", airport: "Dushanbe International Airport", terminal: "Main Terminal", timezone: "Asia/Dushanbe", distanceCenter: "5 km to Center", nearbyAirports: "None", phone: "+99 2 372 449 44 75", website: "https://airport.tj", locationUrl: "https://www.google.com/maps/search/?api=1&query=Dushanbe+Airport" }
 ];
-(function () { if (typeof window !== 'undefined') { window.airportsData = airportsData; } })();
+
+const interlineCarriers = [
+    {carrier:"Emirates",code:"EK",account:"176",host:"MARS",type:"Bilateral/Codeshare",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"United Airlines",code:"UA",account:"016",host:"Shares B",type:"Unilateral/Codeshare",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Air Canada",code:"AC",account:"014",host:"Amadeus",type:"Unilateral/Codeshare",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Access Rail",code:"9B",account:"450",host:"Amadeus",type:"Unilateral/FZ",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"N/A",remarks:"Onward via DB Rail"},
+    {carrier:"Aegean Airlines",code:"A3",account:"390",host:"Amadeus",type:"Bilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Batik Air",code:"OD",account:"816",host:"Sabre",type:"Bilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:"IATCI activation/27Jan'26"},
+    {carrier:"Royal Brunei Airlines",code:"BI",account:"672",host:"Hitit",type:"Bilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:""},
+    {carrier:"Air France",code:"AF",account:"057",host:"Amadeus",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"KLM",code:"KL",account:"074",host:"Amadeus",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"China Southern",code:"CZ",account:"784",host:"Travelsky",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Air India",code:"AI",account:"098",host:"Amadeus",type:"Bilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation - 11Dec25"},
+    {carrier:"ITA Airways",code:"AZ",account:"055",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Biman Bangladesh",code:"BG",account:"997",host:"Sabre",type:"Unilateral",iatci:"YES",iatciType:"Inbound",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:""},
+    {carrier:"Royal Air Maroc",code:"AT",account:"147",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"British Airways",code:"BA",account:"125",host:"Amadeus",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
+    {carrier:"Caribbean Airlines",code:"BW",account:"106",host:"Sabre",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Condor",code:"DE",account:"881",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Pobeda",code:"DP",account:"425",host:"Navitaire",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
+    {carrier:"Egypt Air",code:"MS",account:"077",host:"SITA",type:"Ticketing Partner",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline / GP stock only"},
+    {carrier:"Flyadeal",code:"F3",account:"328",host:"Radixx",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
+    {carrier:"Gulf Air",code:"GF",account:"072",host:"Sabre",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"IndiGo",code:"6E",account:"312",host:"Navitaire",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Kenya Airways",code:"KQ",account:"706",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Korean Air",code:"KE",account:"180",host:"Topas",type:"Unilateral/Codeshare",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Kuwait Airways",code:"KU",account:"229",host:"SITA",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Lion Air",code:"JT",account:"990",host:"Navitaire",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Maldivian",code:"Q2",account:"038",host:"Hitit",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Malaysia Airlines",code:"MH",account:"232",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"MEA",code:"ME",account:"076",host:"SITA",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Oman Air",code:"WY",account:"910",host:"SITA",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Pegasus",code:"PC",account:"624",host:"Navitaire",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
+    {carrier:"Philippine Airlines",code:"PR",account:"079",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Qantas",code:"QF",account:"081",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Qatar Airways",code:"QR",account:"157",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Saudia",code:"SV",account:"065",host:"SITA",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Singapore Airlines",code:"SQ",account:"618",host:"Amadeus",type:"Unilateral/Codeshare",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"SriLankan Airlines",code:"UL",account:"603",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Thai Airways",code:"TG",account:"217",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Turkish Airlines",code:"TK",account:"235",host:"Troya",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
+    {carrier:"Vistara",code:"UK",account:"228",host:"Navitaire",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Vueling",code:"VY",account:"030",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Wizz Air",code:"W6",account:"537",host:"Navitaire",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
+    {carrier:"Air Arabia",code:"G9",account:"514",host:"Radixx",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Virgin Australia",code:"VA",account:"795",host:"Sabre",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Air Mauritius",code:"MK",account:"239",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Cambodia Angkor Air",code:"K6",account:"188",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Air Seychelles",code:"HM",account:"061",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Bangkok Airways",code:"PG",account:"829",host:"Amadeus",type:"Ticketing Partner",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"GP stock ticketing / disruption handling"},
+    {carrier:"Hahn Air",code:"HR",account:"169",host:"Amadeus",type:"Ticketing Partner",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Ticket stock only"},
+    {carrier:"FlexFlight",code:"W2",account:"502",host:"Amadeus",type:"Ticketing Partner",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Ticket stock only"},
+    {carrier:"Air Astana",code:"KC",account:"465",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"S7 Airlines",code:"S7",account:"421",host:"SITA",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Royal Jordanian",code:"RJ",account:"512",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Drukair",code:"KB",account:"699",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
+    {carrier:"Bamboo Airways",code:"QH",account:"986",host:"Sabre",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"}
+];
+
+(function () {
+    if (typeof window !== 'undefined') {
+        window.airportsData = airportsData;
+        window.interlineCarriers = interlineCarriers;
+    }
+})();
