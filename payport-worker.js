@@ -2,6 +2,9 @@ const allowedOrigins = [
     "https://kenanalhennawi.github.io"
 ];
 
+const PAYPORT_INDEX_URL = "https://payport.flydubai.com/en/CurrencyConverter/Index";
+const PAYPORT_CALCULATE_URL = "https://payport.flydubai.com/en/CurrencyConverter/CurrencyCoverterCalculate";
+
 export default {
     async fetch(request) {
         const requestUrl = new URL(request.url);
@@ -62,7 +65,7 @@ export default {
         const amount = requestUrl.searchParams.get("amount") || "10.00";
         const from = requestUrl.searchParams.get("from") || "United States Dollar (USD)";
         const to = requestUrl.searchParams.get("to") || "United Arab Emirates Dirham (AED)";
-        const period = requestUrl.searchParams.get("period") || getTodayPayPortPeriod();
+        const period = requestUrl.searchParams.get("period") || getTodayPayportDate();
 
         if (!isValidAmount(amount)) {
             return json(
@@ -86,7 +89,7 @@ export default {
             );
         }
 
-        const payportUrl = new URL("https://payport.flydubai.com/en/CurrencyConverter/CurrencyCoverterCalculate");
+        const payportUrl = new URL(PAYPORT_CALCULATE_URL);
 
         payportUrl.searchParams.set("sourceCurrencyAmount", amount);
         payportUrl.searchParams.set("sourceCurrencyCode", from);
@@ -95,17 +98,15 @@ export default {
         payportUrl.searchParams.set("_", Date.now().toString());
 
         try {
+            const sessionResponse = await fetch(PAYPORT_INDEX_URL, {
+                method: "GET",
+                headers: payportHeaders()
+            });
+            const cookie = getCookieHeader(sessionResponse.headers.get("set-cookie"));
+
             const response = await fetch(payportUrl.toString(), {
                 method: "GET",
-                headers: {
-                    "Accept": "application/json, text/javascript, */*; q=0.01",
-                    "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
-                    "Cache-Control": "no-cache",
-                    "Pragma": "no-cache",
-                    "Referer": "https://payport.flydubai.com/en/CurrencyConverter/Index",
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    "X-Requested-With": "XMLHttpRequest"
-                }
+                headers: payportHeaders(cookie)
             });
 
             const text = await response.text();
@@ -116,7 +117,7 @@ export default {
                         error: true,
                         message: "PayPort returned error",
                         status: response.status,
-                        body: text.slice(0, 500)
+                        body: text
                     },
                     502,
                     request
@@ -131,13 +132,16 @@ export default {
                 return json(
                     {
                         error: true,
-                    message: "Invalid JSON returned from PayPort",
-                    body: text.slice(0, 500)
+                        message: "Invalid JSON returned from PayPort",
+                        body: text
                     },
                     502,
                     request
                 );
             }
+
+            const targetValue = data.TargetValue || data.AedValue || data.UsdValue || data.EurValue || data.GbpValue || null;
+            const rate = data.rate || data.Rate || calculateRate(targetValue, amount);
 
             return json(
                 {
@@ -147,8 +151,8 @@ export default {
                     from,
                     to,
                     period,
-                    targetValue: data.TargetValue,
-                    rate: data.rate,
+                    targetValue,
+                    rate,
                     raw: data
                 },
                 200,
@@ -172,14 +176,49 @@ function isValidAmount(value) {
     return Number.isFinite(n) && n > 0 && n <= 1000000;
 }
 
-function getTodayPayPortPeriod() {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const today = new Date();
-    const day = String(today.getUTCDate()).padStart(2, "0");
-    const month = months[today.getUTCMonth()];
-    const year = today.getUTCFullYear();
+function payportHeaders(cookie) {
+    const headers = {
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.7",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+        "Referer": PAYPORT_INDEX_URL,
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest"
+    };
 
-    return `${day}-${month}-${year}`;
+    if (cookie) headers.Cookie = cookie;
+    return headers;
+}
+
+function getCookieHeader(setCookie) {
+    if (!setCookie) return "";
+    return setCookie
+        .split(/,(?=\s*[^;=]+=[^;]+)/)
+        .map((item) => item.split(";")[0].trim())
+        .filter(Boolean)
+        .join("; ");
+}
+
+function getTodayPayportDate() {
+    return new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    }).replace(/ /g, "-");
+}
+
+function parsePayportNumber(value) {
+    const n = Number(String(value || "").replace(/,/g, ""));
+    return Number.isFinite(n) ? n : null;
+}
+
+function calculateRate(targetValue, amount) {
+    const target = parsePayportNumber(targetValue);
+    const source = parsePayportNumber(amount);
+    if (!target || !source) return null;
+    return (target / source).toFixed(5);
 }
 
 function corsHeaders(request) {
