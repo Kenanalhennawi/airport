@@ -1399,7 +1399,7 @@ footer strong {
 
 .special-services-search-wrap input {
     width: 100%;
-    padding: 15px 52px 15px 52px;
+    padding: 15px 20px 15px 52px;
     font-size: 1rem;
     border-radius: 999px;
     border: 2px solid #dbeafe;
@@ -2225,6 +2225,25 @@ footer strong {
     background: #ffffff;
 }
 
+.special-service-form-error {
+    margin: 0 0 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+    font-weight: 850;
+    font-size: 0.82rem;
+}
+
+.special-service-form-field input.is-invalid,
+.special-service-form-field select.is-invalid,
+.special-service-form-field textarea.is-invalid {
+    border-color: #dc2626;
+    background: #fff7f7;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
 .special-email-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2261,10 +2280,10 @@ footer strong {
 .special-toggle-btn {
     width: 100%;
     margin-top: 0;
-    background: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #eef6ff 100%);
     color: var(--fz-blue);
-    border: 1px solid #cbd5e1;
-    justify-content: flex-start;
+    border: 1px solid #93c5fd;
+    justify-content: center;
 }
 
 .special-toggle-supervisor {
