@@ -2050,17 +2050,8 @@ function renderSsrBadges(service) {
 }
 
 function renderSpecialServiceMainContent(service) {
-    if (service && service.decisionGuide) {
-        return (
-            renderSpecialServiceSnapshot(service) +
-            renderSpecialFastAnswers(service) +
-            renderAgentChecklist(service)
-        );
-    }
-
     return (
-        renderAgentQuickGuide(service) +
-        renderWorkflowHint(service) +
+        renderSpecialAnswerFinder(service) +
         renderAgentChecklist(service)
     );
 }
@@ -2099,6 +2090,134 @@ function renderQuickGuideItem(label, value, icon) {
             "</div>" +
         "</div>"
     );
+}
+
+function renderSpecialAnswerFinder(service) {
+    const answers = buildSpecialAnswerItems(service);
+
+    if (!answers.length) return "";
+
+    const serviceId = escapeHTML(service.id || "");
+    const visibleDefaultCount = 5;
+    const answersHtml = answers.map(function (item, index) {
+        const defaultHidden = !item.featured || index >= visibleDefaultCount;
+        const itemText = [item.label, item.answer, item.keywords].filter(Boolean).join(" ");
+
+        return (
+            '<article class="special-answer-item' + (defaultHidden ? ' is-hidden-default' : '') + (item.tone === "warning" ? ' is-warning' : '') + '"' + (defaultHidden ? ' hidden' : '') + ' data-special-answer-item data-default-hidden="' + (defaultHidden ? "true" : "false") + '" data-featured="' + (item.featured ? "true" : "false") + '" data-answer-text="' + escapeHTML(normalizeSpecialServiceText(itemText)) + '">' +
+                '<strong>' + escapeHTML(item.label) + "</strong>" +
+                '<span>' + escapeHTML(item.answer) + "</span>" +
+            "</article>"
+        );
+    }).join("");
+
+    return (
+        '<section class="special-answer-finder" data-special-answer-finder="' + serviceId + '">' +
+            '<div class="special-answer-finder-head">' +
+                '<div>' +
+                    '<strong>Find Answer</strong>' +
+                    '<span>Search inside this service. Default shows the most used answers only.</span>' +
+                "</div>" +
+            "</div>" +
+            '<div class="special-answer-search-wrap">' +
+                '<i data-lucide="search"></i>' +
+                '<input type="text" data-special-answer-search placeholder="Search this service: charge, refund, GDS, business, approval..." autocomplete="off">' +
+                '<button type="button" class="special-answer-clear-btn" data-special-action="clear-answer-search" data-service-id="' + serviceId + '">Clear</button>' +
+            "</div>" +
+            '<div class="special-answer-meta" data-special-answer-meta>Showing most used answers.</div>' +
+            '<div class="special-answer-list" data-special-answer-list>' + answersHtml + "</div>" +
+        "</section>"
+    );
+}
+
+function buildSpecialAnswerItems(service) {
+    const answers = [];
+    const guide = service.agentQuickGuide || {};
+
+    addSpecialAnswer(answers, "Cut-off", guide.cutOff, "time deadline cutoff window", true);
+    addSpecialAnswer(answers, "Charge", guide.charge, "fee price amount payment cost", true);
+    addSpecialAnswer(answers, "Approval", guide.approval, "approval required yes no supervisor fs", true);
+    addSpecialAnswer(answers, "Agent Action", guide.mainAction, "main action process what to do", true);
+    addSpecialAnswer(answers, "Warning", guide.warning, "warning important do not confirm", true, "warning");
+
+    if (service.decisionGuide) {
+        addSpecialAnswer(answers, "Decision", service.decisionGuide.result, "decision proceed eligible not eligible", true);
+
+        if (Array.isArray(service.decisionGuide.checks)) {
+            service.decisionGuide.checks.forEach(function (item) {
+                addSpecialAnswer(answers, "Eligibility Check", item, "eligibility allowed restricted", false);
+            });
+        }
+    }
+
+    addSpecialAnswer(answers, "Tell Customer", service.customerScript, "customer script advise say", true);
+
+    if (Array.isArray(service.fastAnswers)) {
+        service.fastAnswers.forEach(function (item) {
+            addSpecialAnswer(answers, item.label || "Answer", item.answer, item.keywords || item.label, true);
+        });
+    }
+
+    if (Array.isArray(service.agentChecklist)) {
+        service.agentChecklist.forEach(function (item) {
+            addSpecialAnswer(answers, "Agent Step", item, "agent action checklist process", false);
+        });
+    }
+
+    if (Array.isArray(service.agentProcess)) {
+        service.agentProcess.forEach(function (item) {
+            addSpecialAnswer(answers, "Agent Process", item, "agent process sprint salesforce", false);
+        });
+    }
+
+    if (Array.isArray(service.customerAdvice)) {
+        service.customerAdvice.forEach(function (item) {
+            addSpecialAnswer(answers, "Customer Advice", item, "customer advise tell passenger", false);
+        });
+    }
+
+    if (service.hiddenDetails && Array.isArray(service.hiddenDetails.sections)) {
+        service.hiddenDetails.sections.forEach(function (section) {
+            if (!Array.isArray(section.items)) return;
+
+            section.items.forEach(function (item) {
+                addSpecialAnswer(answers, section.title || "Policy", item, section.title || "policy", false);
+            });
+        });
+    }
+
+    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
+        service.supervisorSection.items.forEach(function (item) {
+            addSpecialAnswer(answers, service.supervisorSection.title || "Supervisor / FS", item, "supervisor fs escalation approval", false);
+        });
+    }
+
+    return dedupeSpecialAnswers(answers);
+}
+
+function addSpecialAnswer(answers, label, answer, keywords, featured, tone) {
+    if (!answer) return;
+
+    answers.push({
+        label: label || "Answer",
+        answer: answer,
+        keywords: keywords || "",
+        featured: !!featured,
+        tone: tone || ""
+    });
+}
+
+function dedupeSpecialAnswers(answers) {
+    const seen = new Set();
+
+    return answers.filter(function (item) {
+        const key = normalizeSpecialServiceText(item.label + " " + item.answer);
+
+        if (!key || seen.has(key)) return false;
+
+        seen.add(key);
+        return true;
+    });
 }
 
 function renderSpecialServiceSnapshot(service) {
@@ -2671,6 +2790,73 @@ function openSpecialServiceEmail(serviceId) {
     window.open(outlookUrl, "_blank", "noopener,noreferrer");
 }
 
+function filterSpecialAnswerFinder(input) {
+    const finder = input.closest("[data-special-answer-finder]");
+
+    if (!finder) return;
+
+    const query = normalizeSpecialServiceText(input.value || "");
+    const terms = query.split(/\s+/).filter(Boolean);
+    const items = Array.from(finder.querySelectorAll("[data-special-answer-item]"));
+    const meta = finder.querySelector("[data-special-answer-meta]");
+    const matchedItems = [];
+
+    items.forEach(function (item) {
+        const defaultHidden = item.dataset.defaultHidden === "true";
+        const haystack = item.dataset.answerText || "";
+        const matches = terms.length ? terms.every(function (term) {
+            return haystack.includes(term);
+        }) : !defaultHidden;
+
+        item.classList.remove("is-search-match");
+        item.hidden = true;
+
+        if (matches) matchedItems.push(item);
+    });
+
+    const featuredMatches = terms.length ? matchedItems.filter(function (item) {
+        return item.dataset.featured === "true";
+    }) : [];
+    const visibleItems = terms.length && featuredMatches.length ? featuredMatches.slice(0, 6) : matchedItems.slice(0, terms.length ? 8 : matchedItems.length);
+
+    visibleItems.forEach(function (item) {
+        item.hidden = false;
+        item.classList.toggle("is-search-match", !!terms.length);
+    });
+
+    if (meta) {
+        if (!terms.length) {
+            meta.textContent = "Showing most used answers.";
+        } else if (visibleItems.length) {
+            meta.textContent = visibleItems.length + " direct answer" + (visibleItems.length === 1 ? "" : "s") + " found.";
+        } else {
+            meta.textContent = "No direct answer found. Try another word or open Full Policy.";
+        }
+    }
+}
+
+function cssEscapeValue(value) {
+    if (window.CSS && typeof window.CSS.escape === "function") {
+        return window.CSS.escape(String(value || ""));
+    }
+
+    return String(value || "").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+function clearSpecialAnswerSearch(serviceId) {
+    const finder = document.querySelector('[data-special-answer-finder="' + cssEscapeValue(serviceId) + '"]');
+
+    if (!finder) return;
+
+    const input = finder.querySelector("[data-special-answer-search]");
+
+    if (!input) return;
+
+    input.value = "";
+    filterSpecialAnswerFinder(input);
+    input.focus();
+}
+
 function handleSpecialServicesClick(event) {
     const serviceTab = event.target.closest("[data-special-service-tab]");
     const button = event.target.closest("[data-special-action]");
@@ -2692,8 +2878,18 @@ function handleSpecialServicesClick(event) {
         copySpecialServiceEmail(serviceId);
     } else if (action === "open-email") {
         openSpecialServiceEmail(serviceId);
+    } else if (action === "clear-answer-search") {
+        clearSpecialAnswerSearch(serviceId);
     } else if (action === "toggle-block") {
         toggleSpecialBlock(serviceId, blockType, button);
+    }
+}
+
+function handleSpecialServicesInput(event) {
+    const input = event.target.closest("[data-special-answer-search]");
+
+    if (input) {
+        filterSpecialAnswerFinder(input);
     }
 }
 
@@ -3961,6 +4157,7 @@ function initialiseSpecialServices() {
 
     if (panel && !panel.dataset.specialEventsAttached) {
         panel.addEventListener("click", handleSpecialServicesClick);
+        panel.addEventListener("input", handleSpecialServicesInput);
         panel.dataset.specialEventsAttached = "true";
     }
 }
