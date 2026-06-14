@@ -472,56 +472,56 @@ function createInterlineCarrierRow(carrier, index) {
 }
 
 var delayPolicyData = [
-    { airports: 'ALA', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'IST', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'DXB/DWC', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'BEG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BSR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BGW', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BUD', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CTA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'LJU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'NAP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'NJF', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'PSA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'SJJ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'SZG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TIA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'ZAG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CMB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CGP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DAC', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'HGA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JIB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JUB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'KTM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'LYP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'MGQ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'MUX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'UET', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'RUH', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JMK', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JTR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CFU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'PRG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BGY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BSL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'OLB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TIV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DBV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'EBL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'ISU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'AMM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BEY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'AYT', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DAM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TZX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BJV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'All Other', std03: '√', etd03: 'X', closure90: 'X', closure30: '√', closureTime: 'ETD-60' }
+    { airports: 'ALA', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'IST', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'DXB/DWC', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'BEG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSR', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGW', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BUD', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CTA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LJU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NAP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NJF', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PSA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SJJ', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SZG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ZAG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CMB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CGP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAC', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'HGA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JIB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JUB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'KTM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LYP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MGQ', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MUX', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'UET', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'RUH', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JMK', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JTR', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CFU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PRG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGY', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSL', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'OLB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DBV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'EBL', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ISU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AMM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BEY', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AYT', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TZX', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BJV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'All Other', std03: 'âˆš', etd03: 'X', closure90: 'X', closure30: 'âˆš', closureTime: 'ETD-60' }
 ];
 
 function formatMark(value) {
-    if (value === '√') return '<span class="delay-yes">√</span>';
+    if (value === 'âˆš') return '<span class="delay-yes">âˆš</span>';
     return '<span class="delay-no">X</span>';
 }
 
@@ -2046,6 +2046,7 @@ function renderSpecialServices(activeServiceId) {
                 "</div>" +
                 '<div class="special-service-heading">' +
                     "<h3>" + escapeHTML(service.title || "Untitled Service") + "</h3>" +
+                    (service.category ? '<div class="special-service-category">' + escapeHTML(service.category) + "</div>" : "") +
                     renderSsrBadges(service) +
                 "</div>" +
             "</div>" +
@@ -2076,7 +2077,10 @@ function renderSsrBadges(service) {
 }
 
 function renderSpecialServiceMainContent(service) {
-    return renderSpecialAnswerFinder(service);
+    return (
+        renderAgentQuickGuide(service) +
+        renderSpecialAnswerFinder(service)
+    );
 }
 
 function renderAgentQuickGuide(service) {
@@ -2121,9 +2125,8 @@ function renderSpecialAnswerFinder(service) {
     if (!answers.length) return "";
 
     const serviceId = escapeHTML(service.id || "");
-    const visibleDefaultCount = 5;
     const answersHtml = answers.map(function (item, index) {
-        const defaultHidden = !item.featured || index >= visibleDefaultCount;
+        const defaultHidden = true;
         const itemText = [item.label, item.answer, item.keywords].filter(Boolean).join(" ");
 
         return (
@@ -2139,14 +2142,14 @@ function renderSpecialAnswerFinder(service) {
             '<div class="special-answer-finder-head">' +
                 '<div>' +
                     '<strong>Find Answer</strong>' +
-                    '<span>Search inside this service. Default shows the most used answers only.</span>' +
+                    '<span>Type one word to find exact service rules without opening the full process.</span>' +
                 "</div>" +
             "</div>" +
             '<div class="special-answer-search-wrap">' +
                 '<i data-lucide="search"></i>' +
                 '<input type="text" data-special-answer-search placeholder="Search this service: charge, refund, GDS, business, approval..." autocomplete="off">' +
             "</div>" +
-            '<div class="special-answer-meta" data-special-answer-meta>Showing most used answers.</div>' +
+            '<div class="special-answer-meta" data-special-answer-meta>Type to search this service.</div>' +
             '<div class="special-answer-list" data-special-answer-list>' + answersHtml + "</div>" +
         "</section>"
     );
@@ -2375,13 +2378,13 @@ function renderAgentChecklist(service) {
 }
 
 function renderAgentForm(service) {
-    const servicesWithRequestForm = ["falcon", "cake-on-board"];
-
-    if (!servicesWithRequestForm.includes(service.id)) {
-        return "";
-    }
-
-    if (!service.agentForm || !Array.isArray(service.agentForm.fields) || !service.agentForm.fields.length) {
+    if (
+        !service.agentEmail ||
+        !service.agentEmail.enabled ||
+        !service.agentForm ||
+        !Array.isArray(service.agentForm.fields) ||
+        !service.agentForm.fields.length
+    ) {
         return "";
     }
 
@@ -2398,6 +2401,7 @@ function renderAgentForm(service) {
                 '<span>' + escapeHTML(service.agentForm.title || "Request Details") + "</span>" +
             "</div>" +
             (service.agentForm.description ? '<p class="special-service-form-desc">' + escapeHTML(service.agentForm.description) + "</p>" : "") +
+            '<div class="special-service-form-error hidden" data-service-form-error="' + serviceId + '">Please fill all mandatory fields before generating the email.</div>' +
             '<div class="special-service-form-grid" data-service-form="' + serviceId + '">' +
                 fieldsHtml +
             "</div>" +
@@ -2419,14 +2423,14 @@ function renderAgentFormField(serviceId, field) {
 
     if (field.type === "textarea") {
         inputHtml =
-            '<textarea id="' + inputId + '" data-field-id="' + fieldId + '" placeholder="' + placeholder + '">' +
+            '<textarea id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + ' placeholder="' + placeholder + '">' +
                 defaultValue +
             "</textarea>";
     } else if (field.type === "select") {
         const options = Array.isArray(field.options) ? field.options : [];
 
         inputHtml =
-            '<select id="' + inputId + '" data-field-id="' + fieldId + '">' +
+            '<select id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + '>' +
                 '<option value="">Select</option>' +
                 options.map(function (option) {
                     return '<option value="' + escapeHTML(option) + '">' + escapeHTML(option) + "</option>";
@@ -2434,7 +2438,7 @@ function renderAgentFormField(serviceId, field) {
             "</select>";
     } else {
         inputHtml =
-            '<input id="' + inputId + '" data-field-id="' + fieldId + '" type="' + escapeHTML(field.type || "text") + '" placeholder="' + placeholder + '" value="' + defaultValue + '">';
+            '<input id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + ' type="' + escapeHTML(field.type || "text") + '" placeholder="' + placeholder + '" value="' + defaultValue + '">';
     }
 
     return (
@@ -2465,28 +2469,41 @@ function renderAgentEmailActions(service) {
 }
 
 function renderSpecialServiceDisclosureGroup(service) {
+    return renderSpecialFullProcessDisclosure(service);
+}
+
+function renderSpecialFullProcessDisclosure(service) {
     const serviceId = escapeHTML(service.id || "");
-    const blocks = [];
-    const hasAnswerFinderLayout = !!(service && buildSpecialAnswerItems(service).length);
+    const sections = [
+        renderSpecialServiceSection("Agent Process", service.agentProcess),
+        renderSpecialServiceSection("Customer Advice", service.customerAdvice),
+        renderSpecialAllHiddenPolicySections(service),
+        renderSpecialServiceSection("Send / Escalation", getSpecialSendItems(service))
+    ].filter(Boolean).join("");
 
-    if (hasAnswerFinderLayout) {
-        return renderSpecialConciseDisclosureGroup(service);
-    }
-
-    blocks.push(renderHiddenDetailsByCategory(service, "restrictions", "Show Restrictions & Conditions", "ban"));
-    blocks.push(renderHiddenDetailsByCategory(service, "charges", "Show Charges & Limits", "circle-dollar-sign"));
-    blocks.push(renderSupervisorSection(service));
-    blocks.push(renderFullPolicyDetails(service));
-
-    const content = blocks.filter(Boolean).join("");
-
-    if (!content) return "";
+    if (!sections) return "";
 
     return (
         '<div class="special-disclosure-group">' +
-            content +
+            renderSpecialDisclosure(serviceId, "full-process", "View Full Process", "file-search", sections) +
         "</div>"
     );
+}
+
+function renderSpecialAllHiddenPolicySections(service) {
+    const blocks = [];
+
+    if (service.hiddenDetails && Array.isArray(service.hiddenDetails.sections)) {
+        service.hiddenDetails.sections.forEach(function (section) {
+            blocks.push(renderSpecialServiceSection(section.title, section.items));
+        });
+    }
+
+    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
+        blocks.push(renderSpecialServiceSection(service.supervisorSection.title || "FS / Supervisor Process", service.supervisorSection.items));
+    }
+
+    return blocks.join("");
 }
 
 function renderSpecialConciseDisclosureGroup(service) {
@@ -2558,10 +2575,6 @@ function getSpecialSendItems(service) {
         }
 
         pushSpecialItem(items, "Fill the request form, then use Open in Outlook Web.");
-    }
-
-    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
-        pushSpecialItems(items, service.supervisorSection.items);
     }
 
     return compactSpecialItems(items, 8);
@@ -2781,6 +2794,7 @@ function buildSpecialServiceEmail(serviceId) {
     const service = getSpecialServiceById(serviceId);
 
     if (!service || !service.agentEmail) return null;
+    if (!validateSpecialServiceForm(serviceId)) return null;
 
     const values = getSpecialServiceFormValues(serviceId);
 
@@ -2935,6 +2949,28 @@ function openSpecialServiceEmail(serviceId) {
     window.open(outlookUrl, "_blank", "noopener,noreferrer");
 }
 
+function validateSpecialServiceForm(serviceId) {
+    const form = document.querySelector('[data-service-form="' + serviceId + '"]');
+    const error = document.querySelector('[data-service-form-error="' + serviceId + '"]');
+    let isValid = true;
+    let firstInvalid = null;
+
+    if (!form) return true;
+
+    form.querySelectorAll("[data-required='true']").forEach(function (field) {
+        const valid = !!String(field.value || "").trim();
+        field.classList.toggle("is-invalid", !valid);
+
+        if (!valid && !firstInvalid) firstInvalid = field;
+        if (!valid) isValid = false;
+    });
+
+    if (error) error.classList.toggle("hidden", isValid);
+    if (firstInvalid) firstInvalid.focus();
+
+    return isValid;
+}
+
 function filterSpecialAnswerFinder(input) {
     const finder = input.closest("[data-special-answer-finder]");
 
@@ -2951,7 +2987,7 @@ function filterSpecialAnswerFinder(input) {
         const haystack = item.dataset.answerText || "";
         const matches = terms.length ? terms.every(function (term) {
             return haystack.includes(term);
-        }) : !defaultHidden;
+        }) : false;
 
         item.classList.remove("is-search-match");
         item.hidden = true;
@@ -2971,7 +3007,7 @@ function filterSpecialAnswerFinder(input) {
 
     if (meta) {
         if (!terms.length) {
-            meta.textContent = "Showing most used answers.";
+            meta.textContent = "Type to search this service.";
         } else if (visibleItems.length) {
             meta.textContent = visibleItems.length + " direct answer" + (visibleItems.length === 1 ? "" : "s") + " found.";
         } else {
@@ -3018,6 +3054,7 @@ function handleSpecialServicesClick(event) {
 function handleSpecialServicesInput(event) {
     const serviceSearch = event.target.closest("[data-special-service-search]");
     const input = event.target.closest("[data-special-answer-search]");
+    const formField = event.target.closest("[data-service-form] [data-field-id]");
 
     if (serviceSearch) {
         activeSpecialServicesSearch = serviceSearch.value || "";
@@ -3027,6 +3064,15 @@ function handleSpecialServicesInput(event) {
 
     if (input) {
         filterSpecialAnswerFinder(input);
+        return;
+    }
+
+    if (formField) {
+        formField.classList.remove("is-invalid");
+        const form = formField.closest("[data-service-form]");
+        const serviceId = form ? form.dataset.serviceForm : "";
+        const error = serviceId ? document.querySelector('[data-service-form-error="' + serviceId + '"]') : null;
+        if (error) error.classList.add("hidden");
     }
 }
 
