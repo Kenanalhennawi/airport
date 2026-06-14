@@ -2050,10 +2050,7 @@ function renderSsrBadges(service) {
 }
 
 function renderSpecialServiceMainContent(service) {
-    return (
-        renderSpecialAnswerFinder(service) +
-        renderAgentChecklist(service)
-    );
+    return renderSpecialAnswerFinder(service);
 }
 
 function renderAgentQuickGuide(service) {
@@ -2446,12 +2443,8 @@ function renderSpecialServiceDisclosureGroup(service) {
     const blocks = [];
     const hasAnswerFinderLayout = !!(service && buildSpecialAnswerItems(service).length);
 
-    if (!hasAnswerFinderLayout && Array.isArray(service.agentProcess) && service.agentProcess.length) {
-        blocks.push(renderSpecialDisclosure(serviceId, "agent-process", "Show Agent Process", "route", renderSpecialServiceSection("Agent Process", service.agentProcess)));
-    }
-
-    if (!hasAnswerFinderLayout && Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
-        blocks.push(renderSpecialDisclosure(serviceId, "customer-advice", "Show Customer Advice", "message-circle", renderSpecialServiceSection("Customer Advice", service.customerAdvice)));
+    if (hasAnswerFinderLayout) {
+        return renderSpecialConciseDisclosureGroup(service);
     }
 
     blocks.push(renderHiddenDetailsByCategory(service, "restrictions", "Show Restrictions & Conditions", "ban"));
@@ -2468,6 +2461,133 @@ function renderSpecialServiceDisclosureGroup(service) {
             content +
         "</div>"
     );
+}
+
+function renderSpecialConciseDisclosureGroup(service) {
+    const serviceId = escapeHTML(service.id || "");
+    const blocks = [
+        renderSpecialDisclosure(serviceId, "process-method", "Show Process / Method", "route", renderSpecialServiceSection("Process / Method", getSpecialProcessItems(service))),
+        renderSpecialDisclosure(serviceId, "conditions", "Show Conditions", "ban", renderSpecialServiceSection("Conditions", getSpecialConditionItems(service))),
+        renderSpecialDisclosure(serviceId, "charges", "Show Charges", "circle-dollar-sign", renderSpecialServiceSection("Charges", getSpecialChargeItems(service))),
+        renderSpecialDisclosure(serviceId, "send-escalation", "Show Send / Escalation", "send", renderSpecialServiceSection("Send / Escalation", getSpecialSendItems(service)), "special-toggle-supervisor")
+    ].filter(Boolean).join("");
+
+    if (!blocks) return "";
+
+    return '<div class="special-disclosure-group">' + blocks + "</div>";
+}
+
+function getSpecialProcessItems(service) {
+    const items = [];
+    const guide = service.agentQuickGuide || {};
+
+    pushSpecialItem(items, guide.mainAction);
+    pushSpecialItems(items, service.agentChecklist);
+    pushSpecialItems(items, service.agentProcess);
+
+    return compactSpecialItems(items, 8);
+}
+
+function getSpecialConditionItems(service) {
+    const items = [];
+    const guide = service.agentQuickGuide || {};
+
+    pushSpecialItem(items, guide.warning);
+
+    if (service.decisionGuide && Array.isArray(service.decisionGuide.checks)) {
+        pushSpecialItems(items, service.decisionGuide.checks);
+    }
+
+    if (Array.isArray(service.customerAdvice)) {
+        pushSpecialItems(items, service.customerAdvice.filter(function (item) {
+            return !isSpecialChargeText(item);
+        }));
+    }
+
+    pushSpecialHiddenItems(items, service, "restrictions");
+
+    return compactSpecialItems(items, 10);
+}
+
+function getSpecialChargeItems(service) {
+    const items = [];
+    const guide = service.agentQuickGuide || {};
+
+    pushSpecialItem(items, guide.charge);
+    pushSpecialHiddenItems(items, service, "charges");
+
+    return compactSpecialItems(items, 8);
+}
+
+function getSpecialSendItems(service) {
+    const items = [];
+
+    if (service.agentEmail && service.agentEmail.enabled) {
+        if (Array.isArray(service.agentEmail.to) && service.agentEmail.to.length) {
+            pushSpecialItem(items, "Send request to: " + service.agentEmail.to.join("; "));
+        }
+
+        if (Array.isArray(service.agentEmail.cc) && service.agentEmail.cc.length) {
+            pushSpecialItem(items, "CC: " + service.agentEmail.cc.join("; "));
+        }
+
+        pushSpecialItem(items, "Fill the request form, then use Open in Outlook Web.");
+    }
+
+    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
+        pushSpecialItems(items, service.supervisorSection.items);
+    }
+
+    return compactSpecialItems(items, 8);
+}
+
+function pushSpecialHiddenItems(items, service, category) {
+    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections)) return;
+
+    service.hiddenDetails.sections.forEach(function (section) {
+        if (getSpecialDetailsCategory(section.title) !== category || !Array.isArray(section.items)) return;
+
+        pushSpecialItems(items, section.items);
+    });
+}
+
+function pushSpecialItems(target, items) {
+    if (!Array.isArray(items)) return;
+
+    items.forEach(function (item) {
+        pushSpecialItem(target, item);
+    });
+}
+
+function pushSpecialItem(target, item) {
+    const text = String(item || "").trim();
+
+    if (text) target.push(text);
+}
+
+function compactSpecialItems(items, limit) {
+    const seen = new Set();
+    const compact = [];
+
+    items.forEach(function (item) {
+        const normalized = normalizeSpecialServiceText(item)
+            .replace(/\b(passenger|customer|agent|advise|inform|retrieve|verify|confirm)\b/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (!normalized || seen.has(normalized)) return;
+
+        seen.add(normalized);
+        compact.push(item);
+    });
+
+    return compact.slice(0, limit || compact.length);
+}
+
+function isSpecialChargeText(item) {
+    const text = normalizeSpecialServiceText(item);
+
+    return /charge|fee|aed|fare|payment|paid|refund|voucher|cost|price/.test(text);
 }
 
 function renderSupervisorSection(service) {
