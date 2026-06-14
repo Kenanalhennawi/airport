@@ -407,24 +407,23 @@ function populateInterlineTable() {
     const carrierTableBody = document.getElementById('carrierTableBody');
     const carrierModalTableBody = document.getElementById('carrierModalTableBody');
     const carriers = getUniqueInterlineCarriers();
+    const sortedCarriers = carriers.slice().sort(function (a, b) {
+        const nameA = (a.carrier || '').trim().toLowerCase();
+        const nameB = (b.carrier || '').trim().toLowerCase();
+
+        return nameA.localeCompare(nameB);
+    });
 
     if (!carrierTableBody && !carrierModalTableBody) return;
 
     if (carrierModalTableBody) {
         carrierModalTableBody.innerHTML = '';
-        carriers.forEach(function (carrier, i) {
+        sortedCarriers.forEach(function (carrier, i) {
             carrierModalTableBody.appendChild(createInterlineCarrierRow(carrier, i));
         });
     }
 
     if (carrierTableBody) {
-        const sortedCarriers = carriers.slice().sort(function (a, b) {
-            const nameA = (a.carrier || '').trim().toLowerCase();
-            const nameB = (b.carrier || '').trim().toLowerCase();
-
-            return nameA.localeCompare(nameB);
-        });
-
         carrierTableBody.innerHTML = '';
         sortedCarriers.forEach(function (carrier, i) {
             carrierTableBody.appendChild(createInterlineCarrierRow(carrier, i));
@@ -2825,40 +2824,6 @@ const operationsGuideData = [
         ]
     },
     {
-        id: "standard-ssr-cutoffs",
-        title: "Standard SSR Cut-offs",
-        icon: "timer",
-        quickGuide: {
-            channel: "Website / Manage Booking, Contact Centre, OLCI, Travel Shop where applicable",
-            timing: "Meal 24h, Seat 3h, Baggage 6h existing / 2h new or modify, Insurance before journey commences",
-            type: "Pre-purchased SSR / ancillary cut-off matrix",
-            action: "Check booking scenario first: existing booking, modification, or new booking.",
-            warning: "Travel Shop D-rules can be stricter than web / Contact Centre flows; use Travel Shops Cut-offs when the channel is a UAE shop."
-        },
-        classifications: ["From consolidated GO TO guide", "Lite / Value / Flex / Business"],
-        sections: [
-            {
-                title: "General Cut-offs",
-                items: [
-                    "Special Meal SPML: selected up to 24 hours prior to departure.",
-                    "Seat selection: up to 3 hours prior to departure.",
-                    "Travel insurance: added any time before the journey commences through eligible channels; UAE Travel Shop requests follow D > 4.",
-                    "Baggage add or upgrade for existing booking: up to 6 hours prior via Website, Contact Centre, or OLCI.",
-                    "Modifying a flight and adding baggage: Website up to 2 hours prior; Contact Centre must seek Supervisor approval up to 2 hours prior.",
-                    "New booking and adding baggage: up to 2 hours prior via Website or Contact Centre; Contact Centre requires Supervisor approval."
-                ]
-            },
-            {
-                title: "Important Rules",
-                items: [
-                    "Moving or cancellation of optional extras such as baggage and seat is allowed only 24 hours prior to departure.",
-                    "Insurance is non-refundable.",
-                    "If modification is done within the last 24 hours before departure, already paid SSR charges may not be carried forward or adjusted."
-                ]
-            }
-        ]
-    },
-    {
         id: "economy-seating-matrix",
         title: "Economy Seating",
         icon: "armchair",
@@ -2893,117 +2858,6 @@ const operationsGuideData = [
                     "EK codeshare: XLGR / FRST available for purchase, SPST is free.",
                     "UA / AC codeshare: XLGR / FRST purchasable, SPST is free.",
                     "Use exact booking channel and aircraft/seat map availability before advising."
-                ]
-            }
-        ]
-    },
-    {
-        id: "baggage-upgrade-matrix",
-        title: "Baggage Upgrade Matrix",
-        icon: "luggage",
-        quickGuide: {
-            channel: "Website, TA Portal, SPRINT, OLCI, Airport check-in for excluded cases",
-            timing: "Existing booking 6h; new booking or modification 2h where allowed",
-            type: "Baggage add / upgrade channel matrix",
-            action: "Check itinerary type and ticket document number before advising channel.",
-            warning: "Interline booking baggage upgrades are never permitted prior to departure; must be done at airport check-in counter."
-        },
-        classifications: ["Baggage", "Web / TA / SPRINT / OLCI", "GDS document matrix"],
-        sections: [
-            {
-                title: "FZ Prime Direct / TA Portal Non-GDS",
-                items: [
-                    "FZ Prime point-to-point: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
-                    "FZ Prime connection: Web YES, TA Portal NA, SPRINT YES, OLCI YES where available.",
-                    "OLCI baggage upgrade is not available for passengers from Non-DCS stations.",
-                    "Eligible booking channels for OLCI baggage upgrade include Web / ENT / mobile app bookings, Travel Agent portal bookings, Staff ID50 bookings, and eligible GDS point-to-point bookings at SPRINT stations.",
-                    "Codeshare baggage upgrade is available only for point-to-point bookings in weight concept, with no additional purchase allowed for bookings with BAGC 25kg."
-                ]
-            },
-            {
-                title: "GDS Matrix By Document",
-                items: [
-                    "141 FZ Prime PTP / CNX: Web NO, TA Portal NO, SPRINT YES but Contact Centre will not add, OLCI YES.",
-                    "141 FZ DCI: Web NO, TA Portal NO, SPRINT NO, OLCI NO.",
-                    "169 / 275 / 365 FZ Prime PTP / CNX: Web NO, TA Portal NO, SPRINT YES, OLCI YES.",
-                    "176 FZ Prime or EK: Web NO, TA Portal NO, SPRINT NO, OLCI YES using weight concept.",
-                    "016 / 014 EK / UA / AC: Web NO, TA Portal NO, SPRINT NO, OLCI NO."
-                ]
-            },
-            {
-                title: "Baggage Code Notes",
-                items: [
-                    "KRT deal example: BAGX included 40kg; BUPD upgrades to 50kg; BUPE upgrades to 60kg.",
-                    "EXBG is an excess baggage waiver authorized by Chief or SVP and can use EB1.0, EB1.5, EB2.0, or PC values.",
-                    "BUPX may be used in normal upgrade examples when adding allowance on top of existing baggage and waiver.",
-                    "EXPC is extra piece handling for more than three checked pieces, subject to availability.",
-                    "OOGS / OOGL are airport oversize baggage SSRs based on dimensions."
-                ]
-            }
-        ]
-    },
-    {
-        id: "assistance-medical",
-        title: "Assistance / Medical",
-        icon: "accessibility",
-        quickGuide: {
-            channel: "Contact Centre, Manage Booking where available, Travel Shop, Airport support",
-            timing: "12h to 72h depending SSR",
-            type: "Assistance, medical, and special requests",
-            action: "Use SSR-specific cut-off and check whether medical or approval documents are required.",
-            warning: "WCHC and medical-sensitive requests may require document verification or approval."
-        },
-        classifications: ["Wheelchair", "WCHR / WCHS / WCHC", "DPNA", "PPOC", "SVAN", "RSTD", "BLND / DEAF"],
-        sections: [
-            {
-                title: "Cut-offs",
-                items: [
-                    "Wheelchair WCHR: at least 12 hours prior to departure.",
-                    "Wheelchair WCHS / WCHC: at least 24 hours prior to departure.",
-                    "Disabled Passenger DPNA: added up to 12 hours prior to departure.",
-                    "Portable Oxygen PPOC: Contact Centre can add up to 4 hours prior to departure.",
-                    "Service Animal SVAN: pre-approval required no less than 72 hours prior.",
-                    "Restraint Device RSTD: clearance required at least 48 hours before flight.",
-                    "Visual / Hearing BLND / DEAF: added up to 48 hours prior to departure."
-                ]
-            },
-            {
-                title: "Catering / Gift Requests",
-                items: [
-                    "Cake and Fruit Basket: requested at least 48 hours prior to departure.",
-                    "Flower arrangements: 48 hours prior, currently suspended."
-                ]
-            }
-        ]
-    },
-    {
-        id: "equipment-animals",
-        title: "Equipment / Animals",
-        icon: "package-check",
-        quickGuide: {
-            channel: "Contact Centre, SPRINT, Supervisor / FS, Security approval where applicable",
-            timing: "Sporting 24h, Weapons 96h, Falcon 48h+",
-            type: "Equipment, weapons, and animal carriage",
-            action: "Check item type, dimensions, weight, documents, approval, and applicable charge.",
-            warning: "Weapons and falcons must not be confirmed before required approval is received."
-        },
-        classifications: ["SPEQ / SPEX", "WEAP", "PETC"],
-        sections: [
-            {
-                title: "Cut-offs",
-                items: [
-                    "Sporting Equipment SPEQ / SPEX: pre-booked at least 24 hours prior.",
-                    "Supervisors can add sporting equipment up to 12 hours prior if the limit is not reached.",
-                    "Sporting Weapons WEAP: documents must be provided at least 96 hours / 4 working days prior.",
-                    "Falcon PETC: booking requests must be more than 48 hours before departure."
-                ]
-            },
-            {
-                title: "Agent Warning",
-                items: [
-                    "Sporting equipment over 32 kg is not accepted.",
-                    "Sporting weapons require documents and security approval.",
-                    "Falcon carriage is subject to airline and destination approval."
                 ]
             }
         ]
@@ -3347,12 +3201,6 @@ const operationsCategoryData = [
 
 let activeOperationsCategory = "products";
 let activeOperationsSearch = "";
-const hiddenOperationsTopicIds = [
-    "standard-ssr-cutoffs",
-    "baggage-upgrade-matrix",
-    "assistance-medical",
-    "equipment-animals"
-];
 
 function getOperationsTopicCategory(topic) {
     const id = topic && topic.id;
@@ -3404,8 +3252,6 @@ function getFilteredOperationsTopics() {
     const query = normalizeSpecialServiceText(activeOperationsSearch);
 
     const filtered = operationsGuideData.filter(function (topic) {
-        if (hiddenOperationsTopicIds.includes(topic.id)) return false;
-
         const categoryMatch = !query && getOperationsTopicCategory(topic) === activeOperationsCategory;
         const searchMatch = query && buildOperationsTopicSearchText(topic).includes(query);
 
