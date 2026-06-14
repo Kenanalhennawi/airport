@@ -10,7 +10,14 @@ export default {
         const requestUrl = new URL(request.url);
         const origin = request.headers.get("Origin") || "";
 
-        if (origin && !allowedOrigins.includes(origin)) {
+        if (request.method === "OPTIONS") {
+            return new Response(null, {
+                status: 204,
+                headers: corsHeaders(request)
+            });
+        }
+
+        if (!allowedOrigins.includes(origin)) {
             return json(
                 {
                     error: true,
@@ -19,13 +26,6 @@ export default {
                 403,
                 request
             );
-        }
-
-        if (request.method === "OPTIONS") {
-            return new Response(null, {
-                status: 204,
-                headers: corsHeaders(request)
-            });
         }
 
         if (request.method !== "GET") {
