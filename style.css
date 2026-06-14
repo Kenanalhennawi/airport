@@ -1852,7 +1852,7 @@ footer strong {
 
 .special-answer-search-wrap {
     display: grid;
-    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-columns: 20px minmax(0, 1fr);
     align-items: center;
     gap: 8px;
     background: #ffffff;
@@ -1876,17 +1876,6 @@ footer strong {
     font-weight: 850;
     background: transparent;
     min-height: 30px;
-}
-
-.special-answer-clear-btn {
-    border: 1px solid #93c5fd;
-    border-radius: 8px;
-    background: #eff6ff;
-    color: var(--fz-blue);
-    font-weight: 950;
-    min-height: 30px;
-    padding: 0 10px;
-    cursor: pointer;
 }
 
 .special-answer-list {
