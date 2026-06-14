@@ -10,7 +10,7 @@ const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
 const PAYPORT_PROXY_URL =
-    "https://payport-proxy.dominater988.workers.dev/api/convert";
+    "https://payport-proxy.dominater988.workers.dev/";
 
 const PAYPORT_PROXY_VERSION = "1.1";
 
@@ -1883,8 +1883,8 @@ async function convertCurrencyPayport() {
             return;
         }
 
-        resultEl.textContent = "Loading...";
-        rateEl.textContent = "";
+        resultEl.textContent = "Opening PayPort...";
+        rateEl.textContent = "Use the official PayPort page for the live rate.";
 
         const d = new Date(selectedDate);
 
@@ -1894,50 +1894,11 @@ async function convertCurrencyPayport() {
             year: "numeric"
         }).replace(/ /g, "-");
 
-        const url =
-            PAYPORT_PROXY_URL +
-            "?amount=" + encodeURIComponent(amount) +
-            "&from=" + encodeURIComponent(from) +
-            "&to=" + encodeURIComponent(to) +
-            "&period=" + encodeURIComponent(period);
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            let message = "Unable to reach live PayPort service";
-
-            try {
-                const errorData = await response.json();
-                message = errorData.message || message;
-            } catch (parseError) {
-                // Keep the safe generic message when the proxy returns a non-JSON error page.
-            }
-
-            throw new Error(message);
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-            throw new Error(data.message || "PayPort returned an error");
-        }
-
-        const result =
-            data.targetValue ||
-            data.TargetValue ||
-            (data.raw && data.raw.TargetValue) ||
-            "N/A";
-
-        const rate =
-            data.rate ||
-            (data.raw && data.raw.rate) ||
-            "N/A";
-
-        const targetCode =
-            (to.match(/\(([A-Z]{3})\)/) || [])[1] || "";
-
-        resultEl.textContent = result + " " + targetCode;
-        rateEl.textContent = "Rate: " + rate;
+        window.open(
+            "https://payport.flydubai.com/en/CurrencyConverter/Index",
+            "_blank",
+            "noopener,noreferrer"
+        );
 
     } catch (error) {
         const resultEl = document.getElementById("currencyResult");
