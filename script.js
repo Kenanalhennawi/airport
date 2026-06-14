@@ -2024,11 +2024,7 @@ function renderSpecialServices(activeServiceId) {
                 "</div>" +
             "</div>" +
 
-            renderAgentQuickGuide(service) +
-            renderSpecialDecisionGuide(service) +
-            renderSpecialFastAnswers(service) +
-            renderWorkflowHint(service) +
-            renderAgentChecklist(service) +
+            renderSpecialServiceMainContent(service) +
             renderAgentForm(service) +
             renderAgentEmailActions(service) +
             renderSpecialServiceDisclosureGroup(service);
@@ -2051,6 +2047,22 @@ function renderSsrBadges(service) {
     if (!badges.length) return "";
 
     return '<div class="special-service-badges">' + badges.join("") + "</div>";
+}
+
+function renderSpecialServiceMainContent(service) {
+    if (service && service.decisionGuide) {
+        return (
+            renderSpecialServiceSnapshot(service) +
+            renderSpecialFastAnswers(service) +
+            renderAgentChecklist(service)
+        );
+    }
+
+    return (
+        renderAgentQuickGuide(service) +
+        renderWorkflowHint(service) +
+        renderAgentChecklist(service)
+    );
 }
 
 function renderAgentQuickGuide(service) {
@@ -2080,6 +2092,44 @@ function renderQuickGuideItem(label, value, icon) {
 
     return (
         '<div class="special-agent-guide-item">' +
+            '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
+            "<div>" +
+                "<strong>" + escapeHTML(label) + "</strong>" +
+                "<span>" + escapeHTML(value) + "</span>" +
+            "</div>" +
+        "</div>"
+    );
+}
+
+function renderSpecialServiceSnapshot(service) {
+    const guide = service.agentQuickGuide || {};
+    const decision = service.decisionGuide || {};
+
+    return (
+        '<div class="special-service-snapshot">' +
+            '<div class="special-service-snapshot-head">' +
+                '<div>' +
+                    '<strong>Service Snapshot</strong>' +
+                    '<span>' + escapeHTML(decision.result || guide.mainAction || "") + "</span>" +
+                "</div>" +
+            "</div>" +
+            '<div class="special-service-snapshot-grid">' +
+                renderSnapshotItem("Cut-off", guide.cutOff, "clock") +
+                renderSnapshotItem("Charge", guide.charge, "credit-card") +
+                renderSnapshotItem("Approval", guide.approval, "shield-check") +
+                renderSnapshotItem("Agent Action", guide.mainAction, "list-checks") +
+            "</div>" +
+            (guide.warning ? '<div class="special-agent-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + "</span></div>" : "") +
+            (service.customerScript ? '<div class="special-customer-script"><strong>Tell Customer</strong><span>' + escapeHTML(service.customerScript) + "</span></div>" : "") +
+        "</div>"
+    );
+}
+
+function renderSnapshotItem(label, value, icon) {
+    if (!value) return "";
+
+    return (
+        '<div class="special-service-snapshot-item">' +
             '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
             "<div>" +
                 "<strong>" + escapeHTML(label) + "</strong>" +
@@ -2276,12 +2326,13 @@ function renderAgentEmailActions(service) {
 function renderSpecialServiceDisclosureGroup(service) {
     const serviceId = escapeHTML(service.id || "");
     const blocks = [];
+    const hasFastAnswerLayout = !!(service && service.decisionGuide);
 
-    if (Array.isArray(service.agentProcess) && service.agentProcess.length) {
+    if (!hasFastAnswerLayout && Array.isArray(service.agentProcess) && service.agentProcess.length) {
         blocks.push(renderSpecialDisclosure(serviceId, "agent-process", "Show Agent Process", "route", renderSpecialServiceSection("Agent Process", service.agentProcess)));
     }
 
-    if (Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
+    if (!hasFastAnswerLayout && Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
         blocks.push(renderSpecialDisclosure(serviceId, "customer-advice", "Show Customer Advice", "message-circle", renderSpecialServiceSection("Customer Advice", service.customerAdvice)));
     }
 
