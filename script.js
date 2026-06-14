@@ -3401,7 +3401,7 @@ const operationsGuideData = [
         ]
     },
     {
-        id: "masd-meet-assist",
+        id: "maas-meet-assist",
         title: "MAAS Meet & Assist",
         icon: "user-check",
         quickGuide: {
@@ -3649,7 +3649,7 @@ function getOperationsTopicCategory(topic) {
 
     if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
     if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist", "ok-to-board"].includes(id)) return "airport";
+    if (["operational-airport-ssrs", "airport-shop-fees", "maas-meet-assist", "ok-to-board"].includes(id)) return "airport";
 
     return "products";
 }
