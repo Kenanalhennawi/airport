@@ -470,47 +470,13 @@ const specialServicesData = [
             warning: "Once booked, accepted, and paid, the service is non-refundable."
         },
 
-        agentForm: {
-            title: "Fruit Basket Request Details",
-            description: "Fill the below details before adding SSR FRBS and collecting payment.",
-            fields: [
-                {
-                    id: "pnr",
-                    label: "PNR",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: ABC123"
-                },
-                {
-                    id: "passengerName",
-                    label: "Passenger Name",
-                    type: "text",
-                    required: true,
-                    placeholder: "Passenger name"
-                },
-                {
-                    id: "flightDateLeg",
-                    label: "Flight Date / Required Leg",
-                    type: "text",
-                    required: true,
-                    placeholder: "Clarify which flight/date/leg the fruit basket is required"
-                },
-                {
-                    id: "flightNumber",
-                    label: "Flight Number",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: FZ123"
-                },
-                {
-                    id: "paymentCollected",
-                    label: "Payment Collected?",
-                    type: "select",
-                    required: true,
-                    options: ["YES", "NO"]
-                }
-            ]
-        },
+        agentChecklist: [
+            "Verify the request is up to 48 hours before departure.",
+            "Add SSR FRBS for the required flight / leg.",
+            "Collect AED 35 or equivalent.",
+            "Advise the customer that the service is non-refundable once booked, accepted, and paid.",
+            "Update SPRINT comments."
+        ],
 
         agentEmail: {
             enabled: false,
@@ -705,6 +671,16 @@ const specialServicesData = [
             subjectTemplate: "",
             bodyTemplate: ""
         },
+
+        agentChecklist: [
+            "Confirm the reason: comfort, privacy, oversize passenger requirement, valuable item, fragile item, or musical instrument.",
+            "Confirm service eligibility: FZ prime booked flights only; not interline / codeshare.",
+            "For CBBG, confirm Economy Class only. For EXST, Economy and Business Class are allowed.",
+            "Add an adult passenger using First Name EXST or CBBG and Last Name as the passenger last name.",
+            "Add SSR EXST / CBBG as zero value to the passenger requesting the service, not to the extra seat.",
+            "Assign adjoining seats and ensure both seats are charged as applicable.",
+            "For GDS bookings, follow separate PNR handling and update remarks on both bookings."
+        ],
 
         agentProcess: [
             "Retrieve the booking.",
@@ -936,6 +912,16 @@ const specialServicesData = [
             subjectTemplate: "",
             bodyTemplate: ""
         },
+
+        agentChecklist: [
+            "Ask the customer for equipment type, total dimensions L + W + H, and weight.",
+            "If total dimensions are 160 cm to 189 cm, add SPEQ per applicable flight / sector.",
+            "If total dimensions are 190 cm to 350 cm, add SPEX per applicable flight / sector.",
+            "Confirm maximum 32 kg per individual item; sports equipment over 32 kg is not accepted.",
+            "Collect AED 150 for SPEQ or AED 270 for SPEX per item per flight where applicable.",
+            "If within 24 hours, check Supervisor / FS before applying the SSR.",
+            "Advise the customer to arrive at least 2 hours before departure and update SPRINT comments."
+        ],
 
         agentProcess: [
             "Retrieve PNR and verify the flight is more than 24 hours before departure.",
@@ -1200,6 +1186,16 @@ const specialServicesData = [
             subjectTemplate: "",
             bodyTemplate: ""
         },
+
+        agentChecklist: [
+            "Ask whether the customer has already emailed flydubai and has a case number.",
+            "If not, advise the customer to email letstalk@flydubai.com with all required documents and details.",
+            "Do not confirm carriage until security / Dubai Police approval is received.",
+            "Advise the 96-hour / 4-working-day pre-authorization requirement.",
+            "After approval, apply WEAP AED 300 per passenger and SPEX AED 270 per passenger per segment where applicable.",
+            "Escalate the case to Supervisor / FS for security approval handling.",
+            "Update Salesforce case and SPRINT comments."
+        ],
 
         agentProcess: [
             "If customer did not write to flydubai or wrote with incomplete information, inform the customer to email letstalk@flydubai.com with all required documents and details.",
