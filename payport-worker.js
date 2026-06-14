@@ -7,7 +7,7 @@ export default {
         const requestUrl = new URL(request.url);
         const origin = request.headers.get("Origin") || "";
 
-        if (origin && !allowedOrigins.includes(origin)) {
+        if (!origin || !allowedOrigins.includes(origin)) {
             return json(
                 {
                     error: true,
@@ -116,7 +116,7 @@ export default {
                         error: true,
                         message: "PayPort returned error",
                         status: response.status,
-                        body: text
+                        body: text.slice(0, 500)
                     },
                     502,
                     request
@@ -131,8 +131,8 @@ export default {
                 return json(
                     {
                         error: true,
-                        message: "Invalid JSON returned from PayPort",
-                        body: text
+                    message: "Invalid JSON returned from PayPort",
+                    body: text.slice(0, 500)
                     },
                     502,
                     request
