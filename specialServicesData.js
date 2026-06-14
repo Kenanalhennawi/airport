@@ -158,8 +158,8 @@ const specialServicesData = [
         agentEmail: {
             enabled: true,
             to: [
-                "\"CC.FS\" <CC.FS@flydubai.com>",
-                "\"CC.Sups\" <CC.Sups@flydubai.com>"
+                "CC.FS@flydubai.com",
+                "CC.Sups@flydubai.com"
             ],
             cc: [],
             subjectTemplate: "Falcon Request - PNR {{pnr}}",
