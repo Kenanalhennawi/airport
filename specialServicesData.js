@@ -580,6 +580,47 @@ const specialServicesData = [
             warning: "CBBG is available only in Economy Class. EXST can be booked in Economy or Business Class. Not supported for interline / codeshare and available only on FZ prime booked flights."
         },
 
+        decisionGuide: {
+            title: "Quick Decision",
+            result: "Proceed if the request is on FZ prime, at least 2 hours before departure, seats are available, and the class/service combination is eligible.",
+            checks: [
+                "EXST: Economy or Business Class.",
+                "CBBG: Economy Class only.",
+                "Not allowed as interline / codeshare document.",
+                "Passenger and extra seat must be assigned adjoining seats.",
+                "If GDS booking, create a separate booking for the extra seat."
+            ]
+        },
+
+        customerScript: "You can purchase an extra seat subject to availability. EXST is available in Economy and Business, while CBBG is only available in Economy. The extra seat is charged at the applicable fare and seat charges apply.",
+
+        fastAnswers: [
+            {
+                label: "Business Class",
+                answer: "EXST is allowed in Business Class. CBBG is not available for Business Class passengers."
+            },
+            {
+                label: "Charge",
+                answer: "Charge the applicable fare for the extra seat plus standard seat assignment charges for both seats."
+            },
+            {
+                label: "SSR Placement",
+                answer: "Add SSR EXST or CBBG as zero value to the passenger requesting the service, not to the extra seat."
+            },
+            {
+                label: "GDS",
+                answer: "Extra seat cannot be added to the same GDS booking. Create a separate PNR and update both bookings with remarks."
+            },
+            {
+                label: "Baggage",
+                answer: "Hand baggage allowance does not increase with extra seat purchase. CBBG passengers are not eligible for extra checked baggage allowance."
+            },
+            {
+                label: "Seat Rule",
+                answer: "Assign adjoining seats. EXST must not be in exit rows 15/16. CBBG must not be in rows 14/15/16/17."
+            }
+        ],
+
         agentForm: {
             title: "Extra Seat / CBBG Request Details",
             description: "Fill the below details before adding EXST / CBBG or escalating if required.",
