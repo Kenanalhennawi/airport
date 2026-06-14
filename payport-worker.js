@@ -7,7 +7,7 @@ export default {
         const requestUrl = new URL(request.url);
         const origin = request.headers.get("Origin") || "";
 
-        if (!origin || !allowedOrigins.includes(origin)) {
+        if (origin && !allowedOrigins.includes(origin)) {
             return json(
                 {
                     error: true,
