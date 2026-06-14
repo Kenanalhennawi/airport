@@ -158,8 +158,8 @@ const specialServicesData = [
         agentEmail: {
             enabled: true,
             to: [
-                "reservationssupport@flydubai.com",
-                "allresteamleaders@flydubai.com"
+                "\"CC.FS\" <CC.FS@flydubai.com>",
+                "\"CC.Sups\" <CC.Sups@flydubai.com>"
             ],
             cc: [],
             subjectTemplate: "Falcon Request - PNR {{pnr}}",
@@ -174,6 +174,7 @@ const specialServicesData = [
             "Inform the customer that prior airline approval is mandatory.",
             "Inform the customer that flydubai needs to check with the destination airport if falcons are allowed and if any restrictions apply.",
             "Inform the customer that if the itinerary changes after approval, a new approval is required.",
+            "Email the completed Falcon request table to CC.FS and CC.Sups.",
             "Create and escalate a Salesforce case to Supervisor / Floor Support.",
             "Update SPRINT comments."
         ],
@@ -268,7 +269,7 @@ const specialServicesData = [
             title: "FS / Supervisor Steps",
             hiddenByDefault: true,
             items: [
-                "Send the collected request details to reservationssupport@flydubai.com and allresteamleaders@flydubai.com for approval.",
+                "Supervisor / FS should forward the collected Falcon request table to reservationssupport@flydubai.com and allresteamleaders@flydubai.com for approval.",
                 "Request payment time limit extension if required.",
                 "For flights close to departure, treat the approval request as priority.",
                 "Once approval is received from Reservations Support, assign an agent to contact the customer.",
