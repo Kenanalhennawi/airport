@@ -10,7 +10,7 @@ const modal = document.getElementById('infoModal');
 const closeModalBtn = document.getElementById('closeModal');
 
 const PAYPORT_PROXY_URL =
-    "https://payport-proxy.dominater988.workers.dev/";
+    "https://payport-proxy.dominater988.workers.dev/api/convert";
 
 const PAYPORT_PROXY_VERSION = "1.1";
 
@@ -404,71 +404,40 @@ function updateLiveClock() {
 }
 
 function populateInterlineTable() {
+    const carrierModal = document.getElementById('carrierModal');
     const carrierTableBody = document.getElementById('carrierTableBody');
-    const carrierModalTableBody = document.getElementById('carrierModalTableBody');
-    const carriers = getUniqueInterlineCarriers();
-    const sortedCarriers = carriers.slice().sort(function (a, b) {
-        const nameA = (a.carrier || '').trim().toLowerCase();
-        const nameB = (b.carrier || '').trim().toLowerCase();
+    const modalTable = carrierModal && carrierModal.querySelector('.carrier-table');
 
-        return nameA.localeCompare(nameB);
+    if (!modalTable || !modalTable.tBodies[0] || !carrierTableBody) return;
+
+    carrierTableBody.innerHTML = '';
+
+    const rows = Array.from(modalTable.tBodies[0].rows).map(function (r) {
+        return r.cloneNode(true);
     });
 
-    if (!carrierTableBody && !carrierModalTableBody) return;
-
-    if (carrierModalTableBody) {
-        carrierModalTableBody.innerHTML = '';
-        sortedCarriers.forEach(function (carrier, i) {
-            carrierModalTableBody.appendChild(createInterlineCarrierRow(carrier, i));
-        });
-    }
-
-    if (carrierTableBody) {
-        carrierTableBody.innerHTML = '';
-        sortedCarriers.forEach(function (carrier, i) {
-            carrierTableBody.appendChild(createInterlineCarrierRow(carrier, i));
-        });
-    }
-}
-
-function getUniqueInterlineCarriers() {
-    const data = Array.isArray(window.interlineCarriers) ? window.interlineCarriers : [];
     const seen = new Set();
 
-    return data.filter(function (carrier) {
-        const code = (carrier.code || '').trim();
+    const unique = rows.filter(function (r) {
+        const code = (r.cells[2] && r.cells[2].textContent || '').trim();
 
         if (!code || seen.has(code)) return false;
 
         seen.add(code);
         return true;
     });
-}
 
-function createInterlineCarrierRow(carrier, index) {
-    const row = document.createElement('tr');
-    const cells = [
-        index + 1,
-        carrier.carrier,
-        carrier.code,
-        carrier.account,
-        carrier.host,
-        carrier.type,
-        carrier.iatci,
-        carrier.iatciType,
-        carrier.throughCheckInBp,
-        carrier.throughCheckInBag,
-        carrier.bpAtTransfer,
-        carrier.remarks
-    ];
+    unique.sort(function (a, b) {
+        const nameA = (a.cells[1] && a.cells[1].textContent || '').trim().toLowerCase();
+        const nameB = (b.cells[1] && b.cells[1].textContent || '').trim().toLowerCase();
 
-    cells.forEach(function (value) {
-        const cell = document.createElement('td');
-        cell.textContent = value || '';
-        row.appendChild(cell);
+        return nameA.localeCompare(nameB);
     });
 
-    return row;
+    unique.forEach(function (row, i) {
+        if (row.cells[0]) row.cells[0].textContent = i + 1;
+        carrierTableBody.appendChild(row);
+    });
 }
 
 var delayPolicyData = [
@@ -716,14 +685,12 @@ function switchView(view) {
     const interlinePanel = document.getElementById('interlineView');
     const delayPanel = document.getElementById('delayPolicyView');
     const specialServicesPanel = document.getElementById('specialServicesView');
-    const operationsPanel = document.getElementById('operationsView');
     const currencyPanel = document.getElementById('currencyView');
 
     const tabAirports = document.getElementById('tabAirports');
     const tabInterline = document.getElementById('tabInterline');
     const tabDelay = document.getElementById('tabDelayPolicy');
     const tabSpecialServices = document.getElementById('tabSpecialServices');
-    const tabOperations = document.getElementById('tabOperations');
     const tabCurrency = document.getElementById('tabCurrency');
 
     const containerEl = document.querySelector('.container');
@@ -736,7 +703,6 @@ function switchView(view) {
             view === 'interline' ||
             view === 'delay' ||
             view === 'specialServices' ||
-            view === 'operations' ||
             view === 'currency'
         );
     }
@@ -746,7 +712,6 @@ function switchView(view) {
         interlinePanel,
         delayPanel,
         specialServicesPanel,
-        operationsPanel,
         currencyPanel
     ].forEach(function (p) {
         if (p) p.classList.remove('active');
@@ -757,7 +722,6 @@ function switchView(view) {
         tabInterline,
         tabDelay,
         tabSpecialServices,
-        tabOperations,
         tabCurrency
     ].forEach(function (t) {
         if (t) {
@@ -826,19 +790,6 @@ function switchView(view) {
         if (clearBtn) clearBtn.classList.add('hidden');
 
         renderSpecialServices('');
-
-    } else if (view === 'operations') {
-        if (operationsPanel) operationsPanel.classList.add('active');
-
-        if (tabOperations) {
-            tabOperations.classList.add('active');
-            tabOperations.setAttribute('aria-pressed', 'true');
-        }
-
-        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
-        if (clearBtn) clearBtn.classList.add('hidden');
-
-        renderOperationsGuide();
 
     } else if (view === 'currency') {
         if (currencyPanel) currencyPanel.classList.add('active');
@@ -1422,7 +1373,7 @@ function renderCards(filterText) {
                     '<div>' +
                         '<div class="iata-code">' + safeIata + '</div>' +
                         '<div class="city-name">' +
-                            '<img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '">' +
+                            '<img src="' + getFlagUrl(flagCountry) + '" class="flag-icon" alt="Flag of ' + escapeHTML(flagCountry) + '" onerror="this.style.display=\'none\';">' +
                             '<span>' + safeCity + '</span>' +
                         '</div>' +
                         '<div class="country-name"><span class="meta-label">Country:</span> ' + safeCountry + '</div>' +
@@ -1452,13 +1403,6 @@ function renderCards(filterText) {
 
         const dateIn = card.querySelector('#dateIn-' + airport.iata);
         const timeIn = card.querySelector('#timeIn-' + airport.iata);
-        const flagImg = card.querySelector('.flag-icon');
-
-        if (flagImg) {
-            flagImg.addEventListener('error', function () {
-                flagImg.style.display = 'none';
-            });
-        }
 
         const runCalc = function () {
             if (dateIn) formatDateInput(dateIn);
@@ -1635,95 +1579,12 @@ const payportCurrencies = [
     "Zimbabwe's ZWG (ZWG)"
 ];
 
-const currencyFlagByCode = {
-    AFN: "af",
-    AUD: "au",
-    AZN: "az",
-    BHD: "bh",
-    BDT: "bd",
-    BYN: "by",
-    CAD: "ca",
-    XCG: "cw",
-    CZK: "cz",
-    DKK: "dk",
-    DJF: "dj",
-    EGP: "eg",
-    ERN: "er",
-    ETB: "et",
-    EUR: "eu",
-    FJD: "fj",
-    HKD: "hk",
-    HUF: "hu",
-    INR: "in",
-    IDR: "id",
-    IRR: "ir",
-    JOD: "jo",
-    KZT: "kz",
-    KES: "ke",
-    KWD: "kw",
-    LYD: "ly",
-    MYR: "my",
-    NPR: "np",
-    ILS: "il",
-    NZD: "nz",
-    NOK: "no",
-    OMR: "om",
-    PKR: "pk",
-    PLN: "pl",
-    QAR: "qa",
-    RUB: "ru",
-    SAR: "sa",
-    RSD: "rs",
-    SGD: "sg",
-    SSP: "ss",
-    LKR: "lk",
-    SDG: "sd",
-    SEK: "se",
-    CHF: "ch",
-    SYP: "sy",
-    TZS: "tz",
-    THB: "th",
-    TRY: "tr",
-    GBP: "gb",
-    UAH: "ua",
-    AED: "ae",
-    USD: "us",
-    UZS: "uz",
-    ZWG: "zw"
-};
-
-function getCurrencyCode(currencyName) {
-    const match = String(currencyName || "").match(/\(([A-Z]{3})\)$/);
-    return match ? match[1] : "";
-}
-
-function getCurrencyFlagUrl(currencyName) {
-    const countryCode = currencyFlagByCode[getCurrencyCode(currencyName)];
-    return countryCode ? `https://flagcdn.com/24x18/${countryCode}.png` : "";
-}
-
-function renderCurrencySelectOption(data, escape) {
-    const label = data.text || data.value || "";
-    const flagUrl = getCurrencyFlagUrl(label);
-    const flagMarkup = flagUrl
-        ? `<img class="currency-select-flag" src="${flagUrl}" alt="">`
-        : '<span class="currency-select-flag currency-select-flag-fallback" aria-hidden="true"></span>';
-
-    return [
-        '<div class="currency-select-option">',
-        flagMarkup,
-        '<span class="currency-select-label">', escape(label), '</span>',
-        '</div>'
-    ].join("");
-}
-
 function initialiseCurrencyConverter() {
     const from = document.getElementById("currencyFrom");
     const to = document.getElementById("currencyTo");
     const dateInput = document.getElementById("currencyDate");
     const swapBtn = document.getElementById("currencySwapBtn");
     const convertBtn = document.getElementById("currencyConvertBtn");
-    const clearBtn = document.getElementById("currencyClearBtn");
     const amountInput = document.getElementById("currencyAmount");
 
     if (!from || !to || !dateInput || !swapBtn || !convertBtn || !amountInput) return;
@@ -1747,11 +1608,7 @@ function initialiseCurrencyConverter() {
             field: "text",
             direction: "asc"
         },
-        placeholder: "Search currency...",
-        render: {
-            option: renderCurrencySelectOption,
-            item: renderCurrencySelectOption
-        }
+        placeholder: "Search currency..."
     });
 
     window.currencyToTom = new TomSelect("#currencyTo", {
@@ -1762,17 +1619,18 @@ function initialiseCurrencyConverter() {
             field: "text",
             direction: "asc"
         },
-        placeholder: "Search currency...",
-        render: {
-            option: renderCurrencySelectOption,
-            item: renderCurrencySelectOption
-        }
+        placeholder: "Search currency..."
     });
 
     window.currencyFromTom.setValue("United States Dollar (USD)");
     window.currencyToTom.setValue("United Arab Emirates Dirham (AED)");
 
-    setCurrencyDateToToday();
+    const today = new Date();
+
+    dateInput.value =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
 
     swapBtn.onclick = function () {
         const temp = window.currencyFromTom.getValue();
@@ -1784,10 +1642,6 @@ function initialiseCurrencyConverter() {
     };
 
     convertBtn.onclick = convertCurrencyPayport;
-
-    if (clearBtn) {
-        clearBtn.onclick = clearCurrencyConverter;
-    }
 
     amountInput.onkeydown = function (e) {
         if (e.key === "Enter") {
@@ -1821,39 +1675,6 @@ function initialiseCurrencyConverter() {
     window.currencyEnterListenerAdded = true;
 }
 }
-
-function setCurrencyDateToToday() {
-    const dateInput = document.getElementById("currencyDate");
-    const today = new Date();
-
-    if (!dateInput) return;
-
-    dateInput.value =
-        today.getFullYear() + "-" +
-        String(today.getMonth() + 1).padStart(2, "0") + "-" +
-        String(today.getDate()).padStart(2, "0");
-}
-
-function clearCurrencyConverter() {
-    const amountInput = document.getElementById("currencyAmount");
-    const resultEl = document.getElementById("currencyResult");
-    const rateEl = document.getElementById("currencyRate");
-
-    if (amountInput) amountInput.value = "1";
-
-    if (window.currencyFromTom) {
-        window.currencyFromTom.setValue("United States Dollar (USD)");
-    }
-
-    if (window.currencyToTom) {
-        window.currencyToTom.setValue("United Arab Emirates Dirham (AED)");
-    }
-
-    setCurrencyDateToToday();
-
-    if (resultEl) resultEl.textContent = "--";
-    if (rateEl) rateEl.textContent = "Rate: --";
-}
    
 async function convertCurrencyPayport() {
     try {
@@ -1883,8 +1704,8 @@ async function convertCurrencyPayport() {
             return;
         }
 
-        resultEl.textContent = "Opening PayPort...";
-        rateEl.textContent = "Use the official PayPort page for the live rate.";
+        resultEl.textContent = "Loading...";
+        rateEl.textContent = "";
 
         const d = new Date(selectedDate);
 
@@ -1894,18 +1715,48 @@ async function convertCurrencyPayport() {
             year: "numeric"
         }).replace(/ /g, "-");
 
-        window.open(
-            "https://payport.flydubai.com/en/CurrencyConverter/Index",
-            "_blank",
-            "noopener,noreferrer"
-        );
+        const url =
+            PAYPORT_PROXY_URL +
+            "?amount=" + encodeURIComponent(amount) +
+            "&from=" + encodeURIComponent(from) +
+            "&to=" + encodeURIComponent(to) +
+            "&period=" + encodeURIComponent(period);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Unable to reach PayPort service");
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.message || "PayPort returned an error");
+        }
+
+        const result =
+            data.targetValue ||
+            data.TargetValue ||
+            (data.raw && data.raw.TargetValue) ||
+            "N/A";
+
+        const rate =
+            data.rate ||
+            (data.raw && data.raw.rate) ||
+            "N/A";
+
+        const targetCode =
+            (to.match(/\(([A-Z]{3})\)/) || [])[1] || "";
+
+        resultEl.textContent = result + " " + targetCode;
+        rateEl.textContent = "Rate: " + rate;
 
     } catch (error) {
         const resultEl = document.getElementById("currencyResult");
         const rateEl = document.getElementById("currencyRate");
 
         if (resultEl) resultEl.textContent = "Live Rate Unavailable";
-        if (rateEl) rateEl.textContent = "Open Official PayPort to verify the live rate.";
+        if (rateEl) rateEl.textContent = "Please try again later";
 
         console.error("PayPort Error:", error);
     }
@@ -1945,40 +1796,37 @@ function buildSpecialServiceSearchText(service) {
     return parts.join(" ").toLowerCase();
 }
 
-function renderSpecialServices(activeServiceId) {
+function renderSpecialServices(filterText) {
     const grid = document.getElementById("specialServicesGrid");
-    const tabs = document.getElementById("specialServicesTabs");
+    const clearBtn = document.getElementById("specialServicesClearBtn");
 
     if (!grid) return;
 
+    const query = normalizeSpecialServiceText(filterText);
     const services = getSpecialServicesData();
-    const activeService = services.find(function (service) {
-        return service.id === activeServiceId;
-    }) || services[0];
 
-    if (!activeService) {
-        grid.innerHTML = '<div class="special-services-empty">No special services available.</div>';
-        return;
+    if (clearBtn) {
+        clearBtn.classList.toggle("hidden", !query);
     }
 
-    if (tabs) {
-        tabs.innerHTML = services.map(function (service) {
-            const activeClass = service.id === activeService.id ? " active" : "";
-            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " · " + service.ssr.join("/") : "";
+    const filtered = services.filter(function (service) {
+        const searchableText = buildSpecialServiceSearchText(service);
+        return !query || searchableText.includes(query);
+    });
 
-            return (
-                '<button type="button" class="special-service-tab' + activeClass + '" data-special-service-tab="' + escapeHTML(service.id || "") + '">' +
-                    '<i data-lucide="' + escapeHTML(service.icon || "clipboard-list") + '"></i>' +
-                    '<span>' + escapeHTML(service.title || "Service") + '</span>' +
-                    '<small>' + escapeHTML(ssr) + '</small>' +
-                '</button>'
-            );
-        }).join("");
+    if (!filtered.length) {
+        grid.innerHTML =
+            '<div class="special-services-empty">' +
+                "No special service found. Try searching by service name, SSR, item, keyword, route, or process." +
+            "</div>";
+
+        if (typeof lucide !== "undefined") lucide.createIcons();
+        return;
     }
 
     grid.innerHTML = "";
 
-    [activeService].forEach(function (service) {
+    filtered.forEach(function (service) {
         const card = document.createElement("div");
         card.className = "special-service-card";
         card.setAttribute("data-service-id", service.id || "");
@@ -1994,7 +1842,8 @@ function renderSpecialServices(activeServiceId) {
                 "</div>" +
             "</div>" +
 
-            renderSpecialServiceMainContent(service) +
+            renderAgentQuickGuide(service) +
+            renderWorkflowHint() +
             renderAgentForm(service) +
             renderAgentEmailActions(service) +
             renderSpecialServiceDisclosureGroup(service);
@@ -2017,10 +1866,6 @@ function renderSsrBadges(service) {
     if (!badges.length) return "";
 
     return '<div class="special-service-badges">' + badges.join("") + "</div>";
-}
-
-function renderSpecialServiceMainContent(service) {
-    return renderSpecialAnswerFinder(service);
 }
 
 function renderAgentQuickGuide(service) {
@@ -2059,272 +1904,23 @@ function renderQuickGuideItem(label, value, icon) {
     );
 }
 
-function renderSpecialAnswerFinder(service) {
-    const answers = buildSpecialAnswerItems(service);
-
-    if (!answers.length) return "";
-
-    const serviceId = escapeHTML(service.id || "");
-    const visibleDefaultCount = 5;
-    const answersHtml = answers.map(function (item, index) {
-        const defaultHidden = !item.featured || index >= visibleDefaultCount;
-        const itemText = [item.label, item.answer, item.keywords].filter(Boolean).join(" ");
-
-        return (
-            '<article class="special-answer-item' + (defaultHidden ? ' is-hidden-default' : '') + (item.tone === "warning" ? ' is-warning' : '') + '"' + (defaultHidden ? ' hidden' : '') + ' data-special-answer-item data-default-hidden="' + (defaultHidden ? "true" : "false") + '" data-featured="' + (item.featured ? "true" : "false") + '" data-answer-text="' + escapeHTML(normalizeSpecialServiceText(itemText)) + '">' +
-                '<strong>' + escapeHTML(item.label) + "</strong>" +
-                '<span>' + escapeHTML(item.answer) + "</span>" +
-            "</article>"
-        );
-    }).join("");
-
-    return (
-        '<section class="special-answer-finder" data-special-answer-finder="' + serviceId + '">' +
-            '<div class="special-answer-finder-head">' +
-                '<div>' +
-                    '<strong>Find Answer</strong>' +
-                    '<span>Search inside this service. Default shows the most used answers only.</span>' +
-                "</div>" +
-            "</div>" +
-            '<div class="special-answer-search-wrap">' +
-                '<i data-lucide="search"></i>' +
-                '<input type="text" data-special-answer-search placeholder="Search this service: charge, refund, GDS, business, approval..." autocomplete="off">' +
-            "</div>" +
-            '<div class="special-answer-meta" data-special-answer-meta>Showing most used answers.</div>' +
-            '<div class="special-answer-list" data-special-answer-list>' + answersHtml + "</div>" +
-        "</section>"
-    );
-}
-
-function buildSpecialAnswerItems(service) {
-    const answers = [];
-    const guide = service.agentQuickGuide || {};
-
-    addSpecialAnswer(answers, "Cut-off", guide.cutOff, "time deadline cutoff window", true);
-    addSpecialAnswer(answers, "Charge", guide.charge, "fee price amount payment cost", true);
-    addSpecialAnswer(answers, "Approval", guide.approval, "approval required yes no supervisor fs", true);
-    addSpecialAnswer(answers, "Agent Action", guide.mainAction, "main action process what to do", true);
-    addSpecialAnswer(answers, "Warning", guide.warning, "warning important do not confirm", true, "warning");
-
-    if (service.decisionGuide) {
-        addSpecialAnswer(answers, "Decision", service.decisionGuide.result, "decision proceed eligible not eligible", true);
-
-        if (Array.isArray(service.decisionGuide.checks)) {
-            service.decisionGuide.checks.forEach(function (item) {
-                addSpecialAnswer(answers, "Eligibility Check", item, "eligibility allowed restricted", false);
-            });
-        }
-    }
-
-    addSpecialAnswer(answers, "Tell Customer", service.customerScript, "customer script advise say", true);
-
-    if (Array.isArray(service.fastAnswers)) {
-        service.fastAnswers.forEach(function (item) {
-            addSpecialAnswer(answers, item.label || "Answer", item.answer, item.keywords || item.label, true);
-        });
-    }
-
-    if (Array.isArray(service.agentChecklist)) {
-        service.agentChecklist.forEach(function (item) {
-            addSpecialAnswer(answers, "Agent Step", item, "agent action checklist process", false);
-        });
-    }
-
-    if (Array.isArray(service.agentProcess)) {
-        service.agentProcess.forEach(function (item) {
-            addSpecialAnswer(answers, "Agent Process", item, "agent process sprint salesforce", false);
-        });
-    }
-
-    if (Array.isArray(service.customerAdvice)) {
-        service.customerAdvice.forEach(function (item) {
-            addSpecialAnswer(answers, "Customer Advice", item, "customer advise tell passenger", false);
-        });
-    }
-
-    if (service.hiddenDetails && Array.isArray(service.hiddenDetails.sections)) {
-        service.hiddenDetails.sections.forEach(function (section) {
-            if (!Array.isArray(section.items)) return;
-
-            section.items.forEach(function (item) {
-                addSpecialAnswer(answers, section.title || "Policy", item, section.title || "policy", false);
-            });
-        });
-    }
-
-    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
-        service.supervisorSection.items.forEach(function (item) {
-            addSpecialAnswer(answers, service.supervisorSection.title || "Supervisor / FS", item, "supervisor fs escalation approval", false);
-        });
-    }
-
-    return dedupeSpecialAnswers(answers);
-}
-
-function addSpecialAnswer(answers, label, answer, keywords, featured, tone) {
-    if (!answer) return;
-
-    answers.push({
-        label: label || "Answer",
-        answer: answer,
-        keywords: keywords || "",
-        featured: !!featured,
-        tone: tone || ""
-    });
-}
-
-function dedupeSpecialAnswers(answers) {
-    const seen = new Set();
-
-    return answers.filter(function (item) {
-        const key = normalizeSpecialServiceText(item.label + " " + item.answer);
-
-        if (!key || seen.has(key)) return false;
-
-        seen.add(key);
-        return true;
-    });
-}
-
-function renderSpecialServiceSnapshot(service) {
-    const guide = service.agentQuickGuide || {};
-    const decision = service.decisionGuide || {};
-
-    return (
-        '<div class="special-service-snapshot">' +
-            '<div class="special-service-snapshot-head">' +
-                '<div>' +
-                    '<strong>Service Snapshot</strong>' +
-                    '<span>' + escapeHTML(decision.result || guide.mainAction || "") + "</span>" +
-                "</div>" +
-            "</div>" +
-            '<div class="special-service-snapshot-grid">' +
-                renderSnapshotItem("Cut-off", guide.cutOff, "clock") +
-                renderSnapshotItem("Charge", guide.charge, "credit-card") +
-                renderSnapshotItem("Approval", guide.approval, "shield-check") +
-                renderSnapshotItem("Agent Action", guide.mainAction, "list-checks") +
-            "</div>" +
-            (guide.warning ? '<div class="special-agent-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + "</span></div>" : "") +
-            (service.customerScript ? '<div class="special-customer-script"><strong>Tell Customer</strong><span>' + escapeHTML(service.customerScript) + "</span></div>" : "") +
-        "</div>"
-    );
-}
-
-function renderSnapshotItem(label, value, icon) {
-    if (!value) return "";
-
-    return (
-        '<div class="special-service-snapshot-item">' +
-            '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
-            "<div>" +
-                "<strong>" + escapeHTML(label) + "</strong>" +
-                "<span>" + escapeHTML(value) + "</span>" +
-            "</div>" +
-        "</div>"
-    );
-}
-
-function renderWorkflowHint(service) {
-    const hasEmailWorkflow = !!(service && service.agentEmail && service.agentEmail.enabled);
-    const hasForm = !!(service && service.agentForm && Array.isArray(service.agentForm.fields) && service.agentForm.fields.length && hasEmailWorkflow);
-    const actionStep = hasEmailWorkflow ? "Open Outlook" : "Apply SSR / Escalate";
-    const inputStep = hasForm ? "Fill Form" : "Action Checklist";
-
+function renderWorkflowHint() {
     return (
         '<div class="special-workflow-strip" aria-label="Contact centre workflow">' +
             '<span>Request</span>' +
             '<i data-lucide="chevron-right"></i>' +
             '<span>Quick Guide</span>' +
             '<i data-lucide="chevron-right"></i>' +
-            '<span>' + escapeHTML(inputStep) + "</span>" +
+            '<span>Fill Form</span>' +
             '<i data-lucide="chevron-right"></i>' +
-            '<span>' + escapeHTML(actionStep) + "</span>" +
+            '<span>Open Outlook</span>' +
             '<i data-lucide="chevron-right"></i>' +
             '<span>Update SF / Sprint</span>' +
         "</div>"
     );
 }
 
-function renderSpecialDecisionGuide(service) {
-    if (!service || !service.decisionGuide) return "";
-
-    const checks = Array.isArray(service.decisionGuide.checks) ? service.decisionGuide.checks : [];
-    const checksHtml = checks.map(function (item) {
-        return (
-            '<li>' +
-                '<i data-lucide="circle-check"></i>' +
-                '<span>' + escapeHTML(item) + "</span>" +
-            "</li>"
-        );
-    }).join("");
-
-    return (
-        '<div class="special-decision-guide">' +
-            '<div class="special-decision-main">' +
-                '<strong>' + escapeHTML(service.decisionGuide.title || "Quick Decision") + "</strong>" +
-                '<span>' + escapeHTML(service.decisionGuide.result || "") + "</span>" +
-            "</div>" +
-            (checksHtml ? '<ul>' + checksHtml + "</ul>" : "") +
-            (service.customerScript ? '<div class="special-customer-script"><strong>Tell Customer</strong><span>' + escapeHTML(service.customerScript) + "</span></div>" : "") +
-        "</div>"
-    );
-}
-
-function renderSpecialFastAnswers(service) {
-    if (!service || !Array.isArray(service.fastAnswers) || !service.fastAnswers.length) return "";
-
-    const answersHtml = service.fastAnswers.map(function (item) {
-        return (
-            '<div class="special-fast-answer">' +
-                '<strong>' + escapeHTML(item.label || "Answer") + "</strong>" +
-                '<span>' + escapeHTML(item.answer || "") + "</span>" +
-            "</div>"
-        );
-    }).join("");
-
-    return (
-        '<div class="special-fast-answers">' +
-            '<div class="special-fast-answers-title">' +
-                '<i data-lucide="sparkles"></i>' +
-                '<span>Fast Answers</span>' +
-            "</div>" +
-            '<div class="special-fast-answers-grid">' + answersHtml + "</div>" +
-        "</div>"
-    );
-}
-
-function renderAgentChecklist(service) {
-    if (!service || !Array.isArray(service.agentChecklist) || !service.agentChecklist.length) {
-        return "";
-    }
-
-    const itemsHtml = service.agentChecklist.map(function (item) {
-        return (
-            '<li>' +
-                '<i data-lucide="check-circle-2"></i>' +
-                '<span>' + escapeHTML(item) + "</span>" +
-            "</li>"
-        );
-    }).join("");
-
-    return (
-        '<div class="special-action-checklist">' +
-            '<div class="special-action-checklist-title">' +
-                '<i data-lucide="list-checks"></i>' +
-                '<span>Agent Action Checklist</span>' +
-            "</div>" +
-            '<ol>' + itemsHtml + "</ol>" +
-        "</div>"
-    );
-}
-
 function renderAgentForm(service) {
-    const servicesWithRequestForm = ["falcon", "cake-on-board"];
-
-    if (!servicesWithRequestForm.includes(service.id)) {
-        return "";
-    }
-
     if (!service.agentForm || !Array.isArray(service.agentForm.fields) || !service.agentForm.fields.length) {
         return "";
     }
@@ -2352,7 +1948,6 @@ function renderAgentForm(service) {
 function renderAgentFormField(serviceId, field) {
     const safeServiceId = escapeHTML(serviceId || "");
     const fieldId = escapeHTML(field.id || "");
-    const fieldType = String(field.type || "text").replace(/[^a-z0-9-]/gi, "").toLowerCase() || "text";
     const inputId = "special_" + safeServiceId + "_" + fieldId;
     const label = escapeHTML(field.label || field.id || "");
     const requiredMark = field.required ? ' <span class="required-star">*</span>' : "";
@@ -2382,7 +1977,7 @@ function renderAgentFormField(serviceId, field) {
     }
 
     return (
-        '<label class="special-service-form-field special-service-form-field-' + escapeHTML(fieldType) + '" for="' + inputId + '">' +
+        '<label class="special-service-form-field" for="' + inputId + '">' +
             '<span>' + label + requiredMark + "</span>" +
             inputHtml +
         "</label>"
@@ -2411,10 +2006,13 @@ function renderAgentEmailActions(service) {
 function renderSpecialServiceDisclosureGroup(service) {
     const serviceId = escapeHTML(service.id || "");
     const blocks = [];
-    const hasAnswerFinderLayout = !!(service && buildSpecialAnswerItems(service).length);
 
-    if (hasAnswerFinderLayout) {
-        return renderSpecialConciseDisclosureGroup(service);
+    if (Array.isArray(service.agentProcess) && service.agentProcess.length) {
+        blocks.push(renderSpecialDisclosure(serviceId, "agent-process", "Show Agent Process", "route", renderSpecialServiceSection("Agent Process", service.agentProcess)));
+    }
+
+    if (Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
+        blocks.push(renderSpecialDisclosure(serviceId, "customer-advice", "Show Customer Advice", "message-circle", renderSpecialServiceSection("Customer Advice", service.customerAdvice)));
     }
 
     blocks.push(renderHiddenDetailsByCategory(service, "restrictions", "Show Restrictions & Conditions", "ban"));
@@ -2431,133 +2029,6 @@ function renderSpecialServiceDisclosureGroup(service) {
             content +
         "</div>"
     );
-}
-
-function renderSpecialConciseDisclosureGroup(service) {
-    const serviceId = escapeHTML(service.id || "");
-    const blocks = [
-        renderSpecialDisclosure(serviceId, "process-method", "Show Process / Method", "route", renderSpecialServiceSection("Process / Method", getSpecialProcessItems(service))),
-        renderSpecialDisclosure(serviceId, "conditions", "Show Conditions", "ban", renderSpecialServiceSection("Conditions", getSpecialConditionItems(service))),
-        renderSpecialDisclosure(serviceId, "charges", "Show Charges", "circle-dollar-sign", renderSpecialServiceSection("Charges", getSpecialChargeItems(service))),
-        renderSpecialDisclosure(serviceId, "send-escalation", "Show Send / Escalation", "send", renderSpecialServiceSection("Send / Escalation", getSpecialSendItems(service)), "special-toggle-supervisor")
-    ].filter(Boolean).join("");
-
-    if (!blocks) return "";
-
-    return '<div class="special-disclosure-group">' + blocks + "</div>";
-}
-
-function getSpecialProcessItems(service) {
-    const items = [];
-    const guide = service.agentQuickGuide || {};
-
-    pushSpecialItem(items, guide.mainAction);
-    pushSpecialItems(items, service.agentChecklist);
-    pushSpecialItems(items, service.agentProcess);
-
-    return compactSpecialItems(items, 8);
-}
-
-function getSpecialConditionItems(service) {
-    const items = [];
-    const guide = service.agentQuickGuide || {};
-
-    pushSpecialItem(items, guide.warning);
-
-    if (service.decisionGuide && Array.isArray(service.decisionGuide.checks)) {
-        pushSpecialItems(items, service.decisionGuide.checks);
-    }
-
-    if (Array.isArray(service.customerAdvice)) {
-        pushSpecialItems(items, service.customerAdvice.filter(function (item) {
-            return !isSpecialChargeText(item);
-        }));
-    }
-
-    pushSpecialHiddenItems(items, service, "restrictions");
-
-    return compactSpecialItems(items, 10);
-}
-
-function getSpecialChargeItems(service) {
-    const items = [];
-    const guide = service.agentQuickGuide || {};
-
-    pushSpecialItem(items, guide.charge);
-    pushSpecialHiddenItems(items, service, "charges");
-
-    return compactSpecialItems(items, 8);
-}
-
-function getSpecialSendItems(service) {
-    const items = [];
-
-    if (service.agentEmail && service.agentEmail.enabled) {
-        if (Array.isArray(service.agentEmail.to) && service.agentEmail.to.length) {
-            pushSpecialItem(items, "Send request to: " + service.agentEmail.to.join("; "));
-        }
-
-        if (Array.isArray(service.agentEmail.cc) && service.agentEmail.cc.length) {
-            pushSpecialItem(items, "CC: " + service.agentEmail.cc.join("; "));
-        }
-
-        pushSpecialItem(items, "Fill the request form, then use Open in Outlook Web.");
-    }
-
-    if (service.supervisorSection && Array.isArray(service.supervisorSection.items)) {
-        pushSpecialItems(items, service.supervisorSection.items);
-    }
-
-    return compactSpecialItems(items, 8);
-}
-
-function pushSpecialHiddenItems(items, service, category) {
-    if (!service.hiddenDetails || !Array.isArray(service.hiddenDetails.sections)) return;
-
-    service.hiddenDetails.sections.forEach(function (section) {
-        if (getSpecialDetailsCategory(section.title) !== category || !Array.isArray(section.items)) return;
-
-        pushSpecialItems(items, section.items);
-    });
-}
-
-function pushSpecialItems(target, items) {
-    if (!Array.isArray(items)) return;
-
-    items.forEach(function (item) {
-        pushSpecialItem(target, item);
-    });
-}
-
-function pushSpecialItem(target, item) {
-    const text = String(item || "").trim();
-
-    if (text) target.push(text);
-}
-
-function compactSpecialItems(items, limit) {
-    const seen = new Set();
-    const compact = [];
-
-    items.forEach(function (item) {
-        const normalized = normalizeSpecialServiceText(item)
-            .replace(/\b(passenger|customer|agent|advise|inform|retrieve|verify|confirm)\b/g, "")
-            .replace(/\s+/g, " ")
-            .trim();
-
-        if (!normalized || seen.has(normalized)) return;
-
-        seen.add(normalized);
-        compact.push(item);
-    });
-
-    return compact.slice(0, limit || compact.length);
-}
-
-function isSpecialChargeText(item) {
-    const text = normalizeSpecialServiceText(item);
-
-    return /charge|fee|aed|fare|payment|paid|refund|voucher|cost|price/.test(text);
 }
 
 function renderSupervisorSection(service) {
@@ -2879,59 +2350,8 @@ function openSpecialServiceEmail(serviceId) {
     window.open(outlookUrl, "_blank", "noopener,noreferrer");
 }
 
-function filterSpecialAnswerFinder(input) {
-    const finder = input.closest("[data-special-answer-finder]");
-
-    if (!finder) return;
-
-    const query = normalizeSpecialServiceText(input.value || "");
-    const terms = query.split(/\s+/).filter(Boolean);
-    const items = Array.from(finder.querySelectorAll("[data-special-answer-item]"));
-    const meta = finder.querySelector("[data-special-answer-meta]");
-    const matchedItems = [];
-
-    items.forEach(function (item) {
-        const defaultHidden = item.dataset.defaultHidden === "true";
-        const haystack = item.dataset.answerText || "";
-        const matches = terms.length ? terms.every(function (term) {
-            return haystack.includes(term);
-        }) : !defaultHidden;
-
-        item.classList.remove("is-search-match");
-        item.hidden = true;
-
-        if (matches) matchedItems.push(item);
-    });
-
-    const featuredMatches = terms.length ? matchedItems.filter(function (item) {
-        return item.dataset.featured === "true";
-    }) : [];
-    const visibleItems = terms.length && featuredMatches.length ? featuredMatches.slice(0, 6) : matchedItems.slice(0, terms.length ? 8 : matchedItems.length);
-
-    visibleItems.forEach(function (item) {
-        item.hidden = false;
-        item.classList.toggle("is-search-match", !!terms.length);
-    });
-
-    if (meta) {
-        if (!terms.length) {
-            meta.textContent = "Showing most used answers.";
-        } else if (visibleItems.length) {
-            meta.textContent = visibleItems.length + " direct answer" + (visibleItems.length === 1 ? "" : "s") + " found.";
-        } else {
-            meta.textContent = "No direct answer found. Try another word or open Full Policy.";
-        }
-    }
-}
-
 function handleSpecialServicesClick(event) {
-    const serviceTab = event.target.closest("[data-special-service-tab]");
     const button = event.target.closest("[data-special-action]");
-
-    if (serviceTab) {
-        renderSpecialServices(serviceTab.dataset.specialServiceTab);
-        return;
-    }
 
     if (!button) return;
 
@@ -2950,27 +2370,12 @@ function handleSpecialServicesClick(event) {
     }
 }
 
-function handleSpecialServicesInput(event) {
-    const input = event.target.closest("[data-special-answer-search]");
-
-    if (input) {
-        filterSpecialAnswerFinder(input);
-    }
-}
-
 function clearSpecialServiceFormValues() {
     const grid = document.getElementById("specialServicesGrid");
 
     if (!grid) return;
 
-    grid.querySelectorAll("[data-special-answer-search]").forEach(function (input) {
-        input.value = "";
-        filterSpecialAnswerFinder(input);
-    });
-
     grid.querySelectorAll("input, select, textarea").forEach(function (field) {
-        if (field.matches("[data-special-answer-search]")) return;
-
         if (field.type === "checkbox" || field.type === "radio") {
             field.checked = false;
         } else if (field.tagName === "SELECT") {
@@ -2984,1253 +2389,36 @@ function clearSpecialServiceFormValues() {
     });
 }
 
-const operationsGuideData = [
-    {
-        id: "holidays",
-        title: "Holidays Bookings",
-        icon: "palmtree",
-        quickGuide: {
-            channel: "PureCloud transfer / Supervisor callback",
-            timing: "Mon-Thu 09:00-20:00, Fri-Sun 09:00-18:00",
-            type: "Holiday package / existing holiday booking",
-            action: "During working hours transfer to Holidays Team; outside hours collect details or use emergency flow for urgent existing bookings.",
-            warning: "Do not use the Holidays emergency number for new package enquiries during working hours."
-        },
-        classifications: [
-            "General holidays enquiry / quotation request",
-            "New holidays package booking",
-            "Amend / cancel existing holidays booking"
-        ],
-        sections: [
-            {
-                title: "Agent Process",
-                items: [
-                    "General information: guide customer to https://holidays.flydubai.com/en/ and assist with basic navigation.",
-                    "New package within working hours: transfer caller to Holidays Team via PureCloud.",
-                    "New package outside working hours: collect caller name, mobile number, and preferred communication language AR / EN / RU, then escalate to Supervisor for callback.",
-                    "Existing booking within working hours: transfer caller to Holidays Team via PureCloud.",
-                    "Existing booking outside working hours with travel within 48 hours: transfer via PureCloud to Holidays emergency number."
-                ]
-            },
-            {
-                title: "Customer Advice",
-                items: [
-                    "Holiday packages include flights and hotels, with activities, transfers, insurance, and UAE visa services if available.",
-                    "Holiday packages can be purchased on codeshare flights.",
-                    "Miles points are accrued for flights only.",
-                    "Payment option is credit card only.",
-                    "Contact Centre can assist through SPRINT for existing flight services only: baggage, seats, special meals, baggage upgrade, wheelchair, insurance, and similar services."
-                ]
-            },
-            {
-                title: "Contacts",
-                items: [
-                    "Holidays by flydubai: holidays@flydubai.com",
-                    "Group inquiries, 10 or more passengers: holidaysgroups@flydubai.com",
-                    "Travel Agent: holidaysoperation@flydubai.com",
-                    "UAE retail shops can assist with Holidays enquiries within retail shop working hours."
-                ]
-            }
-        ]
-    },
-    {
-        id: "auto-split-od",
-        title: "Auto Split OD",
-        icon: "git-branch",
-        quickGuide: {
-            channel: "SPRINT",
-            timing: "After flight closure when connection legs have different statuses",
-            type: "FZ-FZ connection booking handling",
-            action: "Check leg status order, then follow allowed / not allowed modify or cancellation flow.",
-            warning: "Interline, codeshare, circular flights, and unsupported segment statuses are excluded."
-        },
-        classifications: [
-            "Boarded then No-show",
-            "No-show then Boarded",
-            "Connection modification / cancellation"
-        ],
-        sections: [
-            {
-                title: "Applies To",
-                items: [
-                    "FZ-FZ connection bookings only.",
-                    "Fare types: Lite, Value, Flex, and Business Class.",
-                    "OD split occurs only when flight legs have different statuses.",
-                    "After flight closure, SPRINT automatically updates each leg status."
-                ]
-            },
-            {
-                title: "Core Rules",
-                items: [
-                    "Leg 1 boarded and Leg 2 no-show: customer can cancel or modify the no-show leg as per fare rules.",
-                    "Leg 1 no-show and Leg 2 boarded: modification or cancellation is not permitted.",
-                    "One-way connection, boarded then no-show: modification or cancellation on no-show leg may be allowed as per fare rules.",
-                    "Round-trip connection: inbound segment changes may be allowed as per fare rules; no-show leg handling depends on leg status order and system flow.",
-                    "Cancellation of no-show segment must be completed by Supervisor / FS in-charge when applicable."
-                ]
-            },
-            {
-                title: "Exclusions",
-                items: [
-                    "Interline bookings.",
-                    "Codeshare bookings.",
-                    "Circular flights.",
-                    "Any segment status outside Leg 1 Boarded / Leg 2 No-show or Leg 1 No-show / Leg 2 Boarded."
-                ]
-            }
-        ]
-    },
-    {
-        id: "olci-lounge",
-        title: "OLCI Lounge",
-        icon: "armchair",
-        quickGuide: {
-            channel: "Online Check-In via flydubai website",
-            timing: "Within 48 hours before departure when OLCI is open",
-            type: "Business Class lounge access purchase",
-            action: "Explain eligibility and expected SSR handling; classify case as Online check-in > Lounge when needed.",
-            warning: "Only 4-hour access remains available online; 8-hour online access is disabled."
-        },
-        classifications: [
-            "Case reason: Online check-in",
-            "Sub reason: Lounge",
-            "Use for pricing complaints, unavailable access due to peak hours, or unsuccessful payment."
-        ],
-        sections: [
-            {
-                title: "Eligibility",
-                items: [
-                    "Available for passengers travelling or connecting with flydubai from DXB Terminal 2.",
-                    "Available during OLCI via flydubai website if OLCI is open for the flight.",
-                    "Supported for Economy passengers.",
-                    "Supported for passengers upgraded to J class via OLCI or Plusgrade.",
-                    "Supported for ID50 bookings in J and Y class.",
-                    "Infants receive complimentary access when accompanied by an eligible adult."
-                ]
-            },
-            {
-                title: "Restrictions",
-                items: [
-                    "Group bookings are excluded from online lounge purchase.",
-                    "Infant passengers cannot purchase lounge access independently.",
-                    "Passengers already eligible for lounge access, such as Business Class or loyalty tier entitlement, are restricted.",
-                    "All charges are non-refundable and non-transferable.",
-                    "If OLCI is cancelled, the SSR remains retained."
-                ]
-            },
-            {
-                title: "Expected Handling",
-                items: [
-                    "Economy voluntary modification: SSR is non-refundable and agents should drop the SSR.",
-                    "Economy voluntary cancellation: drop SSR and do not offer refund.",
-                    "Economy upgraded to J class: SSR is dropped and no refund offered.",
-                    "FDIS re-accommodation to new flight: SSR is moved to the new flight.",
-                    "FDIS cancellation and refund to FOP or voucher: SSR refund follows FOP or voucher.",
-                    "Flight reinstatement, no-show change or cancel, terminal change: refer to Shift In Charge for manual SSR handling."
-                ]
-            }
-        ]
-    },
-    {
-        id: "dubai-stopover",
-        title: "Dubai Stopover",
-        icon: "hotel",
-        quickGuide: {
-            channel: "flydubai.com / Travel Agency portal",
-            timing: "Book at least 5 days before travel; connection in Dubai 12-24 hours",
-            type: "Complimentary 24-hour Dubai hotel stay",
-            action: "Check eligibility at initial booking and explain hotel voucher / exclusion rules.",
-            warning: "Dubai Stopover cannot be added later and is not available for one-way, Pay Later, interline, codeshare, group, GDS PNRs."
-        },
-        classifications: [
-            "Dubai stopover > Terms and conditions",
-            "Dubai stopover > Cleanliness/service"
-        ],
-        sections: [
-            {
-                title: "Eligibility",
-                items: [
-                    "Return bookings only with a Dubai connection between 12 and 24 hours.",
-                    "Economy and Business cabins are eligible.",
-                    "Both flights in the itinerary must be operated by flydubai.",
-                    "Offer can be used once per booking, either outbound or inbound.",
-                    "Available only on selected origin-destination routes.",
-                    "Eligible flights show a Complementary Dubai hotel tag during booking."
-                ]
-            },
-            {
-                title: "Hotel Rules",
-                items: [
-                    "Hotel is auto-assigned based on availability; passenger cannot choose or change preference.",
-                    "Hotel details are shown on the review page before payment.",
-                    "After booking confirmation, hotel voucher is sent to the registered email ID.",
-                    "Room is complimentary.",
-                    "Meals, transfers, upgrades, incidental charges, and UAE visa are not included.",
-                    "Passenger is responsible for visa eligibility and compliance."
-                ]
-            },
-            {
-                title: "Modification / Cancellation / FDIS",
-                items: [
-                    "DSO is removed if passenger cancels booking.",
-                    "DSO is removed if passenger modifies the DSO segment.",
-                    "DSO is removed if travel sector is changed via TA portal.",
-                    "DSO is removed if a no-show segment is modified via TA portal.",
-                    "DSO is removed if passenger experiences flight disruption and opts for rebooking or cancellation.",
-                    "DSO is retained for adding or removing passenger, cabin upgrade or downgrade, adding or removing SSRs, non-DSO date changes, schedule changes, and aircraft changes."
-                ]
-            }
-        ]
-    },
-    {
-        id: "travel-insurance",
-        title: "Travel Insurance",
-        icon: "shield-check",
-        quickGuide: {
-            channel: "All channels except GDS / OTA; UAE Travel Shop follows D > 4",
-            timing: "Can be added before journey commences through eligible channels",
-            type: "XCover insurance ancillary",
-            action: "Check passenger type, booking type, trip dates, and async status before adding or advising refund.",
-            warning: "Insurance is non-refundable and cannot be added to asynchronous bookings."
-        },
-        classifications: ["INS", "Insurance", "TravelGuard", "Travel Guard", "XCover", "Cover Genius"],
-        sections: [
-            {
-                title: "Eligibility",
-                items: [
-                    "Applicable for adults and children only; infants are out of scope.",
-                    "Available through all channels except GDS and OTA.",
-                    "Supported booking types exclude multicity, interline, and codeshare.",
-                    "Available when adding passengers or segments if the booking remains eligible.",
-                    "Trip coverage must be within 90 days.",
-                    "Trip start date must be within 150 days from booking."
-                ]
-            },
-            {
-                title: "Modification / Refund Rules",
-                items: [
-                    "Insurance is non-refundable.",
-                    "If booking modification creates an asynchronous booking, insurance drops from the entire PNR and is not refunded.",
-                    "Insurance continues to exist with XCover for the original dates after such modification.",
-                    "Insurance cannot be added to asynchronous bookings; consult Shift In Charge for guidance.",
-                    "Refund of difference is possible if insurance is changed to a lower slab."
-                ]
-            },
-            {
-                title: "Policy Email",
-                items: [
-                    "After successful purchase, policy email is triggered from XCover.com to the passenger who made the booking.",
-                    "To resend policy email, Contact Centre escalates through Salesforce with PNR and required action.",
-                    "Supervisor / Floor Support handles the resend request."
-                ]
-            }
-        ]
-    },
-    {
-        id: "economy-seating-matrix",
-        title: "Economy Seating",
-        icon: "armchair",
-        quickGuide: {
-            channel: "Manage Booking, OLCI, SPRINT",
-            timing: "Seat selection up to 3 hours prior to departure",
-            type: "Seat availability by booking type and channel",
-            action: "Check booking type first, then use the allowed channel for seat purchase or complimentary seat.",
-            warning: "Rows 11-32 excluding 15 and 16 may be complimentary for some EK codeshare cases; rows 1-10 and 15-16 are purchasable."
-        },
-        classifications: ["Seat", "XLGR / FRST / SPST", "Web / OLCI / SPRINT"],
-        sections: [
-            {
-                title: "FZ Prime Direct",
-                items: [
-                    "Manage Booking: Lite / Value all seats paid; Flex standard free and XLGR paid.",
-                    "OLCI: auto-seat is free; specific selection available for purchase.",
-                    "SPRINT: Lite / Value all seats paid; Flex standard free and XLGR paid."
-                ]
-            },
-            {
-                title: "FZ Prime GDS",
-                items: [
-                    "Manage Booking: all seats available for pre-purchase, none complimentary.",
-                    "OLCI: SPST can be booked directly from GDS for free.",
-                    "SPRINT: all seats available for pre-purchase, none complimentary."
-                ]
-            },
-            {
-                title: "Codeshare Notes",
-                items: [
-                    "EK codeshare: XLGR / FRST available for purchase, SPST is free.",
-                    "UA / AC codeshare: XLGR / FRST purchasable, SPST is free.",
-                    "Use exact booking channel and aircraft/seat map availability before advising."
-                ]
-            }
-        ]
-    },
-    {
-        id: "travel-shops-cutoffs",
-        title: "Travel Shops Cut-offs",
-        icon: "store",
-        quickGuide: {
-            channel: "UAE Travel Shops",
-            timing: "D > 6, D > 4, D > 72h, D > 24 depending service",
-            type: "Travel shop service cut-offs",
-            action: "Use Travel Shop D-rules before accepting the request.",
-            warning: "Travel Shop cut-offs are stricter than some Contact Centre / Web flows."
-        },
-        classifications: ["UAE Travel Shops", "D-rule cut-offs"],
-        sections: [
-            {
-                title: "Cut-off Rules",
-                items: [
-                    "Name Change / Correction: more than 6 days before departure.",
-                    "New Ticket Government Deals: more than 6 days before departure.",
-                    "Visa OK to Board VIOK: more than 4 days before departure.",
-                    "Credit Card Verification CCOK: more than 4 days before departure.",
-                    "Baggage Add / Upgrade: more than 4 days before departure.",
-                    "Seat Assignment: more than 4 days before departure.",
-                    "Insurance: more than 4 days before departure.",
-                    "Business Class Upgrade: more than 4 days before departure.",
-                    "New Ticket Normal: more than 4 days before departure.",
-                    "Iraq OK to Board: more than 72 hours before departure.",
-                    "Special Meal SPML: more than 24 hours before departure.",
-                    "Cancelling extras seat / bag: more than 24 hours before departure."
-                ]
-            }
-        ]
-    },
-    {
-        id: "upgrade-cutoffs",
-        title: "Upgrade Cut-offs",
-        icon: "arrow-up-circle",
-        quickGuide: {
-            channel: "Bidding, OLCI banner, Airport counter",
-            timing: "Bidding 18h outstations / 10h Dubai; OLCI 48h to 3h or 12h; airport up to 2h",
-            type: "Business Class upgrade cut-offs",
-            action: "Choose the correct upgrade path by departure point and channel.",
-            warning: "OLCI upgrade window differs for Dubai and outstation departures."
-        },
-        classifications: ["Bid upgrade", "OLCI banner upgrade", "Airport counter upgrade", "Airport upgrade", "UPGJ"],
-        sections: [
-            {
-                title: "Cut-offs",
-                items: [
-                    "Fare-rule upgrade: Economy passenger can upgrade to Business up to 2 hours before departure by paying applicable fare difference.",
-                    "Bidding for upgrades: starts any time.",
-                    "Bidding cut-off: 18 hours for outstations.",
-                    "Bidding cut-off: 10 hours for Dubai.",
-                    "Successful bidding notification is sent around 6 hours before departure.",
-                    "OLCI banner upgrade for Dubai departures: from 48 hours down to 3 hours before departure.",
-                    "OLCI banner upgrade for outstation departures: from 48 hours down to 12 hours before departure.",
-                    "Airport counter upgrade: up to 2 hours prior to departure.",
-                    "Airport Business Class upgrade applies to DXB Terminal 2 and Terminal 3 departure flights.",
-                    "Airport upgrade is handled at airport only and may be offered to FZ, codeshare, and interline bookings when eligible."
-                ]
-            },
-            {
-                title: "OLCI / Bid Restrictions",
-                items: [
-                    "OLCI upgrade applies to all passengers in the booking; one-passenger-only upgrade is restricted.",
-                    "OLCI upgrade payment is by debit or credit card only.",
-                    "Bookings paid using miles are not eligible for OLCI upgrade.",
-                    "Bookings with infants, balance due, codeshare, interline, connection, circular, GDS, group, staff, or asynchronous status are not eligible for OLCI upgrade.",
-                    "If passenger already paid for seat or extra baggage, those amounts are not refunded after upgrade.",
-                    "Lounge access is not included for OLCI or bid upgrades unless the passenger is eligible by tier."
-                ]
-            },
-            {
-                title: "Bidding Notes",
-                items: [
-                    "Credit card is authorized during bidding but charged only if the bid is successful.",
-                    "If authorization fails, upgrade is not triggered and PNR remains untouched.",
-                    "After successful bid, booking is automatically modified to Business Class.",
-                    "Fare basis after bid upgrade is ZOFFER in SPRINT.",
-                    "History shows SSR PGRD with payment amount.",
-                    "Once passenger checks in online, bidding is automatically cancelled.",
-                    "All bid upgrades are non-transferable and non-refundable."
-                ]
-            },
-            {
-                title: "Airport Upgrade Product",
-                items: [
-                    "Product includes J class seat.",
-                    "Product includes priority baggage.",
-                    "Product includes priority boarding.",
-                    "Product includes free IFE on board.",
-                    "Product includes J class meal.",
-                    "Airport upgrade bookings may show SSR UPGJ. BUPZ is a baggage upgrade code, not a Business Class upgrade code."
-                ]
-            }
-        ]
-    },
-    {
-        id: "masd-meet-assist",
-        title: "MAAS Meet & Assist",
-        icon: "user-check",
-        quickGuide: {
-            channel: "Business Class team / OLCI / Contact Centre call handling",
-            timing: "DXB Terminal 2 Business Class departures; default time D-3h if passenger does not select",
-            type: "Meet and Assist Service SSR",
-            action: "Check MAAS SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
-            warning: "Not for bid upgrades, OLCI upgrades, airport upgrades, LNGN no-lounge bookings, transit passengers, DXB T3, or outstation departures."
-        },
-        classifications: ["MAAS", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
-        sections: [
-            {
-                title: "Eligibility",
-                items: [
-                    "Passenger must be travelling on a commercial Business Class booking.",
-                    "Flight must depart from DXB Terminal 2.",
-                    "MAAS SSR is automatically added during booking creation for eligible passengers and flights.",
-                    "Business Class team may contact passenger to introduce the service and encourage OLCI opt-in."
-                ]
-            },
-            {
-                title: "Contact Centre Handling",
-                items: [
-                    "Confirm whether passenger is asking about an email received from flydubai regarding MAAS.",
-                    "Retrieve PNR and check SSRs / comments.",
-                    "Verify MAAS SSR exists and that Business Team comment is present if outbound call was attempted.",
-                    "Confirm the MAAS SSR is associated with the correct eligible flight and that the flight segment was not changed.",
-                    "Advise passenger they can update MAAS via OLCI by selecting preferred airport arrival time.",
-                    "If no preference is selected, passenger can access the service at Business Class check-in area near Entrance 3 at DXB T2.",
-                    "Update SPRINT comments after handling the call."
-                ]
-            },
-            {
-                title: "Exclusions",
-                items: [
-                    "Staff, discounted, or rebate bookings.",
-                    "Passengers upgraded through bid upgrade, OLCI upgrade, or airport upgrade.",
-                    "Bookings with SSR UPGJ or SSR LNGN.",
-                    "Transit passengers at DXB Terminal 2.",
-                    "Flights departing from DXB Terminal 3 or any outstation airport."
-                ]
-            }
-        ]
-    },
-    {
-        id: "g-fare-rules",
-        title: "G Fare Rules",
-        icon: "ticket",
-        quickGuide: {
-            channel: "Web / Mobile / SPRINT / TA Portal depending G fare type",
-            timing: "Follow fare and channel rules",
-            type: "G fare modification and SSR action rules",
-            action: "Identify G fare type and booking channel before modifying or adding SSR.",
-            warning: "For Group Booking through TA Portal, Contact Centre must refer to issuer and cannot modify, name change, or add SSR."
-        },
-        classifications: ["Block Fare", "Group Booking", "TA Portal"],
-        sections: [
-            {
-                title: "Rules By Channel",
-                items: [
-                    "Block Fare through Web / Mobile / SPRINT: permitted through direct channels; name change permitted.",
-                    "Group Booking through TA Portal: refer to issuer; Contact Centre cannot modify, name change, or add SSRs.",
-                    "Block Fare through TA Portal: refer to issuer for modification.",
-                    "Block Fare through TA Portal: customer can add SSRs via Manage Booking.",
-                    "Contact Centre can cancel SSR only if it was added via Web."
-                ]
-            }
-        ]
-    },
-    {
-        id: "ok-to-board",
-        title: "OKTB / OK to Board",
-        icon: "badge-check",
-        quickGuide: {
-            channel: "Official website for policy; FS / Supervisor for EK* handling",
-            timing: "Check latest travel requirements before advising",
-            type: "Travel document / OK to Board guidance",
-            action: "Direct customer to current OKTB policy; FS/Supervisor handles EK* OKTB service when required.",
-            warning: "Travel requirements may change without prior notice; passenger must check relevant authorities before travel."
-        },
-        classifications: ["OKTB", "OK to Board", "Visa OK to Board", "VIOK", "EK*", "UAE Visit Visa", "Floor Support", "Supervisor"],
-        sections: [
-            {
-                title: "Agent Rules",
-                items: [
-                    "For the most current OKTB policy, refer to the official flydubai OK to Board page: https://www.flydubai.com/en/flying-with-us/ok-to-board/",
-                    "Travel requirements are subject to change without prior notice.",
-                    "Passenger must check with the relevant authorities before travel for latest entry and exit requirements.",
-                    "Use VIOK only when Visa OK to Board handling is required for the destination or document scenario.",
-                    "For UAE Travel Shops, Visa OK to Board VIOK cut-off is more than 4 days before departure."
-                ]
-            },
-            {
-                title: "EK* OKTB - FS / Supervisor Only",
-                items: [
-                    "The EK* OKTB flow is for Floor Support and Supervisors only.",
-                    "Take control over the booking.",
-                    "Open Add services.",
-                    "Select Carrier EK*, Category UAE VISIT VISA, then Services and OKTB, and click Add.",
-                    "Update PNR comments with the action taken.",
-                    "Release control of the reservation after completing the action."
-                ]
-            },
-            {
-                title: "Customer Advice",
-                items: [
-                    "Advise customer that OKTB or visa document acceptance is not a substitute for meeting immigration requirements.",
-                    "Customer remains responsible for valid documents, visa eligibility, entry requirements, and authority approvals.",
-                    "If unsure, escalate to Supervisor / FS before confirming the handling path."
-                ]
-            }
-        ]
-    },
-    {
-        id: "operational-airport-ssrs",
-        title: "Operational SSRs",
-        icon: "plane-takeoff",
-        quickGuide: {
-            channel: "Contact Centre, Supervisor / FS, Airport as applicable",
-            timing: "BHFT 50h / 49h, CCOK Travel Shop D>4, ID50 baggage 6h, LRPT/ERPT by DXB T2 timing",
-            type: "Operational and airport SSRs",
-            action: "Use only for the operational scenario described; escalate unclear cases.",
-            warning: "These SSRs are operational controls and should not be treated like normal paid ancillaries."
-        },
-        classifications: ["BHFT", "CCHK", "ID50 baggage", "LRPT / ERPT"],
-        sections: [
-            {
-                title: "BHFT Hold My Fare",
-                items: [
-                    "Hold fee is AED 29 per PNR and is non-refundable.",
-                    "Economy can be held up to 24h; Business can be held up to 72h depending booking creation time.",
-                    "Sale cut-off is 50 hours before departure and hold time limit cut-off is 49 hours before departure.",
-                    "Interline and codeshare bookings are not eligible.",
-                    "Agent can identify the booking by SSR BHFT in booking history.",
-                    "Contact Centre can help complete payment by payment link, miles/voucher, or payment IVR unless Pay by Cash was selected initially.",
-                    "Refund is only during IROP."
-                ]
-            },
-            {
-                title: "Credit Card / Staff / Reporting SSRs",
-                items: [
-                    "CCHK means passenger must verify credit card for smooth travel; CCOK means credit card is verified and passenger may travel.",
-                    "For UAE Travel Shops, CCOK card verification follows D > 4 cut-off.",
-                    "Bookings with CCHK cannot complete online check-in until verification is resolved.",
-                    "Staff ID50 Waitlist Baggage: added before the 6-hour cut-off.",
-                    "Early / Late Reporting applies to DXB T2 departures only and is handled at airport only.",
-                    "LRPT: late reporting after check-in counter closure but before departure; available within 6h of original flight departure.",
-                    "ERPT: early reporting for an earlier flight that is not closed; available within 12h of earlier flight departure.",
-                    "ERPT charge is AED 100 per passenger; LRPT charge is AED 200 per passenger."
-                ]
-            }
-        ]
-    },
-    {
-        id: "airport-shop-fees",
-        title: "Airport / Shop Fees",
-        icon: "receipt",
-        quickGuide: {
-            channel: "Airport Sales Desk / UAE Retail Shops",
-            timing: "At point of service / payment",
-            type: "Service fee and administrative fee reference",
-            action: "Check service type, location, and whether exception applies before quoting fee.",
-            warning: "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except Deira Travel Shop and Airport Sales Desk."
-        },
-        classifications: ["Airport Sales Desk", "UAE Travel Shops", "3% admin fee", "PRNT", "GOSHOW", "IFEE", "Balance payment", "Deira", "Name correction", "Credit card verification"],
-        feeRows: [
-            ["New booking - Economy", "AED 80 per passenger per segment", "AED 60 per passenger per segment"],
-            ["New booking - Business", "AED 100 per passenger per segment", "AED 100 per passenger per segment"],
-            ["Modification of flights including upgrade to J class", "AED 80 per passenger irrespective of the segments", "AED 30 per passenger irrespective of the segments"],
-            ["Baggage / seat / ancillary addition", "AED 80 per PNR", "AED 30 per passenger irrespective of the segments"],
-            ["Ticket print out", "AED 80 per PNR", "AED 30 per PNR"],
-            ["Name correction", "AED 80 per passenger + applicable NC SSR", "AED 30 per passenger irrespective of the segments + applicable NC SSR"],
-            ["Visa OK to board", "AED 80 per passenger", "AED 30 per passenger"],
-            ["Rebate ticket issuance / rebooking", "AED 80 per passenger irrespective of segment", "AED 60 per passenger irrespective of segment"],
-            ["Credit card verification", "AED 80 per PNR", "AED 30 per PNR"],
-            ["Book online / call centre complete payment", "AED 80 per PNR irrespective of class / segments / number of pax", "AED 60 per PNR irrespective of class / segments / number of pax"],
-            ["Issuing fee IFEE, rarely used in AUH for TA", "NA", "AED 45 per passenger per segment"],
-            ["DXB POL / ESAAD CARD DEAL", "NA", "Regular charges at all UAE shops. Deira charges AED 120 for Y class return ticket and AED 200 for J class return ticket per pax."],
-            ["DXB IMG COR DEAL", "NA", "Regular charges at all UAE shops. Deira charges AED 120 for Y class return ticket and AED 200 for J class return ticket per pax."],
-            ["GOSHOW FEE", "NIL", "Passengers may request last-minute booking at the check-in desk, including addition of infants to an existing booking. Applies to DXB T2 departures only. Acceptance and carriage is subject to capacity restrictions and approval. Handled at airport only."],
-            ["Balance payment completion", "Balance due + service fee of AED 80", "AED 30 per PNR. Applies to DXB T2 departures only. Passengers with balance payment that cannot be cleared at check-in desk will be directed to Sales Desk. Agent may inform customer with this service."],
-            ["Printing fee", "SSR: PRNT AED 25 + VAT", "Passengers need missing printouts as part of travel document requirements. Nominal fee per document of max 3 papers. Applies to DXB T2 departures only and all passenger types flying on FZ flights, codeshare, interline, staff. Handled at airport only."]
-        ],
-        sections: [
-            {
-                title: "Important Note",
-                items: [
-                    "A 3% administrative fee applies to all payment transactions completed at UAE travel shops, except for Deira Travel Shop and the Airport Sales Desk."
-                ]
-            }
-        ]
-    },
-    {
-        id: "ssr-guide",
-        title: "SSR / Ancillary Guide",
-        icon: "list-checks",
-        quickGuide: {
-            channel: "SPRINT / Salesforce / email as applicable",
-            timing: "Use service-specific cut-off",
-            type: "SSR and common ancillary quick reference",
-            action: "Use this table to choose the correct SSR or service code, channel, charge, and approval path.",
-            warning: "Some rows are ancillary/service actions rather than technical SSRs; open the full policy or SPRINT flow before applying."
-        },
-        ssrRows: [
-            ["PETC", "Falcon", "Contact Centre, Salesforce, Supervisor / FS, Reservations Support", "More than 48h before departure", "Approval request", "AED 1500 per falcon per direction airport handling charge + seat block at available fare", "Yes", "Create unpaid booking if more than 48h before departure. Add falcon as First name Falcon and last name as primary passenger last name. RSU adds SSR PETC after approval. Not a confirmation until approved. Prior approval is mandatory. Valid health certificate required. AED 1500 applies per PETC / per falcon / per direction. One seat per falcon must be blocked; max 2 falcons per handler. More than 15 falcons requires higher authority approval. Falcons arriving into DXB/DWC must be in a box. Falcon seat is treated like CBBG with no extra checked baggage allowance."],
-            ["CAKE", "Cake on Board", "Contact Centre, email request, Supervisor / FS", "More than 48h before departure", "Catering request", "As per cake option", "Special stations need Shift In Charge", "Add SSR CAKE, collect cake details, send request email, send payment link, update Salesforce / SPRINT."],
-            ["FRBS", "Fruit Basket", "Contact Centre / SPRINT", "Up to 48h before departure", "Paid ancillary", "AED 35 or equivalent", "No special approval mentioned", "Use SPRINT flow. Apply service cut-off and payment rules."],
-            ["EXST", "Extra Seat for Comfort", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Seat ancillary", "Available fare + standard seat assignment charges as per booked fare", "Depends booking type", "EXST is available in both Economy and Business Class. FZ prime only, not interline/codeshare. Two seat assignments are mandatory in the same PNR. Add zero-value SSR EXST to requesting passenger, not the extra seat. Passenger and extra seat must be in same fare option. Max 2 EXST per passenger. EXST must not be in emergency exit rows 15/16. Extra seat for comfort gets checked baggage allowance as per booked fare; hand baggage remains per passenger, not per seat. MEDA cases require medical approval. No-show EXST with passenger boarded requires Floor Support guidance."],
-            ["CBBG", "Cabin Baggage on Seat", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Cabin baggage / seat ancillary", "Available fare + standard seat assignment charges as per booked fare", "Depends booking type", "CBBG is available only in Economy Class and is not available in Business Class. FZ prime only, not interline/codeshare. Two seat assignments are mandatory in the same PNR. Add zero-value SSR CBBG to requesting passenger, not the extra seat. Avoid rows 14/15/16/17. Max 1 CBBG seat per passenger. Baggage on blocked seat max 75kg and must be secured by seat belt. CBBG gives no extra checked baggage allowance. No-show CBBG with passenger boarded requires Floor Support guidance."],
-            ["SPEQ", "Sporting Equipment 160-189cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may add up to 12h if within max 10 equipment per flight", "Special baggage", "AED 150 per item per flight / sector", "Restricted / capacity controlled", "Free if within hand baggage dimensions or checked baggage dimensions up to 159cm. Add SPEQ per leg for 160-189cm by L+W+H. Max 32kg per item; no sporting equipment over 32kg. Max 10 equipment per flight unless Special Handling approval. Accepted as part of checked baggage allowance; excess baggage applies if allowance is exceeded. Passenger must arrive at least 2h before departure. Handling fee refundable as voucher up to 24h before departure; within 24h non-refundable and non-transferable. Handling fees apply only on flydubai-operated flights; EK mixed metal codeshare and through connections may be NIL unless stopover/separate ticket applies."],
-            ["SPEX", "Sporting Equipment 190-350cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may add up to 12h if within max 10 equipment per flight", "Special baggage", "AED 270 per item per flight / sector", "Restricted / capacity controlled", "Free if within hand baggage dimensions or checked baggage dimensions up to 159cm. Add SPEX per leg for 190-350cm by L+W+H. Max 32kg per item; no sporting equipment over 32kg. Beyond 350cm, pole vaults, javelins, and hang gliders require pre-authorization 48h before departure and additional charges. Passenger must arrive at least 2h before departure. Handling fee refundable as voucher up to 24h before departure; within 24h non-refundable and non-transferable. Handling fees apply only on flydubai-operated flights; EK mixed metal codeshare and through connections may be NIL unless stopover/separate ticket applies."],
-            ["WEAP / SPEX", "Sporting Weapons / Firearms / Guns", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h before travel", "Security approval", "WEAP AED 300 per passenger per sector + applicable SPEX charge", "Yes", "Sporting weapons, firearms, and guns are subject to pre-authorization 96h before departure and Dubai Police approval fee. Customer must email documents first or provide case number. Sporting weapons need WEAP plus SPEX charges where applicable. Add SPEX for each item/passenger/segment in addition to WEAP where applicable. Do not confirm without security approval."],
-            ["BAGB / BAGL / BAGX / BUPL / BUPX / BUPZ / BUPD / BUPE", "Baggage / Baggage Upgrade SSR Codes", "Website, Manage Booking, Contact Centre, OLCI, SPRINT; Travel Shop where eligible", "Existing booking: 6h before departure. New booking / modification: Website 2h; Contact Centre up to D-2 via Shift In Charge, subject to availability. UAE Travel Shop D > 4.", "Baggage upgrade", "Dynamic by origin / destination. KRT example: BAGX 40kg included, BUPD 50kg AED 100, BUPE 60kg AED 200.", "Depends eligibility", "BAGB: adds 20kg baggage allowance. BAGL: adds 30kg baggage allowance. BAGX: adds 40kg baggage allowance. BUPL: adds 10kg to existing 20kg. BUPX: adds 20kg to existing 20kg. BUPZ: adds 10kg to existing 30kg. BUPD: total 50kg where available. BUPE: total 60kg where available. FZ Prime direct / non-GDS: Web, Sprint, and OLCI may be available by itinerary and system. GDS 141 FZ Prime: Sprint can add; Contact Centre should not add when matrix says restricted. 169 / 275 / 365 FZ Prime: Sprint and OLCI may be available. 176 EK*, 016 UA*, 014 AC*: OLCI only where supported; no Web / TA / Sprint. Interline baggage upgrades are not permitted prior to departure and must be handled at airport check-in. OLCI baggage upgrade is not available from non-DCS stations. Always upgrade on top of existing baggage SSR; do not cancel/refund existing baggage SSR just to reprice. Example: BAGB + BUPL passenger requesting 40kg should add BUPZ, not cancel BUPL to add BUPX."],
-            ["BAGI", "Infant Baggage Allowance", "SPRINT / applicable booking flow", "As per infant/baggage handling rules", "Baggage SSR", "Included only when baggage-inclusive fare applies", "No", "Infants are entitled to 5kg hand carry containing clothes, diapers, and baby food; bag must be smaller than 55 x 38 x 20cm. Infants get 10kg checked baggage allowance and 5kg hand baggage only when booked on baggage-inclusive fare. SSR on SPRINT for 10kg checked baggage allowance is BAGI."],
-            ["EXPC", "Extra Piece of Checked-in Baggage", "Sprint DCS users / Airport check-in handling", "At airport / check-in handling", "Extra checked baggage piece SSR", "01 EXPC is approximately AED 200 and subject to change + airport service fee", "Subject to availability", "EXPC charges passengers travelling with more than three pieces of checked-in baggage. If total checked baggage weight is within the baggage allowance but packed in more than three pieces, charge the handling fee for every additional piece plus the airport service fee. Each piece must still comply with baggage rules."],
-            ["EXBG", "Excess Baggage Waiver", "SPRINT ENT / authorized waiver", "Pre-approved only", "Waiver / allowance SSR", "Authorized by Chief / SVP", "Yes", "EXBG uses values like EB1.0 extra 10kg, EB1.5 extra 15kg, EB2.0 extra 20kg, or PC concept. If customer wants normal upgrade, follow normal baggage upgrade process."],
-            ["SEAT", "Seat Selection", "Website / Manage Booking, Contact Centre, OLCI, Travel Shop, Airport where applicable", "Travel shop cut-off D > 4; online / OLCI availability as per system", "Ancillary service", "As per selected seat", "Usually no", "Lite / Value: paid seat selection. Flex: free seat selection except XLGR requires payment. Business: free seat selection within Business cabin. Group bookings allow free seats and block paid seats during OLCI. Visa check restrictions may block seat selection. IRROP seat change is charged only when moving to a higher priced seat."],
-            ["SPML / MLIN", "Meals / Special Meals", "Website / Manage Booking, Contact Centre, Travel Shop, OLCI where available", "Special meal cut-off D > 24", "Meal service", "As per meal / fare product", "Catering exception only", "SPML: special meal must be selected more than 24h before departure. MLIN: meal included where applicable by fare / cabin. Business meal included; special meal selection still follows D > 24 cut-off."],
-            ["WCHR / WCHS / WCHC", "Wheelchair Assistance", "All FZ contact points where available", "Recommended at least 48h before departure. System minimum: WCHR 12h; WCHS/WCHC 24h", "Assistance SSR", "Free service", "WCHC requires companion and medical certificate", "WCHR: assistance to ramp; passenger can walk stairs and cabin unassisted. WCHS: assistance to aircraft door; passenger cannot use stairs but can move in cabin unassisted. WCHC: assistance to cabin seat; passenger cannot move or manage needs unassisted and must travel with companion in same cabin on adjoining seat. WCHC requires medical certificate confirming fit to fly. Passenger should arrive 3h before departure and approach flydubai counter; wheelchair will not wait at airport entrance by default. Offer FOC seats rows 29-31 for PRM and one companion subject to availability, excluding FRST/XLGR if unavailable."],
-            ["WCBD / WCBW / WCLB", "Battery Wheelchair", "Contact Centre, Airport, Supervisor / FS if unclear", "Request at least 24h before departure; confirm onward carrier acceptance if applicable", "Mobility aid SSR", "Free service", "Battery acceptance criteria apply", "WCBD: dry-cell/non-spillable battery wheelchair. WCBW: wet-cell/spillable battery wheelchair. WCLB: lithium battery wheelchair. Booking must have two SSRs: one mobility equipment SSR (WCBD/WCBW/WCLB) and one assistance SSR (WCHR/WCHS/WCHC). WCLB max power is 300Wh for one battery or 2 x 160Wh for two batteries; no more than two spare lithium batteries accepted. Removed batteries require protective packaging. If onward EK/OAL connection does not accept the electric wheelchair, carriage cannot be accepted."],
-            ["INS", "Insurance", "Website / Manage Booking, Contact Centre, Travel Shop where applicable", "Before journey commences through eligible channels; UAE Travel Shop cut-off D > 4", "Ancillary service", "As per insurance product", "Subject to product eligibility", "Insurance is non-refundable. Available for adults and children only; infants are out of scope. Not available for GDS, OTA, multicity, interline, codeshare, or asynchronous bookings. If modification creates an asynchronous booking, insurance drops from the PNR and is not refunded. Policy email is sent by XCover; resend requests are escalated through Salesforce to Supervisor / Floor Support."],
-            ["TRBF", "Transfer Baggage Fee", "Airport / transfer handling flow; Contact Centre can advise", "Applies when baggage through-tagging / retagging is required", "Transfer baggage", "As applicable by airport / transfer process", "Depends itinerary and baggage status", "Dubai: applies to transfer passengers whose baggage needs retagging because it was short-tagged from origin. Outstation: applies for two separate tickets when bags need through-tagging to final destination. Not applicable to connections over 24h. If passenger no-shows the onward connected flight, baggage is offloaded / not transferred."],
-            ["UPGJ", "Business Class Upgrade at Airport", "Airport check-in desk / Airport Sales Desk", "Offered D-2 hours for DXB T2 and T3 departures", "Airport upgrade", "Dynamic / airport upgrade charge + applicable service fee", "Subject to availability", "Applies to DXB T2 and T3 departure flights when offered. Eligible for passengers travelling on FZ flight, codeshare, and interline bookings. Handled at airport only. Product includes J class seat, priority baggage, priority boarding, free IFE, and J class meal."],
-            ["PRNT", "Printing Fee", "Airport Sales Desk / DXB T2 airport handling", "At airport when document printout is required", "Airport service SSR", "AED 25 + VAT", "No", "SSR PRNT: AED 25 + VAT per document, maximum 3 papers. Applies to DXB T2 departures only. Applicable to FZ, codeshare, interline, and staff passengers. Handled at airport only."],
-            ["NCFB / NCFE", "Name Correction Fees", "Contact Centre with Supervisor / FS confirmation, Airport Sales Desk, UAE Travel Shops", "Not permitted within 6h before departure; fully active PNR only", "Name correction service", "FOC / AED 0: title, space, gender, or up to 3 characters. Name swap: USD 30 / AED 110. More than 3 characters, full first/middle/last correction, name addition/deletion, or maiden-to-married name: USD 100 / AED 367. NCFB = name swap fee. NCFE = name correction/change fee charges. Airport and shop service fees may also apply.", "Supervisor / FS confirmation required", "Use only for genuine corrections, not different passengers. Only once per passenger. Customer should provide PNR and passport copy; marriage/birth certificate if applicable. SSR should be added on outbound sector only when approved and payable. Not for GDS/codeshare/interline, TA block fare, checked-in/OLCI, utilized, or no-show bookings. No charges for name changes involving extra seat purchase for falcon, EXST, or CBBG."],
-            ["VIOK", "Visa OK to Board / OKTB", "UAE Travel Shops / Airport Sales Desk where applicable; FS / Supervisor for EK* OKTB", "Travel shop cut-off D > 4; check latest authority requirements before advising", "Document / visa service", "Airport AED 80 per passenger; UAE shops AED 30 per passenger", "Depends destination/document requirement", "VIOK: use only when Visa OK to Board handling is required for the destination / document scenario. OKTB policy must be checked against the official website/current authority rules. EK* OKTB handling is FS/Supervisor only."],
-            ["CCOK / CCHK", "Credit Card Verification", "Airport / Travel Shop / operational verification", "Travel shop cut-off D > 4; airport verification must be completed before travel", "Payment verification", "Airport AED 80 per PNR; UAE shops AED 30 per PNR", "May be required", "CCHK means passenger must verify credit card for smooth travel. CCOK means credit card is verified and passenger may travel. CCHK may be auto-applied for direct-channel credit card bookings, bookings within 24h of departure, bypassed authentication, multi-FOP bookings with credit card, and certain vouchers generated from CCHK/bypassed transactions. For multiple passengers/segments, CCHK applies to first active segment and primary passenger. Bookings with CCHK cannot complete online check-in. If payer is flydubai staff, supervisor may remove CCHK if present and add CCOK at zero cost after verification."],
-            ["STPN", "Stopover / Re-accommodation SSR", "Supervisor / FS / Reservations Support", "After reaccommodation where applicable", "Disruption handling SSR", "Override may be AED 100 when system not picking charge", "Senior Manager approval if overridden", "Used after reaccommodation when applicable. Senior Manager approval required only if STPN charge is overridden."],
-            ["KEEP", "Keep Booking From Auto Cancellation", "Contact Centre escalation to Supervisor via Salesforce", "Flight within 48h and balance due AED 200 or more", "Balance due protection SSR", "No customer-facing charge", "Supervisor action required", "KEEP is for existing bookings with pending payment / balance due risk. Agent escalates with details in Salesforce. Supervisor verifies balance due and flight within 48h before adding SSR KEEP to avoid auto cancellation."]
-        ]
-    }
-];
-
-const operationsCategoryData = [
-    { id: "products", label: "Products", icon: "shopping-bag" },
-    { id: "ssr", label: "SSR / Ancillary", icon: "list-checks" },
-    { id: "airport", label: "Airport / Ops", icon: "plane-takeoff" }
-];
-
-let activeOperationsCategory = "products";
-let activeOperationsSearch = "";
-
-function getOperationsTopicCategory(topic) {
-    const id = topic && topic.id;
-
-    if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
-    if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist", "ok-to-board"].includes(id)) return "airport";
-
-    return "products";
-}
-
-function buildOperationsTopicSearchText(topic) {
-    const parts = [
-        topic.id,
-        topic.title,
-        topic.icon,
-        ...(topic.classifications || [])
-    ];
-
-    if (topic.quickGuide) {
-        Object.keys(topic.quickGuide).forEach(function (key) {
-            parts.push(topic.quickGuide[key]);
-        });
-    }
-
-    if (Array.isArray(topic.sections)) {
-        topic.sections.forEach(function (section) {
-            parts.push(section.title);
-            if (Array.isArray(section.items)) parts.push(section.items.join(" "));
-        });
-    }
-
-    if (Array.isArray(topic.ssrRows)) {
-        topic.ssrRows.forEach(function (row) {
-            parts.push(row.join(" "));
-        });
-    }
-
-    if (Array.isArray(topic.feeRows)) {
-        topic.feeRows.forEach(function (row) {
-            parts.push(row.join(" "));
-        });
-    }
-
-    return normalizeSpecialServiceText(parts.filter(Boolean).join(" "));
-}
-
-function getFilteredOperationsTopics() {
-    const query = normalizeSpecialServiceText(activeOperationsSearch);
-
-    const filtered = operationsGuideData.filter(function (topic) {
-        const categoryMatch = !query && getOperationsTopicCategory(topic) === activeOperationsCategory;
-        const searchMatch = query && buildOperationsTopicSearchText(topic).includes(query);
-
-        return categoryMatch || searchMatch;
-    });
-
-    if (!query) return filtered;
-
-    return filtered.sort(function (a, b) {
-        return getOperationsSearchScore(b, query) - getOperationsSearchScore(a, query);
-    });
-}
-
-function getOperationsSearchScore(topic, query) {
-    let score = 0;
-    const title = normalizeSpecialServiceText(topic.title || "");
-    const classifications = normalizeSpecialServiceText((topic.classifications || []).join(" "));
-    const quickGuide = normalizeSpecialServiceText(Object.values(topic.quickGuide || {}).join(" "));
-    const sections = normalizeSpecialServiceText((topic.sections || []).map(function (section) {
-        return [section.title, ...(section.items || [])].join(" ");
-    }).join(" "));
-    const ssrRows = normalizeSpecialServiceText((topic.ssrRows || []).map(function (row) {
-        return row.join(" ");
-    }).join(" "));
-    const feeRows = normalizeSpecialServiceText((topic.feeRows || []).map(function (row) {
-        return row.join(" ");
-    }).join(" "));
-    const exactSsrCodeMatch = (topic.ssrRows || []).some(function (row) {
-        return normalizeSpecialServiceText(row[0] || "").split(/\s+/).includes(query);
-    });
-    const exactFeeServiceMatch = (topic.feeRows || []).some(function (row) {
-        return normalizeSpecialServiceText(row[0] || "").includes(query);
-    });
-
-    if (exactSsrCodeMatch) score += 260;
-    if (exactFeeServiceMatch) score += 160;
-    if (title.includes(query)) score += 120;
-    if (classifications.includes(query)) score += 90;
-    if (feeRows.includes(query)) score += 85;
-    if (ssrRows.includes(query)) score += 75;
-    if (quickGuide.includes(query)) score += 45;
-    if (sections.includes(query)) score += 25;
-
-    return score;
-}
-
-function getOperationsTopicMatches(topic, query) {
-    const matches = [];
-
-    function addMatch(type, text) {
-        if (!text || matches.length >= 4) return;
-        matches.push({
-            type: type,
-            text: String(text).replace(/\s+/g, " ").trim()
-        });
-    }
-
-    if (normalizeSpecialServiceText(topic.title || "").includes(query)) {
-        addMatch("Topic", topic.title);
-    }
-
-    (topic.classifications || []).forEach(function (item) {
-        if (normalizeSpecialServiceText(item).includes(query)) addMatch("Tag", item);
-    });
-
-    Object.keys(topic.quickGuide || {}).forEach(function (key) {
-        const value = topic.quickGuide[key];
-        if (normalizeSpecialServiceText(value).includes(query)) addMatch("Quick Guide", value);
-    });
-
-    (topic.sections || []).forEach(function (section) {
-        if (normalizeSpecialServiceText(section.title || "").includes(query)) {
-            addMatch("Section", section.title);
-        }
-
-        (section.items || []).forEach(function (item) {
-            if (normalizeSpecialServiceText(item).includes(query)) addMatch(section.title || "Policy", item);
-        });
-    });
-
-    (topic.ssrRows || []).forEach(function (row) {
-        if (normalizeSpecialServiceText(row.join(" ")).includes(query)) {
-            addMatch("SSR / Ancillary", [row[0], row[1]].filter(Boolean).join(" - "));
-        }
-    });
-
-    (topic.feeRows || []).forEach(function (row) {
-        if (normalizeSpecialServiceText(row.join(" ")).includes(query)) {
-            addMatch("Airport / Shop Fees", row[0] || row.join(" "));
-        }
-    });
-
-    return matches;
-}
-
-function renderOperationsSearchResults(topics, activeId) {
-    const query = normalizeSpecialServiceText(activeOperationsSearch);
-    if (!query) return "";
-
-    const results = topics.map(function (topic) {
-        return {
-            topic: topic,
-            matches: getOperationsTopicMatches(topic, query)
-        };
-    }).filter(function (result) {
-        return result.matches.length;
-    });
-
-    if (!results.length) return "";
-
-    return (
-        '<div class="operations-search-results">' +
-            '<div class="operations-search-results-title">' +
-                '<i data-lucide="search-check"></i>' +
-                '<span>' + results.length + ' matching topic' + (results.length === 1 ? '' : 's') + ' for "' + escapeHTML(activeOperationsSearch.trim()) + '"</span>' +
-            '</div>' +
-            '<div class="operations-search-result-list">' +
-                results.map(function (result) {
-                    const topic = result.topic;
-                    const activeClass = topic.id === activeId ? " active" : "";
-
-                    return (
-                        '<button type="button" class="operations-search-result' + activeClass + '" data-operations-id="' + escapeHTML(topic.id) + '">' +
-                            '<span class="operations-search-result-topic">' + escapeHTML(topic.title) + '</span>' +
-                            '<span class="operations-search-result-snippets">' +
-                                result.matches.map(function (match) {
-                                    return '<span><strong>' + escapeHTML(match.type) + ':</strong> ' + escapeHTML(match.text) + '</span>';
-                                }).join("") +
-                            '</span>' +
-                        '</button>'
-                    );
-                }).join("") +
-            '</div>' +
-        '</div>'
-    );
-}
-
-function renderOperationsGuide(activeId) {
-    const tabs = document.getElementById("operationsTabs");
-    const content = document.getElementById("operationsContent");
-    const visibleTopics = getFilteredOperationsTopics();
-    const activeTopic = visibleTopics.find(function (topic) {
-        return topic.id === activeId;
-    }) || visibleTopics[0] || operationsGuideData[0];
-
-    if (!tabs || !content || !activeTopic) return;
-
-    tabs.innerHTML = renderOperationsControls() + visibleTopics.map(function (topic) {
-        const activeClass = topic.id === activeTopic.id ? " active" : "";
-
-        return (
-            '<button type="button" class="operations-tab' + activeClass + '" data-operations-id="' + escapeHTML(topic.id) + '">' +
-                '<i data-lucide="' + escapeHTML(topic.icon || "circle") + '"></i>' +
-                '<span>' + escapeHTML(topic.title) + "</span>" +
-            "</button>"
-        );
-    }).join("") + (!visibleTopics.length ? '<div class="operations-empty">No operations topic found.</div>' : "");
-
-    content.innerHTML = renderOperationsSearchResults(visibleTopics, activeTopic.id) + renderOperationsTopic(activeTopic);
-
-    if (activeOperationsSearch) {
-        filterOperationsSsrRows(activeOperationsSearch);
-        filterOperationsFeeRows(activeOperationsSearch);
-    }
-
-    if (typeof lucide !== "undefined") lucide.createIcons();
-}
-
-function renderOperationsControls() {
-    const categories = operationsCategoryData.map(function (category) {
-        const activeClass = !activeOperationsSearch && category.id === activeOperationsCategory ? " active" : "";
-
-        return (
-            '<button type="button" class="operations-category-btn' + activeClass + '" data-operations-category="' + escapeHTML(category.id) + '">' +
-                '<i data-lucide="' + escapeHTML(category.icon) + '"></i>' +
-                '<span>' + escapeHTML(category.label) + '</span>' +
-            '</button>'
-        );
-    }).join("");
-
-    return (
-        '<div class="operations-control-bar">' +
-            '<div class="operations-category-list">' + categories + '</div>' +
-            '<div class="operations-search-wrap">' +
-                '<i data-lucide="search"></i>' +
-                '<input type="text" id="operationsSearch" value="' + escapeHTML(activeOperationsSearch) + '" placeholder="Search ops, SSR, channel, or keyword..." autocomplete="off">' +
-                '<button type="button" id="operationsSearchClear" class="operations-clear-btn" aria-label="Clear operations search"><i data-lucide="x"></i><span>Clear</span></button>' +
-            '</div>' +
-        '</div>'
-    );
-}
-
-function renderOperationsTopic(topic) {
-    const guide = topic.quickGuide || {};
-    const sections = Array.isArray(topic.sections) ? topic.sections : [];
-
-    return (
-        '<article class="operations-card">' +
-            '<div class="operations-card-header">' +
-                '<div class="operations-icon-wrap"><i data-lucide="' + escapeHTML(topic.icon || "workflow") + '"></i></div>' +
-                '<div>' +
-                    '<h3>' + escapeHTML(topic.title) + '</h3>' +
-                    renderOperationsClassifications(topic.classifications) +
-                '</div>' +
-            '</div>' +
-            '<div class="operations-quick-grid">' +
-                renderOperationsQuickItem("Channel", guide.channel, "radio-tower") +
-                renderOperationsQuickItem("Time / Window", guide.timing, "clock") +
-                renderOperationsQuickItem("Type", guide.type, "tag") +
-                renderOperationsQuickItem("Main Action", guide.action, "list-checks") +
-            '</div>' +
-            (guide.warning ? '<div class="operations-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + '</span></div>' : '') +
-            (Array.isArray(topic.ssrRows) ? renderOperationsSsrTable(topic.ssrRows) : '') +
-            (Array.isArray(topic.feeRows) ? renderOperationsFeeTable(topic.feeRows) : '') +
-            sections.map(function (section, index) {
-                return renderOperationsDisclosure(topic.id, index, section);
-            }).join("") +
-        '</article>'
-    );
-}
-
-function renderOperationsQuickItem(label, value, icon) {
-    if (!value) return "";
-
-    return (
-        '<div class="operations-quick-item">' +
-            '<i data-lucide="' + escapeHTML(icon || "info") + '"></i>' +
-            '<div><strong>' + escapeHTML(label) + '</strong><span>' + escapeHTML(value) + '</span></div>' +
-        '</div>'
-    );
-}
-
-function renderOperationsClassifications(items) {
-    if (!Array.isArray(items) || !items.length) return "";
-
-    return (
-        '<div class="operations-classifications">' +
-            items.map(function (item) {
-                return '<span>' + escapeHTML(item) + '</span>';
-            }).join("") +
-        '</div>'
-    );
-}
-
-function renderOperationsDisclosure(topicId, index, section) {
-    const blockId = escapeHTML(topicId + "-" + index);
-
-    return (
-        '<div class="operations-disclosure">' +
-            '<button type="button" class="operations-toggle-btn" data-operations-block="' + blockId + '">' +
-                '<i data-lucide="chevron-down"></i>' +
-                '<span>Show ' + escapeHTML(section.title || "Details") + '</span>' +
-            '</button>' +
-            '<div class="operations-collapsible hidden" id="operations-block-' + blockId + '">' +
-                renderOperationsSection(section.title, section.items) +
-            '</div>' +
-        '</div>'
-    );
-}
-
-function renderOperationsSection(title, items) {
-    if (!Array.isArray(items) || !items.length) return "";
-
-    return (
-        '<div class="operations-section">' +
-            '<strong>' + escapeHTML(title || "Details") + '</strong>' +
-            '<ul>' + items.map(function (item) { return '<li>' + escapeHTML(item) + '</li>'; }).join("") + '</ul>' +
-        '</div>'
-    );
-}
-
-function renderOperationsFeeTable(rows) {
-    const body = rows.map(function (row) {
-        return (
-            '<tr data-fee-row="' + escapeHTML(row.join(" ")) + '">' +
-                '<td class="operations-fee-service">' + escapeHTML(row[0] || "") + '</td>' +
-                '<td>' + formatOperationsFeeCell(row[1] || "") + '</td>' +
-                '<td>' + formatOperationsFeeCell(row[2] || "") + '</td>' +
-            '</tr>'
-        );
-    }).join("");
-
-    return (
-        '<div class="operations-fee-table-wrap">' +
-            '<table class="operations-fee-table">' +
-                '<thead><tr><th>Service</th><th>Airport Sales Desk</th><th>UAE Retail Shops</th></tr></thead>' +
-                '<tbody>' + body + '</tbody>' +
-            '</table>' +
-        '</div>' +
-        '<div id="operationsFeeEmpty" class="operations-ssr-empty hidden">No matching fee row found.</div>'
-    );
-}
-
-function formatOperationsFeeCell(value) {
-    const text = String(value || "");
-    const lines = text.split(/(?<=\.)\s+|;\s+/).map(function (line) {
-        return line.trim();
-    }).filter(Boolean);
-
-    if (lines.length <= 1) return '<span class="operations-fee-pill">' + escapeHTML(text) + '</span>';
-
-    return lines.map(function (line) {
-        return '<span class="operations-fee-pill">' + escapeHTML(line) + '</span>';
-    }).join("");
-}
-
-function renderOperationsSsrTable(rows) {
-    const body = rows.map(function (row, index) {
-        return (
-            '<tr data-ssr-row="' + escapeHTML(row.join(" ")) + '" data-ssr-code="' + escapeHTML(row[0] || "") + '" data-ssr-service="' + escapeHTML(row[1] || "") + '" data-ssr-index="' + index + '">' +
-                row.map(function (cell, index) { return renderOperationsSsrCell(cell, index); }).join("") +
-            '</tr>'
-        );
-    }).join("");
-
-    return (
-        '<div class="operations-ssr-search-wrap">' +
-            '<i data-lucide="search"></i>' +
-            '<input type="text" id="operationsSsrSearch" value="' + escapeHTML(activeOperationsSearch) + '" placeholder="Search SSR, service, channel, cut-off, or keyword..." autocomplete="off">' +
-            '<button type="button" id="operationsSsrSearchClear" class="operations-clear-btn operations-ssr-clear-btn" aria-label="Clear SSR search"><i data-lucide="x"></i><span>Clear</span></button>' +
-        '</div>' +
-        '<div class="operations-ssr-wrap">' +
-            '<table class="operations-ssr-table">' +
-                '<thead><tr><th>SSR / Code</th><th>Service</th><th>Channels</th><th>Add Cut-off</th><th>Type</th><th>Charge</th><th>Approval</th><th>Key Notes</th></tr></thead>' +
-                '<tbody>' + body + '</tbody>' +
-            '</table>' +
-        '</div>' +
-        '<div id="operationsSsrEmpty" class="operations-ssr-empty hidden">No matching SSR / ancillary found.</div>'
-    );
-}
-
-function renderOperationsSsrCell(cell, index) {
-    const text = String(cell || "");
-    const lines = splitOperationsSsrCell(text, index);
-    const classNames = ["operations-ssr-col-" + index];
-
-    if (index === 0) {
-        return '<td class="' + classNames.concat("operations-ssr-code-cell").join(" ") + '">' + renderOperationsCodeBadges(text) + '</td>';
-    }
-
-    if (lines.length <= 1) {
-        return '<td class="' + classNames.join(" ") + '">' + escapeHTML(text) + '</td>';
-    }
-
-    classNames.push("operations-ssr-lines");
-    if (index === 7) classNames.push("operations-ssr-key-notes");
-
-    return (
-        '<td class="' + classNames.join(" ") + '">' +
-            lines.map(function (line) {
-                const codeMatch = line.match(/^(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\b/i);
-                const label = codeMatch ? '<strong>' + escapeHTML(codeMatch[1].trim()) + '</strong> ' : "";
-                const body = codeMatch ? line.replace(codeMatch[1], "").trim() : line;
-
-                return '<span>' + label + escapeHTML(body) + '</span>';
-            }).join("") +
-        '</td>'
-    );
-}
-
-function renderOperationsCodeBadges(text) {
-    return (
-        '<div class="operations-code-badges">' +
-            String(text || "").split("/").map(function (part) {
-                const code = part.trim();
-                return code ? '<span>' + escapeHTML(code) + '</span>' : "";
-            }).join("") +
-        '</div>'
-    );
-}
-
-function splitOperationsSsrCell(text, index) {
-    if (!text || index < 4) return [text];
-
-    const codeSplit = text
-        .replace(/,\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, "\n$1 ")
-        .replace(/\.\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, ".\n$1 ");
-
-    if (codeSplit.includes("\n")) {
-        return codeSplit.split("\n").map(function (line) {
-            return line.replace(/^,\s*/, "").trim();
-        }).filter(Boolean);
-    }
-
-    if (index === 5 && /[,;]/.test(text) && text.length > 45) {
-        return text.split(/[,;]\s+/).map(function (line) {
-            return line.trim().replace(/\.$/, "");
-        }).filter(Boolean);
-    }
-
-    if (index === 7) {
-        const sentenceLines = text.split(/(?<=\.)\s+|;\s+/).map(function (line) {
-            return line.trim();
-        }).filter(Boolean);
-
-        return sentenceLines.length ? sentenceLines : [text];
-    }
-
-    if (text.length < 95) return [text];
-
-    return text.split(/(?<=\.)\s+/).map(function (line) {
-        return line.trim();
-    }).filter(Boolean);
-}
-
-function filterOperationsSsrRows(query) {
-    const normalized = normalizeSpecialServiceText(query || "");
-    const rows = Array.from(document.querySelectorAll(".operations-ssr-table tbody tr"));
-    const tbody = rows.length ? rows[0].parentNode : null;
-    const empty = document.getElementById("operationsSsrEmpty");
-    let visible = 0;
-    const rankedRows = [];
-
-    rows.forEach(function (row) {
-        const text = normalizeSpecialServiceText(row.dataset.ssrRow || row.textContent || "");
-        const code = normalizeSpecialServiceText(row.dataset.ssrCode || "");
-        const service = normalizeSpecialServiceText(row.dataset.ssrService || "");
-        const codes = code.split(/\s*\/\s*|\s+/).filter(Boolean);
-        const exactCodeMatch = codes.indexOf(normalized) >= 0;
-        let rank = Number(row.dataset.ssrIndex || 0);
-
-        if (normalized) {
-            if (exactCodeMatch) rank = 0;
-            else if (service.indexOf(normalized) === 0) rank = 1;
-            else if (code.includes(normalized)) rank = 2;
-            else if (service.includes(normalized)) rank = 3;
-            else rank = 4;
-        }
-
-        const match = !normalized || text.includes(normalized);
-
-        row.style.display = match ? "" : "none";
-        row.classList.toggle("operations-search-selected", !!normalized && match);
-
-        if (match) {
-            visible += 1;
-            rankedRows.push({
-                row: row,
-                rank: rank,
-                index: Number(row.dataset.ssrIndex || 0)
-            });
-        }
-    });
-
-    if (tbody && normalized) {
-        rankedRows.sort(function (a, b) {
-            if (a.rank !== b.rank) return a.rank - b.rank;
-            return a.index - b.index;
-        }).forEach(function (item) {
-            tbody.appendChild(item.row);
-        });
-    } else if (tbody) {
-        rankedRows.sort(function (a, b) {
-            return a.index - b.index;
-        }).forEach(function (item) {
-            tbody.appendChild(item.row);
-        });
-    }
-
-    if (empty) empty.classList.toggle("hidden", visible !== 0);
-}
-
-function filterOperationsFeeRows(query) {
-    const normalized = normalizeSpecialServiceText(query || "");
-    const rows = Array.from(document.querySelectorAll(".operations-fee-table tbody tr"));
-    const empty = document.getElementById("operationsFeeEmpty");
-    let visible = 0;
-
-    if (!rows.length) return;
-
-    rows.forEach(function (row) {
-        const text = normalizeSpecialServiceText(row.dataset.feeRow || row.textContent || "");
-        const match = !normalized || text.includes(normalized);
-
-        row.style.display = match ? "" : "none";
-        row.classList.toggle("operations-search-selected", !!normalized && match);
-        if (match) visible += 1;
-    });
-
-    if (empty) empty.classList.toggle("hidden", visible !== 0);
-}
-
-function handleOperationsClick(event) {
-    const category = event.target.closest("[data-operations-category]");
-    const tab = event.target.closest("[data-operations-id]");
-    const toggle = event.target.closest("[data-operations-block]");
-    const clearOperationsSearch = event.target.closest("#operationsSearchClear");
-    const clearSsrSearch = event.target.closest("#operationsSsrSearchClear");
-
-    if (clearOperationsSearch) {
-        activeOperationsSearch = "";
-        renderOperationsGuide();
-        return;
-    }
-
-    if (clearSsrSearch) {
-        const search = document.getElementById("operationsSsrSearch");
-        if (search) {
-            search.value = "";
-            filterOperationsSsrRows("");
-            search.focus();
-        }
-        return;
-    }
-
-    if (category) {
-        activeOperationsCategory = category.dataset.operationsCategory || "products";
-        activeOperationsSearch = "";
-        renderOperationsGuide();
-        return;
-    }
-
-    if (tab) {
-        renderOperationsGuide(tab.dataset.operationsId);
-        return;
-    }
-
-    if (toggle) {
-        const block = document.getElementById("operations-block-" + toggle.dataset.operationsBlock);
-        const label = toggle.querySelector("span");
-        const isHidden = block && block.classList.contains("hidden");
-
-        if (!block) return;
-
-        block.classList.toggle("hidden", !isHidden);
-
-        if (label) {
-            label.textContent = label.textContent.replace(isHidden ? /^Show\b/ : /^Hide\b/, isHidden ? "Hide" : "Show");
-        }
-    }
-}
-
-function handleOperationsInput(event) {
-    if (event.target && event.target.id === "operationsSearch") {
-        activeOperationsSearch = event.target.value || "";
-        renderOperationsGuide();
-        const search = document.getElementById("operationsSearch");
-        if (search) {
-            search.focus();
-            search.setSelectionRange(search.value.length, search.value.length);
-        }
-        return;
-    }
-
-    if (event.target && event.target.id === "operationsSsrSearch") {
-        filterOperationsSsrRows(event.target.value);
-    }
-}
-
-function initialiseOperationsGuide() {
-    const panel = document.getElementById("operationsView");
-
-    renderOperationsGuide();
-
-    if (panel && !panel.dataset.operationsReady) {
-        panel.addEventListener("click", handleOperationsClick);
-        panel.addEventListener("input", handleOperationsInput);
-        panel.dataset.operationsReady = "true";
-    }
-}
-
 function initialiseSpecialServices() {
+    const search = document.getElementById("specialServicesSearch");
+    const clearBtn = document.getElementById("specialServicesClearBtn");
     const clearFormsBtn = document.getElementById("specialServicesClearFormsBtn");
-    const panel = document.getElementById("specialServicesView");
+    const grid = document.getElementById("specialServicesGrid");
 
-    renderSpecialServices();
+    renderSpecialServices("");
+
+    if (search) {
+        search.addEventListener("input", function () {
+            renderSpecialServices(search.value);
+        });
+    }
+
+    if (clearBtn && search) {
+        clearBtn.addEventListener("click", function () {
+            search.value = "";
+            renderSpecialServices("");
+            search.focus();
+        });
+    }
 
     if (clearFormsBtn && !clearFormsBtn.dataset.specialClearAttached) {
         clearFormsBtn.addEventListener("click", clearSpecialServiceFormValues);
         clearFormsBtn.dataset.specialClearAttached = "true";
     }
 
-    if (panel && !panel.dataset.specialEventsAttached) {
-        panel.addEventListener("click", handleSpecialServicesClick);
-        panel.addEventListener("input", handleSpecialServicesInput);
-        panel.dataset.specialEventsAttached = "true";
+    if (grid && !grid.dataset.specialEventsAttached) {
+        grid.addEventListener("click", handleSpecialServicesClick);
+        grid.dataset.specialEventsAttached = "true";
     }
 }
 
@@ -4247,7 +2435,6 @@ function init() {
     populateInterlineTable();
     initialiseCurrencyConverter();
     initialiseSpecialServices();
-    initialiseOperationsGuide();
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -4307,14 +2494,12 @@ function init() {
 const tabInterline = document.getElementById('tabInterline');
 const tabDelay = document.getElementById('tabDelayPolicy');
 const tabSpecialServices = document.getElementById('tabSpecialServices');
-const tabOperations = document.getElementById('tabOperations');
 const tabCurrency = document.getElementById('tabCurrency');
 
 if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
 if (tabInterline) tabInterline.onclick = function () { switchView('interline'); };
 if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
 if (tabSpecialServices) tabSpecialServices.onclick = function () { switchView('specialServices'); };
-if (tabOperations) tabOperations.onclick = function () { switchView('operations'); };
 if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
