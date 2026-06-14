@@ -1334,7 +1334,7 @@ const specialServicesData = [
                 "Verify all required details and documents.",
                 "Create a follow-up request to Customer Service Group via Chatter titled firearms/ammunition so the case is picked up on priority.",
                 "Update SPRINT comments.",
-                "Request with all relevant documents must be forwarded to Security for necessary approval.",
+                "Request with all relevant documents must be forwarded to Security@flydubai.com for necessary approval.",
                 "Approval from Dubai Police authority must be obtained where required.",
                 "Once approval from Security is received, Reservations Support keeps reminder to send advisory to Airports.",
                 "Security informs NCC, Airport, and originator of the request after approval."
