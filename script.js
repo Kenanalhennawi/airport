@@ -2025,6 +2025,8 @@ function renderSpecialServices(activeServiceId) {
             "</div>" +
 
             renderAgentQuickGuide(service) +
+            renderSpecialDecisionGuide(service) +
+            renderSpecialFastAnswers(service) +
             renderWorkflowHint(service) +
             renderAgentChecklist(service) +
             renderAgentForm(service) +
@@ -2104,6 +2106,54 @@ function renderWorkflowHint(service) {
             '<span>' + escapeHTML(actionStep) + "</span>" +
             '<i data-lucide="chevron-right"></i>' +
             '<span>Update SF / Sprint</span>' +
+        "</div>"
+    );
+}
+
+function renderSpecialDecisionGuide(service) {
+    if (!service || !service.decisionGuide) return "";
+
+    const checks = Array.isArray(service.decisionGuide.checks) ? service.decisionGuide.checks : [];
+    const checksHtml = checks.map(function (item) {
+        return (
+            '<li>' +
+                '<i data-lucide="circle-check"></i>' +
+                '<span>' + escapeHTML(item) + "</span>" +
+            "</li>"
+        );
+    }).join("");
+
+    return (
+        '<div class="special-decision-guide">' +
+            '<div class="special-decision-main">' +
+                '<strong>' + escapeHTML(service.decisionGuide.title || "Quick Decision") + "</strong>" +
+                '<span>' + escapeHTML(service.decisionGuide.result || "") + "</span>" +
+            "</div>" +
+            (checksHtml ? '<ul>' + checksHtml + "</ul>" : "") +
+            (service.customerScript ? '<div class="special-customer-script"><strong>Tell Customer</strong><span>' + escapeHTML(service.customerScript) + "</span></div>" : "") +
+        "</div>"
+    );
+}
+
+function renderSpecialFastAnswers(service) {
+    if (!service || !Array.isArray(service.fastAnswers) || !service.fastAnswers.length) return "";
+
+    const answersHtml = service.fastAnswers.map(function (item) {
+        return (
+            '<div class="special-fast-answer">' +
+                '<strong>' + escapeHTML(item.label || "Answer") + "</strong>" +
+                '<span>' + escapeHTML(item.answer || "") + "</span>" +
+            "</div>"
+        );
+    }).join("");
+
+    return (
+        '<div class="special-fast-answers">' +
+            '<div class="special-fast-answers-title">' +
+                '<i data-lucide="sparkles"></i>' +
+                '<span>Fast Answers</span>' +
+            "</div>" +
+            '<div class="special-fast-answers-grid">' + answersHtml + "</div>" +
         "</div>"
     );
 }
