@@ -17,7 +17,7 @@ const PAYPORT_PROXY_VERSION = "1.1";
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
     "Kuwait": "kw", "Oman": "om", "Qatar": "qa", "Jordan": "jo", "Lebanon": "lb",
-    "Iraq": "iq", "Iran": "ir", "Syria": "sy", "Israel": "il", "Yemen": "ye", "Turkey": "tr", "Türkiye": "tr",
+    "Iraq": "iq", "Iran": "ir", "Syria": "sy", "Israel": "il", "Yemen": "ye", "Turkey": "tr", "TÃ¼rkiye": "tr",
     "Egypt": "eg", "Sudan": "sd", "Djibouti": "dj", "Eritrea": "er", "Somalia": "so",
     "Ethiopia": "et", "South Sudan": "ss", "Kenya": "ke", "Uganda": "ug", "Tanzania": "tz",
     "Zanzibar": "tz", "South Africa": "za", "Nigeria": "ng", "Ghana": "gh", "Senegal": "sn",
@@ -43,7 +43,7 @@ const countryCodes = {
     "Australia": "au", "New Zealand": "nz", "Fiji": "fj",
     "Bermuda": "bm", "Cape Verde": "cv",
     "Papua New Guinea": "pg", "Solomon Islands": "sb", "New Caledonia": "nc",
-    "Samoa": "ws", "Tonga": "to", "Réunion": "re", "Bhutan": "bt", "Ecuador": "ec"
+    "Samoa": "ws", "Tonga": "to", "RÃ©union": "re", "Bhutan": "bt", "Ecuador": "ec"
 };
 
 function formatDateInput(el) {
@@ -472,56 +472,56 @@ function createInterlineCarrierRow(carrier, index) {
 }
 
 var delayPolicyData = [
-    { airports: 'ALA', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'IST', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'DXB/DWC', std03: 'X', etd03: 'X', closure90: '√', closure30: '√', closureTime: 'ETD-60' },
-    { airports: 'BEG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BSR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BGW', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BUD', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CTA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'LJU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'NAP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'NJF', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'PSA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'SJJ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'SZG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TIA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'ZAG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CMB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CGP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DAC', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'HGA', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JIB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JUB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'KTM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'LYP', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'MGQ', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'MUX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'UET', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'RUH', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JMK', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'JTR', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'CFU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'PRG', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BGY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BSL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'OLB', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TIV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DBV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'EBL', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'ISU', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'AMM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BEY', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'AYT', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'DAM', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'TZX', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'BJV', std03: '√', etd03: '√', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
-    { airports: 'All Other', std03: '√', etd03: 'X', closure90: 'X', closure30: '√', closureTime: 'ETD-60' }
+    { airports: 'ALA', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'IST', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'DXB/DWC', std03: 'X', etd03: 'X', closure90: 'âˆš', closure30: 'âˆš', closureTime: 'ETD-60' },
+    { airports: 'BEG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSR', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGW', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BUD', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CTA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LJU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NAP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'NJF', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PSA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SJJ', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'SZG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ZAG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CMB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CGP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAC', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'HGA', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JIB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JUB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'KTM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'LYP', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MGQ', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'MUX', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'UET', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'RUH', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JMK', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'JTR', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'CFU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'PRG', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BGY', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BSL', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'OLB', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TIV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DBV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'EBL', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'ISU', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AMM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BEY', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'AYT', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'DAM', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'TZX', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'BJV', std03: 'âˆš', etd03: 'âˆš', closure90: 'X', closure30: 'X', closureTime: 'STD-60' },
+    { airports: 'All Other', std03: 'âˆš', etd03: 'X', closure90: 'X', closure30: 'âˆš', closureTime: 'ETD-60' }
 ];
 
 function formatMark(value) {
-    if (value === '√') return '<span class="delay-yes">√</span>';
+    if (value === 'âˆš') return '<span class="delay-yes">âˆš</span>';
     return '<span class="delay-no">X</span>';
 }
 
@@ -617,12 +617,12 @@ function filterDelayPolicy(query) {
         allOtherRow.classList.add('delay-result-highlight', 'delay-all-other', 'delay-row-etd');
 
         if (hintEl) {
-            hintEl.textContent = 'Airport not in list — applies: All Other';
+            hintEl.textContent = 'Airport not in list â€” applies: All Other';
             hintEl.classList.remove('hidden');
         }
 
         if (summaryEl) {
-            summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>All Other</strong> — <span class="closure-badge closure-etd">ETD-60</span> (ETD-based)';
+            summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>All Other</strong> â€” <span class="closure-badge closure-etd">ETD-60</span> (ETD-based)';
             summaryEl.classList.remove('hidden');
         }
     } else {
@@ -635,7 +635,7 @@ function filterDelayPolicy(query) {
                 var closure = first.cells[5] ? first.cells[5].innerHTML : '';
                 var type = first.dataset.closureType === 'std' ? 'STD-based' : 'ETD-based';
 
-                summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>' + apt + '</strong> — ' + closure + ' (' + type + ')';
+                summaryEl.innerHTML = '<span class="delay-summary-label">Result:</span> <strong>' + apt + '</strong> â€” ' + closure + ' (' + type + ')';
 
                 if (matchedRows.length > 1) summaryEl.innerHTML += ' <small>+' + (matchedRows.length - 1) + ' more</small>';
 
@@ -918,10 +918,10 @@ const countrySearchAliases = {
     "ye": ["Yemen"],
     "yemen": ["Yemen"],
 
-    "tr": ["Türkiye", "Turkey"],
-    "turkey": ["Türkiye", "Turkey"],
-    "turkiye": ["Türkiye", "Turkey"],
-    "türkiye": ["Türkiye", "Turkey"],
+    "tr": ["TÃ¼rkiye", "Turkey"],
+    "turkey": ["TÃ¼rkiye", "Turkey"],
+    "turkiye": ["TÃ¼rkiye", "Turkey"],
+    "tÃ¼rkiye": ["TÃ¼rkiye", "Turkey"],
 
     // Africa
     "eg": ["Egypt"],
@@ -970,7 +970,7 @@ const countrySearchAliases = {
     "ci": ["Ivory Coast"],
     "ivory coast": ["Ivory Coast"],
     "cote d ivoire": ["Ivory Coast"],
-    "côte d ivoire": ["Ivory Coast"],
+    "cÃ´te d ivoire": ["Ivory Coast"],
 
     "ma": ["Morocco"],
     "morocco": ["Morocco"],
@@ -1012,9 +1012,9 @@ const countrySearchAliases = {
     "cv": ["Cape Verde"],
     "cape verde": ["Cape Verde"],
 
-    "re": ["Réunion"],
-    "reunion": ["Réunion"],
-    "réunion": ["Réunion"],
+    "re": ["RÃ©union"],
+    "reunion": ["RÃ©union"],
+    "rÃ©union": ["RÃ©union"],
 
     // Europe / CIS
     "ru": ["Russian Federation", "Russia"],
@@ -1288,12 +1288,12 @@ function normalizeSearchText(value) {
     return String(value || "")
         .toLowerCase()
         .trim()
-        .replace(/ü/g, "u")
-        .replace(/ı/g, "i")
-        .replace(/ğ/g, "g")
-        .replace(/ş/g, "s")
-        .replace(/ç/g, "c")
-        .replace(/ö/g, "o")
+        .replace(/Ã¼/g, "u")
+        .replace(/Ä±/g, "i")
+        .replace(/ÄŸ/g, "g")
+        .replace(/ÅŸ/g, "s")
+        .replace(/Ã§/g, "c")
+        .replace(/Ã¶/g, "o")
         .replace(/\s+/g, " ");
 }
 
@@ -1531,11 +1531,11 @@ function openModal(data) {
 
     if (modalCity) {
         modalCity.textContent =
-            (data.airport ? data.airport + ' • ' : '') +
+            (data.airport ? data.airport + ' - ' : '') +
             (data.city || '') +
             ', ' +
             (data.country || '') +
-            (data.region ? ' • ' + data.region : '');
+            (data.region ? ' - ' + data.region : '');
     }
 
     if (modalDistance) modalDistance.textContent = data.distanceCenter || '';
@@ -2003,7 +2003,7 @@ function renderSpecialServices(activeServiceId) {
     if (tabs) {
         tabs.innerHTML = services.map(function (service) {
             const activeClass = service.id === activeService.id ? " active" : "";
-            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " · " + service.ssr.join("/") : "";
+            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " Â· " + service.ssr.join("/") : "";
 
             return (
                 '<button type="button" class="special-service-tab' + activeClass + '" data-special-service-tab="' + escapeHTML(service.id || "") + '">' +
@@ -3401,35 +3401,35 @@ const operationsGuideData = [
         ]
     },
     {
-        id: "maas-meet-assist",
-        title: "MAAS Meet & Assist",
+        id: "masd-meet-assist",
+        title: "MASD (previously MAAS) Meet & Assist",
         icon: "user-check",
         quickGuide: {
             channel: "Business Class team / OLCI / Contact Centre call handling",
             timing: "DXB Terminal 2 Business Class departures; default time D-3h if passenger does not select",
             type: "Meet and Assist Service SSR",
-            action: "Check MAAS SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
+            action: "Check MASD SSR and comments, verify flight eligibility, advise passenger how to opt in or use Business Class check-in.",
             warning: "Not for bid upgrades, OLCI upgrades, airport upgrades, LNGN no-lounge bookings, transit passengers, DXB T3, or outstation departures."
         },
-        classifications: ["MAAS", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
+        classifications: ["MASD", "MAAS", "Meet and Assist", "Business Class", "DXB T2", "LNGN"],
         sections: [
             {
                 title: "Eligibility",
                 items: [
                     "Passenger must be travelling on a commercial Business Class booking.",
                     "Flight must depart from DXB Terminal 2.",
-                    "MAAS SSR is automatically added during booking creation for eligible passengers and flights.",
+                    "MASD SSR replaced MAAS and is automatically added during booking creation for eligible passengers and flights.",
                     "Business Class team may contact passenger to introduce the service and encourage OLCI opt-in."
                 ]
             },
             {
                 title: "Contact Centre Handling",
                 items: [
-                    "Confirm whether passenger is asking about an email received from flydubai regarding MAAS.",
+                    "Confirm whether passenger is asking about an email received from flydubai regarding MASD / Meet and Assist.",
                     "Retrieve PNR and check SSRs / comments.",
-                    "Verify MAAS SSR exists and that Business Team comment is present if outbound call was attempted.",
-                    "Confirm the MAAS SSR is associated with the correct eligible flight and that the flight segment was not changed.",
-                    "Advise passenger they can update MAAS via OLCI by selecting preferred airport arrival time.",
+                    "Verify MASD SSR exists and that Business Team comment is present if outbound call was attempted.",
+                    "Confirm the MASD SSR is associated with the correct eligible flight and that the flight segment was not changed.",
+                    "Advise passenger they can update MASD via OLCI by selecting preferred airport arrival time.",
                     "If no preference is selected, passenger can access the service at Business Class check-in area near Entrance 3 at DXB T2.",
                     "Update SPRINT comments after handling the call."
                 ]
@@ -3649,7 +3649,7 @@ function getOperationsTopicCategory(topic) {
 
     if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
     if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
-    if (["operational-airport-ssrs", "airport-shop-fees", "maas-meet-assist", "ok-to-board"].includes(id)) return "airport";
+    if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist", "ok-to-board"].includes(id)) return "airport";
 
     return "products";
 }
