@@ -2122,7 +2122,6 @@ function renderSpecialAnswerFinder(service) {
             '<div class="special-answer-search-wrap">' +
                 '<i data-lucide="search"></i>' +
                 '<input type="text" data-special-answer-search placeholder="Search this service: charge, refund, GDS, business, approval..." autocomplete="off">' +
-                '<button type="button" class="special-answer-clear-btn" data-special-action="clear-answer-search" data-service-id="' + serviceId + '">Clear</button>' +
             "</div>" +
             '<div class="special-answer-meta" data-special-answer-meta>Showing most used answers.</div>' +
             '<div class="special-answer-list" data-special-answer-list>' + answersHtml + "</div>" +
@@ -2445,13 +2444,13 @@ function renderAgentEmailActions(service) {
 function renderSpecialServiceDisclosureGroup(service) {
     const serviceId = escapeHTML(service.id || "");
     const blocks = [];
-    const hasFastAnswerLayout = !!(service && service.decisionGuide);
+    const hasAnswerFinderLayout = !!(service && buildSpecialAnswerItems(service).length);
 
-    if (!hasFastAnswerLayout && Array.isArray(service.agentProcess) && service.agentProcess.length) {
+    if (!hasAnswerFinderLayout && Array.isArray(service.agentProcess) && service.agentProcess.length) {
         blocks.push(renderSpecialDisclosure(serviceId, "agent-process", "Show Agent Process", "route", renderSpecialServiceSection("Agent Process", service.agentProcess)));
     }
 
-    if (!hasFastAnswerLayout && Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
+    if (!hasAnswerFinderLayout && Array.isArray(service.customerAdvice) && service.customerAdvice.length) {
         blocks.push(renderSpecialDisclosure(serviceId, "customer-advice", "Show Customer Advice", "message-circle", renderSpecialServiceSection("Customer Advice", service.customerAdvice)));
     }
 
@@ -2835,28 +2834,6 @@ function filterSpecialAnswerFinder(input) {
     }
 }
 
-function cssEscapeValue(value) {
-    if (window.CSS && typeof window.CSS.escape === "function") {
-        return window.CSS.escape(String(value || ""));
-    }
-
-    return String(value || "").replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
-
-function clearSpecialAnswerSearch(serviceId) {
-    const finder = document.querySelector('[data-special-answer-finder="' + cssEscapeValue(serviceId) + '"]');
-
-    if (!finder) return;
-
-    const input = finder.querySelector("[data-special-answer-search]");
-
-    if (!input) return;
-
-    input.value = "";
-    filterSpecialAnswerFinder(input);
-    input.focus();
-}
-
 function handleSpecialServicesClick(event) {
     const serviceTab = event.target.closest("[data-special-service-tab]");
     const button = event.target.closest("[data-special-action]");
@@ -2878,8 +2855,6 @@ function handleSpecialServicesClick(event) {
         copySpecialServiceEmail(serviceId);
     } else if (action === "open-email") {
         openSpecialServiceEmail(serviceId);
-    } else if (action === "clear-answer-search") {
-        clearSpecialAnswerSearch(serviceId);
     } else if (action === "toggle-block") {
         toggleSpecialBlock(serviceId, blockType, button);
     }
@@ -2898,7 +2873,14 @@ function clearSpecialServiceFormValues() {
 
     if (!grid) return;
 
+    grid.querySelectorAll("[data-special-answer-search]").forEach(function (input) {
+        input.value = "";
+        filterSpecialAnswerFinder(input);
+    });
+
     grid.querySelectorAll("input, select, textarea").forEach(function (field) {
+        if (field.matches("[data-special-answer-search]")) return;
+
         if (field.type === "checkbox" || field.type === "radio") {
             field.checked = false;
         } else if (field.tagName === "SELECT") {
