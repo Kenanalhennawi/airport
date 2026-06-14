@@ -1968,20 +1968,27 @@ function getSpecialServicesData() {
     return [];
 }
 
+let activeSpecialServicesSearch = "";
+
 function buildSpecialServiceSearchText(service) {
     const parts = [];
 
-    Object.keys(service).forEach(function (key) {
-        const value = service[key];
+    function collect(value) {
+        if (!value) return;
 
         if (typeof value === "string") {
             parts.push(value);
         } else if (Array.isArray(value)) {
-            parts.push(value.join(" "));
+            value.forEach(collect);
+        } else if (typeof value === "object") {
+            Object.keys(value).forEach(function (key) {
+                collect(value[key]);
+            });
         }
-    });
+    }
 
-    return parts.join(" ").toLowerCase();
+    collect(service);
+    return normalizeSpecialServiceText(parts.join(" "));
 }
 
 function renderSpecialServices(activeServiceId) {
@@ -1991,19 +1998,29 @@ function renderSpecialServices(activeServiceId) {
     if (!grid) return;
 
     const services = getSpecialServicesData();
+    const query = normalizeSpecialServiceText(activeSpecialServicesSearch);
+    const terms = query.split(/\s+/).filter(Boolean);
+    const visibleServices = terms.length ? services.filter(function (service) {
+        const haystack = buildSpecialServiceSearchText(service);
+
+        return terms.every(function (term) {
+            return haystack.includes(term);
+        });
+    }) : services;
     const activeService = services.find(function (service) {
-        return service.id === activeServiceId;
-    }) || services[0];
+        return service.id === activeServiceId && visibleServices.includes(service);
+    }) || visibleServices[0];
 
     if (!activeService) {
-        grid.innerHTML = '<div class="special-services-empty">No special services available.</div>';
+        if (tabs) tabs.innerHTML = "";
+        grid.innerHTML = '<div class="special-services-empty">No special service found.</div>';
         return;
     }
 
     if (tabs) {
-        tabs.innerHTML = services.map(function (service) {
+        tabs.innerHTML = visibleServices.map(function (service) {
             const activeClass = service.id === activeService.id ? " active" : "";
-            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " Â· " + service.ssr.join("/") : "";
+            const ssr = Array.isArray(service.ssr) && service.ssr.length ? " - " + service.ssr.join("/") : "";
 
             return (
                 '<button type="button" class="special-service-tab' + activeClass + '" data-special-service-tab="' + escapeHTML(service.id || "") + '">' +
@@ -2964,8 +2981,17 @@ function filterSpecialAnswerFinder(input) {
 }
 
 function handleSpecialServicesClick(event) {
+    const searchClear = event.target.closest("[data-special-service-search-clear]");
     const serviceTab = event.target.closest("[data-special-service-tab]");
     const button = event.target.closest("[data-special-action]");
+
+    if (searchClear) {
+        const search = document.getElementById("specialServicesSearch");
+        activeSpecialServicesSearch = "";
+        if (search) search.value = "";
+        renderSpecialServices();
+        return;
+    }
 
     if (serviceTab) {
         renderSpecialServices(serviceTab.dataset.specialServiceTab);
@@ -2990,7 +3016,14 @@ function handleSpecialServicesClick(event) {
 }
 
 function handleSpecialServicesInput(event) {
+    const serviceSearch = event.target.closest("[data-special-service-search]");
     const input = event.target.closest("[data-special-answer-search]");
+
+    if (serviceSearch) {
+        activeSpecialServicesSearch = serviceSearch.value || "";
+        renderSpecialServices();
+        return;
+    }
 
     if (input) {
         filterSpecialAnswerFinder(input);
@@ -2999,6 +3032,11 @@ function handleSpecialServicesInput(event) {
 
 function clearSpecialServiceFormValues() {
     const grid = document.getElementById("specialServicesGrid");
+    const search = document.getElementById("specialServicesSearch");
+
+    activeSpecialServicesSearch = "";
+    if (search) search.value = "";
+    renderSpecialServices();
 
     if (!grid) return;
 
@@ -3613,7 +3651,7 @@ const operationsGuideData = [
             ["CBBG", "Cabin Baggage on Seat", "Contact Centre / SPRINT; GDS requires separate PNR handling; airport go-show at DXB T2 subject to approval", "At least 2h before departure", "Cabin baggage / seat ancillary", "Available fare + standard seat assignment charges as per booked fare", "Depends booking type", "CBBG is available only in Economy Class and is not available in Business Class. FZ prime only, not interline/codeshare. Two seat assignments are mandatory in the same PNR. Add zero-value SSR CBBG to requesting passenger, not the extra seat. Avoid rows 14/15/16/17. Max 1 CBBG seat per passenger. Baggage on blocked seat max 75kg and must be secured by seat belt. CBBG gives no extra checked baggage allowance. No-show CBBG with passenger boarded requires Floor Support guidance."],
             ["SPEQ", "Sporting Equipment 160-189cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may add up to 12h if within max 10 equipment per flight", "Special baggage", "AED 150 per item per flight / sector", "Restricted / capacity controlled", "Free if within hand baggage dimensions or checked baggage dimensions up to 159cm. Add SPEQ per leg for 160-189cm by L+W+H. Max 32kg per item; no sporting equipment over 32kg. Max 10 equipment per flight unless Special Handling approval. Accepted as part of checked baggage allowance; excess baggage applies if allowance is exceeded. Passenger must arrive at least 2h before departure. Handling fee refundable as voucher up to 24h before departure; within 24h non-refundable and non-transferable. Handling fees apply only on flydubai-operated flights; EK mixed metal codeshare and through connections may be NIL unless stopover/separate ticket applies."],
             ["SPEX", "Sporting Equipment 190-350cm", "Contact Centre / SPRINT / Supervisor or FS", "At least 24h before departure; Supervisor / FS may add up to 12h if within max 10 equipment per flight", "Special baggage", "AED 270 per item per flight / sector", "Restricted / capacity controlled", "Free if within hand baggage dimensions or checked baggage dimensions up to 159cm. Add SPEX per leg for 190-350cm by L+W+H. Max 32kg per item; no sporting equipment over 32kg. Beyond 350cm, pole vaults, javelins, and hang gliders require pre-authorization 48h before departure and additional charges. Passenger must arrive at least 2h before departure. Handling fee refundable as voucher up to 24h before departure; within 24h non-refundable and non-transferable. Handling fees apply only on flydubai-operated flights; EK mixed metal codeshare and through connections may be NIL unless stopover/separate ticket applies."],
-            ["WEAP / SPEX", "Sporting Weapons / Firearms / Guns", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h before travel", "Security approval", "WEAP AED 300 per passenger per sector + applicable SPEX charge", "Yes", "Sporting weapons, firearms, and guns are subject to pre-authorization 96h before departure and Dubai Police approval fee. Customer must email documents first or provide case number. Sporting weapons need WEAP plus SPEX charges where applicable. Add SPEX for each item/passenger/segment in addition to WEAP where applicable. Do not confirm without security approval."],
+            ["WEAP / SPEX", "Sporting Weapons / Firearms / Guns", "Contact Centre, letstalk, Supervisor / FS, Security approval", "96h before travel", "Security approval", "WEAP AED 300 per passenger + SPEX AED 270 per passenger per segment", "Yes", "Sporting weapons, firearms, and guns are subject to pre-authorization 96h before departure and Dubai Police approval fee. Customer must email documents first or provide case number. Sporting weapons need WEAP plus SPEX charges where applicable. Add SPEX for each item/passenger/segment in addition to WEAP where applicable. Do not confirm without security approval."],
             ["BAGB / BAGL / BAGX / BUPL / BUPX / BUPZ / BUPD / BUPE", "Baggage / Baggage Upgrade SSR Codes", "Website, Manage Booking, Contact Centre, OLCI, SPRINT; Travel Shop where eligible", "Existing booking: 6h before departure. New booking / modification: Website 2h; Contact Centre up to D-2 via Shift In Charge, subject to availability. UAE Travel Shop D > 4.", "Baggage upgrade", "Dynamic by origin / destination. KRT example: BAGX 40kg included, BUPD 50kg AED 100, BUPE 60kg AED 200.", "Depends eligibility", "BAGB: adds 20kg baggage allowance. BAGL: adds 30kg baggage allowance. BAGX: adds 40kg baggage allowance. BUPL: adds 10kg to existing 20kg. BUPX: adds 20kg to existing 20kg. BUPZ: adds 10kg to existing 30kg. BUPD: total 50kg where available. BUPE: total 60kg where available. FZ Prime direct / non-GDS: Web, Sprint, and OLCI may be available by itinerary and system. GDS 141 FZ Prime: Sprint can add; Contact Centre should not add when matrix says restricted. 169 / 275 / 365 FZ Prime: Sprint and OLCI may be available. 176 EK*, 016 UA*, 014 AC*: OLCI only where supported; no Web / TA / Sprint. Interline baggage upgrades are not permitted prior to departure and must be handled at airport check-in. OLCI baggage upgrade is not available from non-DCS stations. Always upgrade on top of existing baggage SSR; do not cancel/refund existing baggage SSR just to reprice. Example: BAGB + BUPL passenger requesting 40kg should add BUPZ, not cancel BUPL to add BUPX."],
             ["BAGI", "Infant Baggage Allowance", "SPRINT / applicable booking flow", "As per infant/baggage handling rules", "Baggage SSR", "Included only when baggage-inclusive fare applies", "No", "Infants are entitled to 5kg hand carry containing clothes, diapers, and baby food; bag must be smaller than 55 x 38 x 20cm. Infants get 10kg checked baggage allowance and 5kg hand baggage only when booked on baggage-inclusive fare. SSR on SPRINT for 10kg checked baggage allowance is BAGI."],
             ["EXPC", "Extra Piece of Checked-in Baggage", "Sprint DCS users / Airport check-in handling", "At airport / check-in handling", "Extra checked baggage piece SSR", "01 EXPC is approximately AED 200 and subject to change + airport service fee", "Subject to availability", "EXPC charges passengers travelling with more than three pieces of checked-in baggage. If total checked baggage weight is within the baggage allowance but packed in more than three pieces, charge the handling fee for every additional piece plus the airport service fee. Each piece must still comply with baggage rules."],
