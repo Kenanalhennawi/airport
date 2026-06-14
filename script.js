@@ -2026,6 +2026,7 @@ function renderSpecialServices(activeServiceId) {
 
             renderAgentQuickGuide(service) +
             renderWorkflowHint(service) +
+            renderAgentChecklist(service) +
             renderAgentForm(service) +
             renderAgentEmailActions(service) +
             renderSpecialServiceDisclosureGroup(service);
@@ -2088,7 +2089,9 @@ function renderQuickGuideItem(label, value, icon) {
 
 function renderWorkflowHint(service) {
     const hasEmailWorkflow = !!(service && service.agentEmail && service.agentEmail.enabled);
+    const hasForm = !!(service && service.agentForm && Array.isArray(service.agentForm.fields) && service.agentForm.fields.length && hasEmailWorkflow);
     const actionStep = hasEmailWorkflow ? "Open Outlook" : "Apply SSR / Escalate";
+    const inputStep = hasForm ? "Fill Form" : "Action Checklist";
 
     return (
         '<div class="special-workflow-strip" aria-label="Contact centre workflow">' +
@@ -2096,7 +2099,7 @@ function renderWorkflowHint(service) {
             '<i data-lucide="chevron-right"></i>' +
             '<span>Quick Guide</span>' +
             '<i data-lucide="chevron-right"></i>' +
-            '<span>Fill Form</span>' +
+            '<span>' + escapeHTML(inputStep) + "</span>" +
             '<i data-lucide="chevron-right"></i>' +
             '<span>' + escapeHTML(actionStep) + "</span>" +
             '<i data-lucide="chevron-right"></i>' +
@@ -2105,7 +2108,38 @@ function renderWorkflowHint(service) {
     );
 }
 
+function renderAgentChecklist(service) {
+    if (!service || !Array.isArray(service.agentChecklist) || !service.agentChecklist.length) {
+        return "";
+    }
+
+    const itemsHtml = service.agentChecklist.map(function (item) {
+        return (
+            '<li>' +
+                '<i data-lucide="check-circle-2"></i>' +
+                '<span>' + escapeHTML(item) + "</span>" +
+            "</li>"
+        );
+    }).join("");
+
+    return (
+        '<div class="special-action-checklist">' +
+            '<div class="special-action-checklist-title">' +
+                '<i data-lucide="list-checks"></i>' +
+                '<span>Agent Action Checklist</span>' +
+            "</div>" +
+            '<ol>' + itemsHtml + "</ol>" +
+        "</div>"
+    );
+}
+
 function renderAgentForm(service) {
+    const servicesWithRequestForm = ["falcon", "cake-on-board"];
+
+    if (!servicesWithRequestForm.includes(service.id)) {
+        return "";
+    }
+
     if (!service.agentForm || !Array.isArray(service.agentForm.fields) || !service.agentForm.fields.length) {
         return "";
     }
