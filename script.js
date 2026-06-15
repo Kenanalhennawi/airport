@@ -1938,6 +1938,26 @@ async function convertCurrencyPayport() {
 
         resultEl.textContent = result + " " + targetCode;
         rateEl.textContent = "Rate: " + rate;
+        function showCurrencyDisclaimer() {
+    const rateEl = document.getElementById("currencyRate");
+
+    if (!rateEl) return;
+
+    let disclaimer = document.getElementById("currencyDisclaimer");
+
+    if (!disclaimer) {
+        disclaimer = document.createElement("div");
+        disclaimer.id = "currencyDisclaimer";
+        disclaimer.className = "currency-disclaimer";
+
+        rateEl.insertAdjacentElement("afterend", disclaimer);
+    }
+
+    disclaimer.innerHTML =
+        'Rates are retrieved from Flydubai PayPort and are provided for reference only. ' +
+        'Please verify final rates on the ' +
+        '<a href="https://payport.flydubai.com/en/CurrencyConverter/Index" target="_blank" rel="noopener noreferrer">official PayPort website</a>.';
+}
 
     } catch (error) {
         const resultEl = document.getElementById("currencyResult");
@@ -1945,6 +1965,7 @@ async function convertCurrencyPayport() {
 
         if (resultEl) resultEl.textContent = "Live Rate Unavailable";
         if (rateEl) rateEl.textContent = "Open Official PayPort to verify the live rate.";
+        showCurrencyDisclaimer();
 
         console.error("PayPort Error:", error);
     }
