@@ -1853,8 +1853,30 @@ function clearCurrencyConverter() {
 
     if (resultEl) resultEl.textContent = "--";
     if (rateEl) rateEl.textContent = "Rate: --";
+    
+    const disclaimer = document.getElementById("currencyDisclaimer");
+if (disclaimer) disclaimer.remove();
 }
-   
+ function showCurrencyDisclaimer() {
+    const rateEl = document.getElementById("currencyRate");
+
+    if (!rateEl) return;
+
+    let disclaimer = document.getElementById("currencyDisclaimer");
+
+    if (!disclaimer) {
+        disclaimer = document.createElement("div");
+        disclaimer.id = "currencyDisclaimer";
+        disclaimer.className = "currency-disclaimer";
+
+        rateEl.insertAdjacentElement("afterend", disclaimer);
+    }
+
+    disclaimer.innerHTML =
+        'Rates are retrieved from Flydubai PayPort and are provided for reference only. ' +
+        'Please verify final rates on the ' +
+        '<a href="https://payport.flydubai.com/en/CurrencyConverter/Index" target="_blank" rel="noopener noreferrer">official PayPort website</a>.';
+}  
 async function convertCurrencyPayport() {
     try {
         const amountEl = document.getElementById("currencyAmount");
@@ -1938,26 +1960,7 @@ async function convertCurrencyPayport() {
 
         resultEl.textContent = result + " " + targetCode;
         rateEl.textContent = "Rate: " + rate;
-        function showCurrencyDisclaimer() {
-    const rateEl = document.getElementById("currencyRate");
-
-    if (!rateEl) return;
-
-    let disclaimer = document.getElementById("currencyDisclaimer");
-
-    if (!disclaimer) {
-        disclaimer = document.createElement("div");
-        disclaimer.id = "currencyDisclaimer";
-        disclaimer.className = "currency-disclaimer";
-
-        rateEl.insertAdjacentElement("afterend", disclaimer);
-    }
-
-    disclaimer.innerHTML =
-        'Rates are retrieved from Flydubai PayPort and are provided for reference only. ' +
-        'Please verify final rates on the ' +
-        '<a href="https://payport.flydubai.com/en/CurrencyConverter/Index" target="_blank" rel="noopener noreferrer">official PayPort website</a>.';
-}
+        showCurrencyDisclaimer();
 
     } catch (error) {
         const resultEl = document.getElementById("currencyResult");
