@@ -4102,40 +4102,36 @@ function renderSingleNameBookingTool() {
             '<div class="single-name-grid">' +
                 renderSingleNameField("From", "from", "DXB") +
                 renderSingleNameField("To", "to", "KRT") +
-                '<label class="single-name-field single-name-field-wide">' +
-                    '<span>Passport name case</span>' +
-                    '<select data-single-name-field="case">' +
-                        '<option value="single-given">Only given / first name on front page, no surname</option>' +
-                        '<option value="single-surname">Only surname / last name on front page, no given name</option>' +
-                        '<option value="two-given">Two given names in one field on front page</option>' +
-                        '<option value="two-surname">Two surnames in one field on front page</option>' +
-                        '<option value="given-plus-other">One given name + additional names on other passport pages</option>' +
-                        '<option value="surname-plus-other">One surname + additional names on other passport pages</option>' +
-                        '<option value="two-plus-other">Two names on front page + additional names on other pages</option>' +
-                    '</select>' +
+                '<label class="single-name-field">' +
+                    '<span>Given name(s) on front page</span>' +
+                    '<input type="text" data-single-name-field="given" placeholder="Example: Mariyam Fatima">' +
                 '</label>' +
                 '<label class="single-name-field">' +
-                    '<span>Name(s) on passport front page</span>' +
-                    '<input type="text" data-single-name-field="front" placeholder="Example: Mariyam Fatima">' +
+                    '<span>Surname(s) on front page</span>' +
+                    '<input type="text" data-single-name-field="surname" placeholder="Example: Syed Hassan">' +
                 '</label>' +
                 '<label class="single-name-field">' +
                     '<span>Other page names, if any</span>' +
                     '<input type="text" data-single-name-field="other" placeholder="Example: Syed Hassan">' +
                 '</label>' +
-                '<label class="single-name-field single-name-field-wide">' +
-                    '<span>Travel situation</span>' +
-                    '<select data-single-name-field="mode">' +
-                        '<option value="auto">Auto from route</option>' +
-                        '<option value="uae-entry">Passenger entering UAE</option>' +
-                        '<option value="transit">Transit via UAE only / not entering UAE</option>' +
-                        '<option value="other">Other destination or UAE resident journey</option>' +
-                    '</select>' +
-                '</label>' +
             '</div>' +
             '<div class="single-name-result" data-single-name-result>' +
                 '<div class="single-name-result-empty">Fill route and passport name details to get the correct First Name / Last Name entry.</div>' +
             '</div>' +
+            renderAirportCodeDatalist() +
         '</div>'
+    );
+}
+
+function renderAirportCodeDatalist() {
+    const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+
+    return (
+        '<datalist id="airportCodeList">' +
+            data.map(function (airport) {
+                return '<option value="' + escapeHTML(airport.iata + ' - ' + airport.city + ' - ' + airport.country) + '"></option>';
+            }).join("") +
+        '</datalist>'
     );
 }
 
@@ -4143,7 +4139,8 @@ function renderSingleNameField(label, id, placeholder) {
     return (
         '<label class="single-name-field">' +
             '<span>' + label + ' airport</span>' +
-            '<input type="text" data-single-name-field="' + id + '" maxlength="3" placeholder="' + placeholder + '">' +
+            '<input type="text" data-single-name-field="' + id + '" list="airportCodeList" placeholder="' + placeholder + ' or city">' +
+            '<small class="single-name-airport-hint" data-single-name-airport-hint="' + id + '">Type airport code or city.</small>' +
         '</label>'
     );
 }
@@ -4418,8 +4415,31 @@ function getAirportByCode(code) {
     }) || null;
 }
 
+function parseAirportInput(value) {
+    const raw = String(value || "").trim();
+    const firstToken = raw.split(/\s|-/)[0] || raw;
+
+    return firstToken.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+}
+
+function findAirportByInput(value) {
+    const raw = String(value || "").trim().toLowerCase();
+    const code = parseAirportInput(value);
+    const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+
+    if (!raw) return null;
+
+    return data.find(function (airport) {
+        return String(airport.iata || "").toUpperCase() === code;
+    }) || data.find(function (airport) {
+        return [airport.city, airport.airport, airport.country, airport.region].some(function (item) {
+            return String(item || "").toLowerCase().includes(raw);
+        });
+    }) || null;
+}
+
 function isUaeAirportCode(code) {
-    const airport = getAirportByCode(code);
+    const airport = findAirportByInput(code);
 
     return !!airport && String(airport.country || "").toLowerCase() === "united arab emirates";
 }
@@ -4447,38 +4467,45 @@ function splitFirstNamePair(value) {
 }
 
 function getSingleNameRecommendation(values) {
-    const from = String(values.from || "").trim().toUpperCase();
-    const to = String(values.to || "").trim().toUpperCase();
-    const front = cleanPassengerName(values.front);
+    const from = parseAirportInput(values.from);
+    const to = parseAirportInput(values.to);
+    const fromAirport = findAirportByInput(values.from);
+    const toAirport = findAirportByInput(values.to);
+    const given = cleanPassengerName(values.given);
+    const surname = cleanPassengerName(values.surname);
     const other = cleanPassengerName(values.other);
-    const nameCase = values.caseValue || "single-given";
-    const mode = values.mode || "auto";
-    const fromKnown = !from || !!getAirportByCode(from);
-    const toKnown = !to || !!getAirportByCode(to);
-    const routeLooksUaeEntry = !!to && isUaeAirportCode(to) && !isUaeAirportCode(from);
-    const isUaeEntry = mode === "uae-entry" || (mode === "auto" && routeLooksUaeEntry);
-    const isTransitOrOther = mode === "transit" || mode === "other" || (mode === "auto" && !routeLooksUaeEntry);
+    const fromKnown = !values.from || !!fromAirport;
+    const toKnown = !values.to || !!toAirport;
+    const routeLooksUaeEntry = !!toAirport && isUaeAirportCode(values.to) && !isUaeAirportCode(values.from);
+    const isUaeEntry = routeLooksUaeEntry;
+    const isTransitOrOther = !routeLooksUaeEntry;
     let firstName = "";
     let lastName = "";
     let status = "ready";
     const notes = [];
+    const hasGiven = !!given;
+    const hasSurname = !!surname;
+    const hasOther = !!other;
+    const singleNameOnly = (hasGiven && !hasSurname && !hasOther && given.split(" ").length === 1) ||
+        (!hasGiven && hasSurname && !hasOther && surname.split(" ").length === 1);
 
     if (!fromKnown) notes.push("From airport code was not found in airport data; verify route manually.");
     if (!toKnown) notes.push("To airport code was not found in airport data; verify route manually.");
 
-    if (!front) {
+    if (!hasGiven && !hasSurname) {
         return {
             status: "empty",
             firstName: "",
             lastName: "",
-            notes: ["Enter the name exactly as shown on the passport front page."]
+            notes: ["Enter the given name(s) and/or surname(s) exactly as shown on the passport front page."]
         };
     }
 
-    if (isUaeEntry && (nameCase === "single-given" || nameCase === "single-surname")) {
+    if (isUaeEntry && singleNameOnly) {
         status = "blocked";
         notes.push("Do not confirm UAE entry booking with a single-name passport unless an exception applies.");
         notes.push("Exception examples: passenger only transits via UAE, UAE visa shows additional names, valid Emirates ID, national ID with additional names, or Observations / Annotations show additional names.");
+        notes.push("If the passenger is not entering UAE or has a valid exception, use other destination rules: First Name FNU and Last Name as the single passport name.");
 
         return {
             status: status,
@@ -4489,47 +4516,65 @@ function getSingleNameRecommendation(values) {
     }
 
     if (isUaeEntry) {
-        if (nameCase === "two-given" || nameCase === "two-surname" || nameCase === "two-plus-other") {
-            const split = splitFirstNamePair(front);
+        if (hasGiven && hasSurname) {
+            firstName = given;
+            lastName = surname;
+        } else if (hasGiven && hasOther && given.split(" ").length === 1) {
+            firstName = given;
+            lastName = other;
+        } else if (hasSurname && hasOther && surname.split(" ").length === 1) {
+            firstName = other;
+            lastName = surname;
+        } else if (hasGiven && !hasSurname) {
+            const split = splitFirstNamePair(given);
             firstName = split.firstName;
             lastName = split.lastName;
             if (split.note) notes.push(split.note);
-            if (nameCase === "two-plus-other") notes.push("For UAE entry, use the two names shown on the front page as First Name and Last Name.");
-        } else if (nameCase === "given-plus-other") {
-            firstName = front;
-            lastName = other;
-            if (!other) notes.push("Enter the additional name(s) from other passport pages in Other page names.");
-        } else if (nameCase === "surname-plus-other") {
-            firstName = other;
-            lastName = front;
-            if (!other) notes.push("Enter the additional name(s) from other passport pages in Other page names.");
+            if (hasOther) notes.push("For UAE entry with two names on the front page, use the front-page two names as First Name and Last Name.");
+        } else if (hasSurname && !hasGiven) {
+            const split = splitFirstNamePair(surname);
+            firstName = split.firstName;
+            lastName = split.lastName;
+            if (split.note) notes.push(split.note);
+            if (hasOther) notes.push("For UAE entry with two surnames on the front page, use the front-page two names as First Name and Last Name.");
         }
 
-        notes.push("UAE entry flow detected from route. If passenger is only transiting via UAE, choose Transit via UAE only.");
+        notes.push("UAE entry flow detected from the To airport.");
     } else if (isTransitOrOther) {
-        if (nameCase === "single-given" || nameCase === "single-surname") {
+        if (hasGiven && hasSurname) {
+            firstName = given;
+            lastName = surname;
+        } else if (singleNameOnly) {
             firstName = "FNU";
-            lastName = front;
+            lastName = given || surname;
             notes.push("Use FNU in First Name for other destinations / transit flow when only one name appears on the front page.");
-        } else if (nameCase === "two-given" || nameCase === "two-surname" || nameCase === "two-plus-other") {
-            const split = splitFirstNamePair(front);
+        } else if (hasGiven && !hasSurname) {
+            const split = splitFirstNamePair(given);
             firstName = split.firstName;
             lastName = split.lastName;
             if (split.note) notes.push(split.note);
-        } else if (nameCase === "given-plus-other") {
-            firstName = front;
-            lastName = other || "FNU";
-            if (!other) notes.push("No other page names entered; verify document before booking.");
-        } else if (nameCase === "surname-plus-other") {
-            firstName = other || "FNU";
-            lastName = front;
-            if (!other) notes.push("No other page names entered; verify document before booking.");
+        } else if (hasSurname && !hasGiven) {
+            if (surname.split(" ").length > 1) {
+                const split = splitFirstNamePair(surname);
+                firstName = split.firstName;
+                lastName = split.lastName;
+                if (split.note) notes.push(split.note);
+            } else {
+                firstName = "FNU";
+                lastName = surname;
+                notes.push("Use FNU in First Name when no given name appears on the front page.");
+            }
         }
     }
 
     if (!firstName || !lastName) {
         status = "review";
         notes.push("Could not complete both fields. Check passport example and contact support if no example matches.");
+    }
+
+    if ((!fromKnown || !toKnown) && status === "ready") {
+        status = "review";
+        notes.push("Route could not be fully detected from airport data; verify destination before confirming UAE entry rules.");
     }
 
     return {
@@ -4552,13 +4597,15 @@ function updateSingleNameBookingTool() {
         return field ? field.value : "";
     };
 
+    updateSingleNameAirportHint(tool, "from", getValue("from"));
+    updateSingleNameAirportHint(tool, "to", getValue("to"));
+
     const recommendation = getSingleNameRecommendation({
         from: getValue("from"),
         to: getValue("to"),
-        front: getValue("front"),
+        given: getValue("given"),
+        surname: getValue("surname"),
         other: getValue("other"),
-        caseValue: getValue("case"),
-        mode: getValue("mode")
     });
 
     if (recommendation.status === "empty") {
@@ -4578,11 +4625,60 @@ function updateSingleNameBookingTool() {
 
     result.innerHTML =
         '<div class="' + statusClass + '">' +
+            renderSingleNameRouteSummary(getValue("from"), getValue("to")) +
             fieldsHtml +
             '<ul>' + recommendation.notes.map(function (note) {
                 return '<li>' + escapeHTML(note) + '</li>';
             }).join("") + '</ul>' +
         '</div>';
+}
+
+function updateSingleNameAirportHint(tool, fieldName, value) {
+    const hint = tool.querySelector('[data-single-name-airport-hint="' + fieldName + '"]');
+    const airport = findAirportByInput(value);
+
+    if (!hint) return;
+
+    hint.classList.remove("is-valid", "is-invalid");
+
+    if (!String(value || "").trim()) {
+        hint.textContent = "Type airport code, city, country, or airport name.";
+        return;
+    }
+
+    if (airport) {
+        hint.textContent = airport.iata + " - " + airport.city + ", " + airport.country;
+        hint.classList.add("is-valid");
+    } else {
+        hint.textContent = "Airport not found. Check IATA/city or verify route manually.";
+        hint.classList.add("is-invalid");
+    }
+}
+
+function renderSingleNameRouteSummary(fromValue, toValue) {
+    const fromAirport = findAirportByInput(fromValue);
+    const toAirport = findAirportByInput(toValue);
+    const fromMissing = !!String(fromValue || "").trim() && !fromAirport;
+    const toMissing = !!String(toValue || "").trim() && !toAirport;
+    const isUaeEntry = !!toAirport && String(toAirport.country || "").toLowerCase() === "united arab emirates" && !isUaeAirportCode(fromValue);
+    const routeType = (fromMissing || toMissing)
+        ? "Verify route manually"
+        : (isUaeEntry ? "UAE entry route" : "Other destination / transit rules");
+
+    return (
+        '<div class="single-name-route-grid">' +
+            '<div><strong>From Airport</strong><span>' + escapeHTML(formatSingleNameAirport(fromValue, fromAirport)) + '</span></div>' +
+            '<div><strong>To Airport</strong><span>' + escapeHTML(formatSingleNameAirport(toValue, toAirport)) + '</span></div>' +
+            '<div><strong>Detected Rule</strong><span>' + escapeHTML(routeType) + '</span></div>' +
+        '</div>'
+    );
+}
+
+function formatSingleNameAirport(value, airport) {
+    if (!String(value || "").trim()) return "Not entered";
+    if (!airport) return "Not found: " + String(value || "").trim();
+
+    return airport.iata + " - " + airport.city + ", " + airport.country;
 }
 
 function clearSingleNameBookingTool() {
@@ -4662,7 +4758,7 @@ function handleOperationsInput(event) {
         const airportField = event.target.closest('[data-single-name-field="from"], [data-single-name-field="to"]');
 
         if (airportField) {
-            airportField.value = airportField.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+            airportField.value = airportField.value.toUpperCase();
         }
 
         updateSingleNameBookingTool();
