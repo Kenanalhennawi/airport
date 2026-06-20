@@ -2622,6 +2622,21 @@ footer strong {
     text-transform: uppercase;
 }
 
+.single-name-airport-hint {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 800;
+    min-height: 1.2em;
+}
+
+.single-name-airport-hint.is-valid {
+    color: #047857;
+}
+
+.single-name-airport-hint.is-invalid {
+    color: #b91c1c;
+}
+
 .single-name-field input,
 .single-name-field select {
     width: 100%;
@@ -2667,6 +2682,35 @@ footer strong {
 .single-name-result-blocked {
     border-color: #fecaca;
     background: #fff1f2;
+}
+
+.single-name-route-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    margin-bottom: 9px;
+}
+
+.single-name-route-grid div {
+    border: 1px solid #bae6fd;
+    background: #f0f9ff;
+    border-radius: 8px;
+    padding: 9px;
+}
+
+.single-name-route-grid strong {
+    display: block;
+    color: #075985;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.single-name-route-grid span {
+    display: block;
+    color: #0f172a;
+    font-weight: 900;
+    line-height: 1.3;
 }
 
 .single-name-output-grid {
