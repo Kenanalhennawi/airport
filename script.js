@@ -401,6 +401,32 @@ function updateLiveClock() {
 
     if (utcEl) utcEl.textContent = fmt('UTC');
     if (dxbEl) dxbEl.textContent = fmt('Asia/Dubai');
+    updateAirportCardTimes();
+}
+
+function updateAirportCardTimes() {
+    var needsIconRefresh = false;
+
+    document.querySelectorAll('.time-badge[data-timezone]').forEach(function (badge) {
+        var timezone = badge.dataset.timezone;
+
+        if (!timezone) return;
+
+        badge.innerHTML = getDayNightIcon(timezone) + ' ' + getLocalTime(timezone);
+        needsIconRefresh = true;
+    });
+
+    document.querySelectorAll('[data-time-diff-timezone]').forEach(function (el) {
+        var timezone = el.dataset.timeDiffTimezone;
+
+        if (!timezone) return;
+
+        el.innerHTML = getTimeDiffHTML(timezone);
+    });
+
+    if (needsIconRefresh && typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 function populateInterlineTable() {
@@ -1431,7 +1457,7 @@ function renderCards(filterText) {
                     '</div>' +
                     '<div class="time-container">' +
                         '<div class="time-badge" data-timezone="' + safeTimezone + '">' + getDayNightIcon(airport.timezone) + ' ' + getLocalTime(airport.timezone) + '</div>' +
-                        '<div>' + getTimeDiffHTML(airport.timezone) + '</div>' +
+                        '<div data-time-diff-timezone="' + safeTimezone + '">' + getTimeDiffHTML(airport.timezone) + '</div>' +
                     '</div>' +
                 '</div>' +
                 '<div class="terminal-info"><i data-lucide="plane-landing" style="width:16px"></i><span>' + safeTerminal + '</span></div>' +
@@ -1853,30 +1879,8 @@ function clearCurrencyConverter() {
 
     if (resultEl) resultEl.textContent = "--";
     if (rateEl) rateEl.textContent = "Rate: --";
-    
-    const disclaimer = document.getElementById("currencyDisclaimer");
-if (disclaimer) disclaimer.remove();
 }
- function showCurrencyDisclaimer() {
-    const rateEl = document.getElementById("currencyRate");
-
-    if (!rateEl) return;
-
-    let disclaimer = document.getElementById("currencyDisclaimer");
-
-    if (!disclaimer) {
-        disclaimer = document.createElement("div");
-        disclaimer.id = "currencyDisclaimer";
-        disclaimer.className = "currency-disclaimer";
-
-        rateEl.insertAdjacentElement("afterend", disclaimer);
-    }
-
-    disclaimer.innerHTML =
-        'Rates are retrieved from Flydubai PayPort and are provided for reference only. ' +
-        'Please verify final rates on the ' +
-        '<a href="https://payport.flydubai.com/en/CurrencyConverter/Index" target="_blank" rel="noopener noreferrer">official PayPort website</a>.';
-}  
+   
 async function convertCurrencyPayport() {
     try {
         const amountEl = document.getElementById("currencyAmount");
@@ -1960,7 +1964,6 @@ async function convertCurrencyPayport() {
 
         resultEl.textContent = result + " " + targetCode;
         rateEl.textContent = "Rate: " + rate;
-        showCurrencyDisclaimer();
 
     } catch (error) {
         const resultEl = document.getElementById("currencyResult");
@@ -1968,7 +1971,6 @@ async function convertCurrencyPayport() {
 
         if (resultEl) resultEl.textContent = "Live Rate Unavailable";
         if (rateEl) rateEl.textContent = "Open Official PayPort to verify the live rate.";
-        showCurrencyDisclaimer();
 
         console.error("PayPort Error:", error);
     }
