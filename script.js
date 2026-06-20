@@ -3183,6 +3183,69 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "single-name-booking",
+        title: "Single Name Booking",
+        icon: "user-round-check",
+        quickGuide: {
+            channel: "Website / Contact Centre booking support",
+            timing: "Before booking / passenger details entry",
+            type: "Passenger name entry guidance",
+            action: "Check destination and passport name structure before advising first name and last name fields.",
+            warning: "For UAE entry, a passport with only one name on the front page and no additional names elsewhere may be refused entry under UAE NAIC rules."
+        },
+        classifications: [
+            "Single name passport",
+            "FNU",
+            "No surname",
+            "No given name",
+            "UAE NAIC",
+            "Passenger details",
+            "Booking name guidance"
+        ],
+        sections: [
+            {
+                title: "General Name Rules",
+                items: [
+                    "Name must be spelled exactly as shown on the passport.",
+                    "Special characters are not accepted.",
+                    "Abbreviations and nicknames are not accepted.",
+                    "Combined first name and last name length must not exceed 59 characters including spaces."
+                ]
+            },
+            {
+                title: "Travelling To UAE - Single Name Passport",
+                items: [
+                    "If the passport front page has only one name, first or last, and no additional names on any other passport pages, passenger will not be allowed entry to the UAE as per UAE National Advance Information Centre (NAIC) regulations.",
+                    "Applies to all nationalities travelling on tourist, visit, work, transit visas, visa exempt passengers, or visa on arrival passengers entering the UAE.",
+                    "Does not apply to passengers transiting via UAE.",
+                    "Does not apply when UAE visa displays additional names.",
+                    "Does not apply when passenger has valid Emirates ID.",
+                    "Does not apply when national ID contains additional names usable for passenger details.",
+                    "Does not apply when travel document has additional names under Observations / Annotations."
+                ]
+            },
+            {
+                title: "Travelling To UAE - Name Entry Examples",
+                items: [
+                    "Two given names on front page and no surname: enter first given name as First Name and second given name as Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima.",
+                    "Two surnames on front page and no given name: enter first surname as First Name and second surname as Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima.",
+                    "One given name on front page plus other names on other passport pages: enter given name as First Name and other names as Last Name. Example: Mariyam + Syed Hassan -> First Name Mariyam, Last Name Syed Hassan.",
+                    "One surname on front page plus other names on other passport pages: enter other names as First Name and surname as Last Name. Example: Surname Mariyam + other names Syed Hassan -> First Name Syed Hassan, Last Name Mariyam.",
+                    "Two given names or two surnames on front page plus other names on other pages: use the two names on the front page as First Name and Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima."
+                ]
+            },
+            {
+                title: "Other Destinations / UAE Resident Travel",
+                items: [
+                    "Use these rules for travel to destinations outside the UAE, without entering UAE, or when the journey starts and ends in UAE and passenger holds a valid UAE residence visa.",
+                    "No surname on front page: enter FNU as First Name and the passport name as Last Name.",
+                    "No given name on front page: enter FNU as First Name and the passport surname as Last Name.",
+                    "If example does not match the passenger document, advise customer to contact flydubai for assistance before booking."
+                ]
+            }
+        ]
+    },
+    {
         id: "auto-split-od",
         title: "Auto Split OD",
         icon: "git-branch",
@@ -3757,7 +3820,7 @@ let activeOperationsSearch = "";
 function getOperationsTopicCategory(topic) {
     const id = topic && topic.id;
 
-    if (["holidays", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
+    if (["holidays", "single-name-booking", "olci-lounge", "dubai-stopover", "upgrade-cutoffs", "auto-split-od", "g-fare-rules"].includes(id)) return "products";
     if (["ssr-guide", "economy-seating-matrix", "travel-shops-cutoffs"].includes(id)) return "ssr";
     if (["operational-airport-ssrs", "airport-shop-fees", "masd-meet-assist", "ok-to-board"].includes(id)) return "airport";
 
@@ -4016,12 +4079,72 @@ function renderOperationsTopic(topic) {
                 renderOperationsQuickItem("Main Action", guide.action, "list-checks") +
             '</div>' +
             (guide.warning ? '<div class="operations-warning"><i data-lucide="triangle-alert"></i><span>' + escapeHTML(guide.warning) + '</span></div>' : '') +
+            (topic.id === "single-name-booking" ? renderSingleNameBookingTool() : '') +
             (Array.isArray(topic.ssrRows) ? renderOperationsSsrTable(topic.ssrRows) : '') +
             (Array.isArray(topic.feeRows) ? renderOperationsFeeTable(topic.feeRows) : '') +
             sections.map(function (section, index) {
                 return renderOperationsDisclosure(topic.id, index, section);
             }).join("") +
         '</article>'
+    );
+}
+
+function renderSingleNameBookingTool() {
+    return (
+        '<div class="single-name-tool" data-single-name-tool>' +
+            '<div class="single-name-tool-head">' +
+                '<div>' +
+                    '<strong>Name Entry Helper</strong>' +
+                    '<span>Enter route and passport name structure to get booking fields.</span>' +
+                '</div>' +
+                '<button type="button" class="single-name-clear" data-single-name-clear><i data-lucide="x"></i><span>Clear</span></button>' +
+            '</div>' +
+            '<div class="single-name-grid">' +
+                renderSingleNameField("From", "from", "DXB") +
+                renderSingleNameField("To", "to", "KRT") +
+                '<label class="single-name-field single-name-field-wide">' +
+                    '<span>Passport name case</span>' +
+                    '<select data-single-name-field="case">' +
+                        '<option value="single-given">Only given / first name on front page, no surname</option>' +
+                        '<option value="single-surname">Only surname / last name on front page, no given name</option>' +
+                        '<option value="two-given">Two given names in one field on front page</option>' +
+                        '<option value="two-surname">Two surnames in one field on front page</option>' +
+                        '<option value="given-plus-other">One given name + additional names on other passport pages</option>' +
+                        '<option value="surname-plus-other">One surname + additional names on other passport pages</option>' +
+                        '<option value="two-plus-other">Two names on front page + additional names on other pages</option>' +
+                    '</select>' +
+                '</label>' +
+                '<label class="single-name-field">' +
+                    '<span>Name(s) on passport front page</span>' +
+                    '<input type="text" data-single-name-field="front" placeholder="Example: Mariyam Fatima">' +
+                '</label>' +
+                '<label class="single-name-field">' +
+                    '<span>Other page names, if any</span>' +
+                    '<input type="text" data-single-name-field="other" placeholder="Example: Syed Hassan">' +
+                '</label>' +
+                '<label class="single-name-field single-name-field-wide">' +
+                    '<span>Travel situation</span>' +
+                    '<select data-single-name-field="mode">' +
+                        '<option value="auto">Auto from route</option>' +
+                        '<option value="uae-entry">Passenger entering UAE</option>' +
+                        '<option value="transit">Transit via UAE only / not entering UAE</option>' +
+                        '<option value="other">Other destination or UAE resident journey</option>' +
+                    '</select>' +
+                '</label>' +
+            '</div>' +
+            '<div class="single-name-result" data-single-name-result>' +
+                '<div class="single-name-result-empty">Fill route and passport name details to get the correct First Name / Last Name entry.</div>' +
+            '</div>' +
+        '</div>'
+    );
+}
+
+function renderSingleNameField(label, id, placeholder) {
+    return (
+        '<label class="single-name-field">' +
+            '<span>' + label + ' airport</span>' +
+            '<input type="text" data-single-name-field="' + id + '" maxlength="3" placeholder="' + placeholder + '">' +
+        '</label>'
     );
 }
 
@@ -4286,12 +4409,205 @@ function filterOperationsFeeRows(query) {
     if (empty) empty.classList.toggle("hidden", visible !== 0);
 }
 
+function getAirportByCode(code) {
+    const normalized = String(code || "").trim().toUpperCase();
+    const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+
+    return data.find(function (airport) {
+        return String(airport.iata || "").toUpperCase() === normalized;
+    }) || null;
+}
+
+function isUaeAirportCode(code) {
+    const airport = getAirportByCode(code);
+
+    return !!airport && String(airport.country || "").toLowerCase() === "united arab emirates";
+}
+
+function cleanPassengerName(value) {
+    return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+function splitFirstNamePair(value) {
+    const parts = cleanPassengerName(value).split(" ").filter(Boolean);
+
+    if (parts.length <= 1) {
+        return {
+            firstName: parts[0] || "",
+            lastName: "",
+            note: "Enter two names if passport shows two names in one field."
+        };
+    }
+
+    return {
+        firstName: parts[0],
+        lastName: parts.slice(1).join(" "),
+        note: ""
+    };
+}
+
+function getSingleNameRecommendation(values) {
+    const from = String(values.from || "").trim().toUpperCase();
+    const to = String(values.to || "").trim().toUpperCase();
+    const front = cleanPassengerName(values.front);
+    const other = cleanPassengerName(values.other);
+    const nameCase = values.caseValue || "single-given";
+    const mode = values.mode || "auto";
+    const fromKnown = !from || !!getAirportByCode(from);
+    const toKnown = !to || !!getAirportByCode(to);
+    const routeLooksUaeEntry = !!to && isUaeAirportCode(to) && !isUaeAirportCode(from);
+    const isUaeEntry = mode === "uae-entry" || (mode === "auto" && routeLooksUaeEntry);
+    const isTransitOrOther = mode === "transit" || mode === "other" || (mode === "auto" && !routeLooksUaeEntry);
+    let firstName = "";
+    let lastName = "";
+    let status = "ready";
+    const notes = [];
+
+    if (!fromKnown) notes.push("From airport code was not found in airport data; verify route manually.");
+    if (!toKnown) notes.push("To airport code was not found in airport data; verify route manually.");
+
+    if (!front) {
+        return {
+            status: "empty",
+            firstName: "",
+            lastName: "",
+            notes: ["Enter the name exactly as shown on the passport front page."]
+        };
+    }
+
+    if (isUaeEntry && (nameCase === "single-given" || nameCase === "single-surname")) {
+        status = "blocked";
+        notes.push("Do not confirm UAE entry booking with a single-name passport unless an exception applies.");
+        notes.push("Exception examples: passenger only transits via UAE, UAE visa shows additional names, valid Emirates ID, national ID with additional names, or Observations / Annotations show additional names.");
+
+        return {
+            status: status,
+            firstName: "",
+            lastName: "",
+            notes: notes
+        };
+    }
+
+    if (isUaeEntry) {
+        if (nameCase === "two-given" || nameCase === "two-surname" || nameCase === "two-plus-other") {
+            const split = splitFirstNamePair(front);
+            firstName = split.firstName;
+            lastName = split.lastName;
+            if (split.note) notes.push(split.note);
+            if (nameCase === "two-plus-other") notes.push("For UAE entry, use the two names shown on the front page as First Name and Last Name.");
+        } else if (nameCase === "given-plus-other") {
+            firstName = front;
+            lastName = other;
+            if (!other) notes.push("Enter the additional name(s) from other passport pages in Other page names.");
+        } else if (nameCase === "surname-plus-other") {
+            firstName = other;
+            lastName = front;
+            if (!other) notes.push("Enter the additional name(s) from other passport pages in Other page names.");
+        }
+
+        notes.push("UAE entry flow detected from route. If passenger is only transiting via UAE, choose Transit via UAE only.");
+    } else if (isTransitOrOther) {
+        if (nameCase === "single-given" || nameCase === "single-surname") {
+            firstName = "FNU";
+            lastName = front;
+            notes.push("Use FNU in First Name for other destinations / transit flow when only one name appears on the front page.");
+        } else if (nameCase === "two-given" || nameCase === "two-surname" || nameCase === "two-plus-other") {
+            const split = splitFirstNamePair(front);
+            firstName = split.firstName;
+            lastName = split.lastName;
+            if (split.note) notes.push(split.note);
+        } else if (nameCase === "given-plus-other") {
+            firstName = front;
+            lastName = other || "FNU";
+            if (!other) notes.push("No other page names entered; verify document before booking.");
+        } else if (nameCase === "surname-plus-other") {
+            firstName = other || "FNU";
+            lastName = front;
+            if (!other) notes.push("No other page names entered; verify document before booking.");
+        }
+    }
+
+    if (!firstName || !lastName) {
+        status = "review";
+        notes.push("Could not complete both fields. Check passport example and contact support if no example matches.");
+    }
+
+    return {
+        status: status,
+        firstName: firstName,
+        lastName: lastName,
+        notes: notes
+    };
+}
+
+function updateSingleNameBookingTool() {
+    const tool = document.querySelector("[data-single-name-tool]");
+    const result = document.querySelector("[data-single-name-result]");
+
+    if (!tool || !result) return;
+
+    const getValue = function (name) {
+        const field = tool.querySelector('[data-single-name-field="' + name + '"]');
+
+        return field ? field.value : "";
+    };
+
+    const recommendation = getSingleNameRecommendation({
+        from: getValue("from"),
+        to: getValue("to"),
+        front: getValue("front"),
+        other: getValue("other"),
+        caseValue: getValue("case"),
+        mode: getValue("mode")
+    });
+
+    if (recommendation.status === "empty") {
+        result.innerHTML = '<div class="single-name-result-empty">' + escapeHTML(recommendation.notes[0]) + '</div>';
+        return;
+    }
+
+    const statusClass = "single-name-result-" + recommendation.status;
+    const fieldsHtml = recommendation.status === "blocked"
+        ? '<div class="single-name-blocked">Do not confirm as UAE entry booking</div>'
+        : (
+            '<div class="single-name-output-grid">' +
+                '<div><strong>First Name</strong><span>' + escapeHTML(recommendation.firstName || "--") + '</span></div>' +
+                '<div><strong>Last Name</strong><span>' + escapeHTML(recommendation.lastName || "--") + '</span></div>' +
+            '</div>'
+        );
+
+    result.innerHTML =
+        '<div class="' + statusClass + '">' +
+            fieldsHtml +
+            '<ul>' + recommendation.notes.map(function (note) {
+                return '<li>' + escapeHTML(note) + '</li>';
+            }).join("") + '</ul>' +
+        '</div>';
+}
+
+function clearSingleNameBookingTool() {
+    const tool = document.querySelector("[data-single-name-tool]");
+
+    if (!tool) return;
+
+    tool.querySelectorAll("input").forEach(function (input) {
+        input.value = "";
+    });
+
+    tool.querySelectorAll("select").forEach(function (select) {
+        select.selectedIndex = 0;
+    });
+
+    updateSingleNameBookingTool();
+}
+
 function handleOperationsClick(event) {
     const category = event.target.closest("[data-operations-category]");
     const tab = event.target.closest("[data-operations-id]");
     const toggle = event.target.closest("[data-operations-block]");
     const clearOperationsSearch = event.target.closest("#operationsSearchClear");
     const clearSsrSearch = event.target.closest("#operationsSsrSearchClear");
+    const clearSingleName = event.target.closest("[data-single-name-clear]");
 
     if (clearOperationsSearch) {
         activeOperationsSearch = "";
@@ -4306,6 +4622,11 @@ function handleOperationsClick(event) {
             filterOperationsSsrRows("");
             search.focus();
         }
+        return;
+    }
+
+    if (clearSingleName) {
+        clearSingleNameBookingTool();
         return;
     }
 
@@ -4337,6 +4658,17 @@ function handleOperationsClick(event) {
 }
 
 function handleOperationsInput(event) {
+    if (event.target && event.target.closest("[data-single-name-tool]")) {
+        const airportField = event.target.closest('[data-single-name-field="from"], [data-single-name-field="to"]');
+
+        if (airportField) {
+            airportField.value = airportField.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+        }
+
+        updateSingleNameBookingTool();
+        return;
+    }
+
     if (event.target && event.target.id === "operationsSearch") {
         activeOperationsSearch = event.target.value || "";
         renderOperationsGuide();
@@ -4353,6 +4685,12 @@ function handleOperationsInput(event) {
     }
 }
 
+function handleOperationsChange(event) {
+    if (event.target && event.target.closest("[data-single-name-tool]")) {
+        updateSingleNameBookingTool();
+    }
+}
+
 function initialiseOperationsGuide() {
     const panel = document.getElementById("operationsView");
 
@@ -4361,6 +4699,7 @@ function initialiseOperationsGuide() {
     if (panel && !panel.dataset.operationsReady) {
         panel.addEventListener("click", handleOperationsClick);
         panel.addEventListener("input", handleOperationsInput);
+        panel.addEventListener("change", handleOperationsChange);
         panel.dataset.operationsReady = "true";
     }
 }
