@@ -1057,6 +1057,16 @@ input {
     font-weight: 850;
 }
 
+#iataCheckBtn {
+    background: var(--fz-orange);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 850;
+}
+
 #iataClearBtn {
     margin-top: 15px;
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
