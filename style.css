@@ -981,6 +981,123 @@ input {
     transform: translateY(-1px);
 }
 
+/* === IATA TRAVEL CENTRE PANEL === */
+
+.iata-panel {
+    max-width: 960px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-left: 5px solid var(--fz-blue);
+}
+
+.iata-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.iata-header h2 {
+    color: var(--fz-blue);
+    margin-bottom: 10px;
+}
+
+.iata-header p {
+    color: #475569;
+    font-weight: 650;
+}
+
+.iata-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.iata-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.iata-row label {
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: #0f172a;
+}
+
+.iata-row input,
+.iata-row select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.iata-row input:focus,
+.iata-row select:focus {
+    outline: none;
+    border-color: var(--fz-orange);
+    box-shadow: 0 0 0 3px rgba(245, 130, 32, 0.16);
+}
+
+.iata-actions {
+    justify-content: flex-end;
+}
+
+#iataOpenBtn {
+    background: var(--fz-blue);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 850;
+}
+
+#iataClearBtn {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 850;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#iataClearBtn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.iata-result-card {
+    margin-top: 25px;
+    padding: 18px;
+    background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+}
+
+#iataRouteSummary {
+    color: var(--fz-blue);
+    font-weight: 900;
+    line-height: 1.45;
+}
+
+#iataRequirementNote {
+    margin-top: 10px;
+    color: #475569;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
 /* === TOM SELECT === */
 
 .ts-wrapper {
