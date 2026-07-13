@@ -286,6 +286,11 @@ input {
     display: block;
 }
 
+#tabIataTravel[hidden],
+#iataTravelView[hidden] {
+    display: none !important;
+}
+
 /* === AIRPORT CARDS === */
 
 .cards-grid {
@@ -1009,6 +1014,25 @@ input {
     font-weight: 650;
 }
 
+.iata-extension-status {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 9px;
+    padding: 5px 9px;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.iata-extension-status.connected {
+    border-color: #22c55e;
+    background: #ecfdf5;
+    color: #166534;
+}
+
 .iata-form {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1106,6 +1130,75 @@ input {
     color: #475569;
     font-weight: 700;
     line-height: 1.45;
+}
+
+.iata-official-result {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 2px solid #93c5fd;
+}
+
+.iata-result-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: #004f91;
+}
+
+#iataCopyResultBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 1px solid #0284c7;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #0369a1;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#iataCopyResultBtn svg {
+    width: 16px;
+    height: 16px;
+}
+
+#iataResultMeta {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+#iataResultText {
+    max-height: 460px;
+    margin: 12px 0 0;
+    padding: 14px;
+    overflow: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #172033;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+    .iata-result-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    #iataCopyResultBtn {
+        width: 100%;
+    }
 }
 
 /* === TOM SELECT === */
