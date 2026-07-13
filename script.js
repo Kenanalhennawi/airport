@@ -14,6 +14,8 @@ const PAYPORT_PROXY_URL =
 
 const PAYPORT_PROXY_VERSION = "1.1";
 const IATA_TRAVEL_CENTRE_URL = "https://www.iatatravelcentre.com/";
+const IATA_REQUIREMENTS_PROXY_URL =
+    "https://iata-travel-proxy.dominater988.workers.dev/api/iata/requirements";
 
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -1906,6 +1908,7 @@ function initialiseIataTravelCentre() {
     const nationality = document.getElementById("iataNationality");
     const residence = document.getElementById("iataResidence");
     const passportType = document.getElementById("iataPassportType");
+    const checkBtn = document.getElementById("iataCheckBtn");
     const openBtn = document.getElementById("iataOpenBtn");
     const clearBtn = document.getElementById("iataClearBtn");
 
@@ -1926,6 +1929,11 @@ function initialiseIataTravelCentre() {
         }
     });
 
+    if (checkBtn && !checkBtn.dataset.iataBound) {
+        checkBtn.addEventListener("click", checkIataRequirements);
+        checkBtn.dataset.iataBound = "true";
+    }
+
     if (openBtn && !openBtn.dataset.iataBound) {
         openBtn.addEventListener("click", openIataTravelCentre);
         openBtn.dataset.iataBound = "true";
@@ -1937,6 +1945,49 @@ function initialiseIataTravelCentre() {
     }
 
     updateIataTravelSummary();
+}
+
+async function checkIataRequirements() {
+    const from = document.getElementById("iataFrom");
+    const to = document.getElementById("iataTo");
+    const nationality = document.getElementById("iataNationality");
+    const residence = document.getElementById("iataResidence");
+    const passportType = document.getElementById("iataPassportType");
+    const note = document.getElementById("iataRequirementNote");
+
+    if (!note) return;
+
+    const fromAirport = getIataAirportByInput(from ? from.value : "");
+    const toAirport = getIataAirportByInput(to ? to.value : "");
+    const nationalityValue = nationality ? nationality.value.trim() : "";
+
+    if (!fromAirport || !toAirport || !nationalityValue) {
+        note.textContent = "Enter valid From airport, To airport, and Nationality before checking requirements.";
+        return;
+    }
+
+    const url =
+        IATA_REQUIREMENTS_PROXY_URL +
+        "?from=" + encodeURIComponent(fromAirport.iata) +
+        "&to=" + encodeURIComponent(toAirport.iata) +
+        "&nationality=" + encodeURIComponent(nationalityValue) +
+        "&residence=" + encodeURIComponent(residence && residence.value.trim() ? residence.value.trim() : "") +
+        "&passportType=" + encodeURIComponent(passportType && passportType.value ? passportType.value : "ordinary");
+
+    note.textContent = "Checking IATA requirements...";
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+            throw new Error(data.message || "IATA requirements service unavailable");
+        }
+
+        note.textContent = data.message || "Open IATA Travel Centre to verify official requirements.";
+    } catch (error) {
+        note.textContent = "IATA API is not connected yet. Open IATA Travel Centre to verify official requirements.";
+    }
 }
 
 function getIataAirportByInput(value) {
