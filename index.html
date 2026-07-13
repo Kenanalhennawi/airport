@@ -58,6 +58,10 @@
                 <i data-lucide="workflow"></i>
                 <span>Ops</span>
             </button>
+            <button type="button" id="tabIataTravel" class="view-tab" aria-pressed="false">
+                <i data-lucide="globe-2"></i>
+                <span>IATA</span>
+            </button>
             <button type="button" id="tabCurrency" class="view-tab" aria-pressed="false">
                 <i data-lucide="badge-dollar-sign"></i>
                 <span>Currency</span>
@@ -420,6 +424,66 @@
 
         <div id="operationsTabs" class="operations-tabs" role="tablist" aria-label="Operations topics"></div>
         <div id="operationsContent" class="operations-content"></div>
+    </div>
+</div>
+<div id="iataTravelView" class="view-panel">
+    <div class="iata-panel">
+        <div class="iata-header">
+            <h2>
+                <i data-lucide="globe-2"></i>
+                IATA Travel Centre
+            </h2>
+            <p>Official passport, visa, health, and destination requirement reference</p>
+        </div>
+
+        <div class="iata-form">
+            <div class="iata-row">
+                <label>From Airport</label>
+                <input type="text" id="iataFrom" list="iataAirportList" placeholder="DXB or Dubai">
+            </div>
+
+            <div class="iata-row">
+                <label>To Airport</label>
+                <input type="text" id="iataTo" list="iataAirportList" placeholder="KRT or Khartoum">
+            </div>
+
+            <div class="iata-row">
+                <label>Nationality</label>
+                <input type="text" id="iataNationality" placeholder="Example: Syrian">
+            </div>
+
+            <div class="iata-row">
+                <label>Residence</label>
+                <input type="text" id="iataResidence" placeholder="Example: UAE">
+            </div>
+
+            <div class="iata-row">
+                <label>Passport Type</label>
+                <select id="iataPassportType">
+                    <option value="ordinary">Ordinary passport</option>
+                    <option value="diplomatic">Diplomatic passport</option>
+                    <option value="service">Service / official passport</option>
+                    <option value="travel-document">Travel document</option>
+                </select>
+            </div>
+
+            <div class="iata-row iata-actions">
+                <button id="iataOpenBtn" type="button">Open IATA Travel Centre</button>
+                <button id="iataClearBtn" type="button">
+                    <i data-lucide="x"></i>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <datalist id="iataAirportList"></datalist>
+
+        <div class="iata-result-card">
+            <div id="iataRouteSummary">Enter route details to verify before opening IATA.</div>
+            <div id="iataRequirementNote">
+                IATA Travel Centre / Timatic is the official source. Final acceptance remains subject to airport, immigration, and destination authority decision.
+            </div>
+        </div>
     </div>
 </div>
 <div id="currencyView" class="view-panel">
