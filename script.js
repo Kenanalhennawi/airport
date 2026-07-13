@@ -16,6 +16,17 @@ const PAYPORT_PROXY_VERSION = "1.1";
 const IATA_TRAVEL_CENTRE_URL = "https://www.iatatravelcentre.com/";
 const IATA_REQUIREMENTS_PROXY_URL =
     "https://iata-travel-proxy.dominater988.workers.dev/api/iata/requirements";
+const IATA_NATIONALITY_OPTIONS = [
+    "Afghan", "Albanian", "Algerian", "American", "Armenian", "Australian", "Austrian", "Azerbaijani",
+    "Bahraini", "Bangladeshi", "Belarusian", "Belgian", "Bosnian", "Brazilian", "British", "Bulgarian",
+    "Canadian", "Chinese", "Croatian", "Cypriot", "Czech", "Danish", "Dutch", "Egyptian", "Emirati",
+    "Eritrean", "Ethiopian", "Filipino", "Finnish", "French", "Georgian", "German", "Ghanaian",
+    "Greek", "Indian", "Indonesian", "Iranian", "Iraqi", "Irish", "Italian", "Jordanian", "Kazakh",
+    "Kenyan", "Kuwaiti", "Kyrgyz", "Lebanese", "Libyan", "Malaysian", "Moldovan", "Moroccan",
+    "Nepalese", "Nigerian", "Omani", "Pakistani", "Polish", "Qatari", "Romanian", "Russian",
+    "Saudi", "Serbian", "Somali", "South African", "Sri Lankan", "Sudanese", "Syrian", "Tajik",
+    "Tanzanian", "Thai", "Turkish", "Ukrainian", "Uzbek", "Yemeni"
+];
 
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -1902,7 +1913,9 @@ function clearCurrencyConverter() {
 }
 
 function initialiseIataTravelCentre() {
-    const list = document.getElementById("iataAirportList");
+    const destinationList = document.getElementById("iataDestinationList");
+    const nationalityList = document.getElementById("iataNationalityList");
+    const residenceList = document.getElementById("iataResidenceList");
     const from = document.getElementById("iataFrom");
     const to = document.getElementById("iataTo");
     const nationality = document.getElementById("iataNationality");
@@ -1912,14 +1925,7 @@ function initialiseIataTravelCentre() {
     const openBtn = document.getElementById("iataOpenBtn");
     const clearBtn = document.getElementById("iataClearBtn");
 
-    if (list && !list.dataset.ready) {
-        const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
-
-        list.innerHTML = data.map(function (airport) {
-            return '<option value="' + escapeHTML(airport.iata + ' - ' + airport.city + ' - ' + airport.country) + '"></option>';
-        }).join("");
-        list.dataset.ready = "true";
-    }
+    populateIataTravelLists(destinationList, nationalityList, residenceList);
 
     [from, to, nationality, residence, passportType].forEach(function (field) {
         if (field && !field.dataset.iataBound) {
@@ -1947,6 +1953,59 @@ function initialiseIataTravelCentre() {
     updateIataTravelSummary();
 }
 
+function populateIataTravelLists(destinationList, nationalityList, residenceList) {
+    const airports = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+    const countries = getIataCountryOptions();
+
+    if (destinationList && !destinationList.dataset.ready) {
+        const airportOptions = airports.map(function (airport) {
+            return airport.iata + " - " + airport.city + " - " + airport.country;
+        });
+
+        destinationList.innerHTML = uniqueIataOptions(airportOptions.concat(countries)).map(function (item) {
+            return '<option value="' + escapeHTML(item) + '"></option>';
+        }).join("");
+        destinationList.dataset.ready = "true";
+    }
+
+    if (nationalityList && !nationalityList.dataset.ready) {
+        nationalityList.innerHTML = uniqueIataOptions(IATA_NATIONALITY_OPTIONS.concat(countries)).map(function (item) {
+            return '<option value="' + escapeHTML(item) + '"></option>';
+        }).join("");
+        nationalityList.dataset.ready = "true";
+    }
+
+    if (residenceList && !residenceList.dataset.ready) {
+        residenceList.innerHTML = uniqueIataOptions(countries.concat(["UAE", "United Arab Emirates", "USA", "UK"])).map(function (item) {
+            return '<option value="' + escapeHTML(item) + '"></option>';
+        }).join("");
+        residenceList.dataset.ready = "true";
+    }
+}
+
+function getIataCountryOptions() {
+    const countries = Object.keys(countryCodes || {});
+    const airportCountries = ((typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [])
+        .map(function (airport) { return airport.country; });
+
+    return uniqueIataOptions(countries.concat(airportCountries));
+}
+
+function uniqueIataOptions(items) {
+    const seen = {};
+
+    return items.map(function (item) {
+        return String(item || "").trim();
+    }).filter(function (item) {
+        const key = item.toLowerCase();
+        if (!item || seen[key]) return false;
+        seen[key] = true;
+        return true;
+    }).sort(function (a, b) {
+        return a.localeCompare(b);
+    });
+}
+
 async function checkIataRequirements() {
     const from = document.getElementById("iataFrom");
     const to = document.getElementById("iataTo");
@@ -1959,17 +2018,19 @@ async function checkIataRequirements() {
 
     const fromAirport = getIataAirportByInput(from ? from.value : "");
     const toAirport = getIataAirportByInput(to ? to.value : "");
+    const fromValue = cleanIataInput(from ? from.value : "");
+    const toValue = cleanIataInput(to ? to.value : "");
     const nationalityValue = nationality ? nationality.value.trim() : "";
 
-    if (!fromAirport || !toAirport || !nationalityValue) {
-        note.textContent = "Enter valid From airport, To airport, and Nationality before checking requirements.";
+    if (!fromValue || !toValue || !nationalityValue) {
+        note.textContent = "Enter From, To, and Nationality before checking requirements.";
         return;
     }
 
     const url =
         IATA_REQUIREMENTS_PROXY_URL +
-        "?from=" + encodeURIComponent(fromAirport.iata) +
-        "&to=" + encodeURIComponent(toAirport.iata) +
+        "?from=" + encodeURIComponent(fromAirport ? fromAirport.iata : fromValue) +
+        "&to=" + encodeURIComponent(toAirport ? toAirport.iata : toValue) +
         "&nationality=" + encodeURIComponent(nationalityValue) +
         "&residence=" + encodeURIComponent(residence && residence.value.trim() ? residence.value.trim() : "") +
         "&passportType=" + encodeURIComponent(passportType && passportType.value ? passportType.value : "ordinary");
@@ -1994,6 +2055,10 @@ async function checkIataRequirements() {
     }
 }
 
+function cleanIataInput(value) {
+    return String(value || "").trim().replace(/\s+/g, " ");
+}
+
 function getIataAirportByInput(value) {
     const raw = String(value || "").trim().toLowerCase();
     const code = raw.split(/\s|-/)[0].toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
@@ -2007,6 +2072,15 @@ function getIataAirportByInput(value) {
         return [airport.city, airport.airport, airport.country, airport.region].some(function (item) {
             return String(item || "").toLowerCase().includes(raw);
         });
+    }) || getIataCountryOptions().map(function (country) {
+        return {
+            iata: country,
+            city: country,
+            country: country,
+            isCountryOnly: true
+        };
+    }).find(function (country) {
+        return String(country.country || "").toLowerCase() === raw;
     }) || null;
 }
 
@@ -2032,14 +2106,15 @@ function updateIataTravelSummary() {
     ];
 
     routeSummary.textContent = parts.join(" | ");
-    note.textContent = (!fromAirport || !toAirport)
-        ? "Verify airport code/city before checking IATA Travel Centre."
-        : "Route detected. Open IATA Travel Centre and enter the same route/passenger details for official requirements.";
+    note.textContent = (!cleanIataInput(from ? from.value : "") || !cleanIataInput(to ? to.value : ""))
+        ? "Enter route before checking IATA Travel Centre."
+        : "Route prepared. Open IATA Travel Centre and enter the same route/passenger details for official requirements.";
 }
 
 function formatIataAirport(value, airport) {
     if (!String(value || "").trim()) return "Not entered";
-    if (!airport) return "Not found (" + String(value || "").trim() + ")";
+    if (!airport) return String(value || "").trim() + " (manual destination)";
+    if (airport.isCountryOnly) return airport.country + " (country)";
 
     return airport.iata + " - " + airport.city + ", " + airport.country;
 }
