@@ -10,7 +10,7 @@
         script-src 'self';
         style-src 'self' 'unsafe-inline';
         img-src 'self' https://flagcdn.com data:;
-        connect-src 'self' https://payport-proxy.dominater988.workers.dev https://iata-travel-proxy.dominater988.workers.dev;
+        connect-src 'self' https://payport-proxy.dominater988.workers.dev;
         base-uri 'self';
         form-action 'self';
     ">
@@ -58,7 +58,7 @@
                 <i data-lucide="workflow"></i>
                 <span>Ops</span>
             </button>
-            <button type="button" id="tabIataTravel" class="view-tab" aria-pressed="false">
+            <button type="button" id="tabIataTravel" class="view-tab" aria-pressed="false" hidden>
                 <i data-lucide="globe-2"></i>
                 <span>IATA</span>
             </button>
@@ -426,7 +426,7 @@
         <div id="operationsContent" class="operations-content"></div>
     </div>
 </div>
-<div id="iataTravelView" class="view-panel">
+<div id="iataTravelView" class="view-panel" hidden>
     <div class="iata-panel">
         <div class="iata-header">
             <h2>
@@ -434,6 +434,7 @@
                 IATA Travel Centre
             </h2>
             <p>Official passport, visa, health, and destination requirement reference</p>
+            <span id="iataExtensionStatus" class="iata-extension-status" role="status">IATA Assistant extension not detected</span>
         </div>
 
         <div class="iata-form">
@@ -448,13 +449,61 @@
             </div>
 
             <div class="iata-row">
-                <label>Nationality</label>
-                <input type="text" id="iataNationality" list="iataNationalityList" placeholder="Example: Syrian">
+                <label>Transit Airport (optional)</label>
+                <input type="text" id="iataTransit" list="iataDestinationList" placeholder="Example: DXB">
+            </div>
+
+            <div class="iata-row">
+                <label>Country / Territory of Nationality</label>
+                <input type="text" id="iataNationality" list="iataNationalityList" placeholder="Example: Syria">
             </div>
 
             <div class="iata-row">
                 <label>Residence</label>
                 <input type="text" id="iataResidence" list="iataResidenceList" placeholder="Example: UAE">
+            </div>
+
+            <div class="iata-row">
+                <label>Journey Type</label>
+                <select id="iataJourneyType">
+                    <option value="one-way">One way</option>
+                    <option value="round-trip">Round trip</option>
+                    <option value="multicity">Multicity</option>
+                </select>
+            </div>
+
+            <div class="iata-row">
+                <label>Departure Date</label>
+                <input type="date" id="iataDepartureDate">
+            </div>
+
+            <div class="iata-row">
+                <label>Return Date (if applicable)</label>
+                <input type="date" id="iataReturnDate">
+            </div>
+
+            <div class="iata-row">
+                <label>Duration of Stay</label>
+                <select id="iataStayDuration">
+                    <option value="up-to-7-days">Up to 7 days</option>
+                    <option value="8-to-14-days">8 to 14 days</option>
+                    <option value="15-to-30-days">15 to 30 days</option>
+                    <option value="31-to-90-days">31 to 90 days</option>
+                    <option value="more-than-90-days">More than 90 days</option>
+                </select>
+            </div>
+
+            <div class="iata-row">
+                <label>Purpose of Travel</label>
+                <select id="iataTravelPurpose">
+                    <option value="tourist">Tourist / Vacation</option>
+                    <option value="business">Business</option>
+                    <option value="visit">Visit family / friends</option>
+                    <option value="transit">Transit</option>
+                    <option value="work">Work</option>
+                    <option value="study">Study</option>
+                    <option value="crew">Crew</option>
+                </select>
             </div>
 
             <div class="iata-row">
@@ -468,7 +517,7 @@
             </div>
 
             <div class="iata-row iata-actions">
-                <button id="iataCheckBtn" type="button">Check Requirements</button>
+                <button id="iataCheckBtn" type="button">Search Official IATA</button>
                 <button id="iataOpenBtn" type="button">Open IATA Travel Centre</button>
                 <button id="iataClearBtn" type="button">
                     <i data-lucide="x"></i>
@@ -485,6 +534,17 @@
             <div id="iataRouteSummary">Enter route details to verify before opening IATA.</div>
             <div id="iataRequirementNote">
                 IATA Travel Centre / Timatic is the official source. Final acceptance remains subject to airport, immigration, and destination authority decision.
+            </div>
+            <div id="iataOfficialResult" class="iata-official-result" hidden>
+                <div class="iata-result-toolbar">
+                    <strong>Official IATA page output</strong>
+                    <button id="iataCopyResultBtn" type="button" title="Copy official IATA result">
+                        <i data-lucide="copy"></i>
+                        <span>Copy Result</span>
+                    </button>
+                </div>
+                <div id="iataResultMeta"></div>
+                <pre id="iataResultText"></pre>
             </div>
         </div>
     </div>
