@@ -1984,9 +1984,13 @@ async function checkIataRequirements() {
             throw new Error(data.message || "IATA requirements service unavailable");
         }
 
-        note.textContent = data.message || "Open IATA Travel Centre to verify official requirements.";
+        const portalText = data.result && data.result.portalAvailable
+            ? " Official IATA portal is reachable."
+            : " Open the official IATA portal to continue.";
+
+        note.textContent = (data.message || "Route prepared for IATA Travel Centre.") + portalText;
     } catch (error) {
-        note.textContent = "IATA API is not connected yet. Open IATA Travel Centre to verify official requirements.";
+        note.textContent = "Unable to reach the IATA helper. Open IATA Travel Centre to verify official requirements.";
     }
 }
 
