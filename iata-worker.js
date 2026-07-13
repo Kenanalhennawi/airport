@@ -1,5 +1,9 @@
 const allowedOrigins = [
-    "https://kenanalhennawi.github.io"
+    "https://kenanalhennawi.github.io",
+    "http://127.0.0.1:8770",
+    "http://localhost:8770",
+    "http://127.0.0.1:8767",
+    "http://localhost:8767"
 ];
 
 const IATA_TRAVEL_CENTRE_URL = "https://www.iatatravelcentre.com/";
