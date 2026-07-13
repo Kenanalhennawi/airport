@@ -438,23 +438,23 @@
 
         <div class="iata-form">
             <div class="iata-row">
-                <label>From Airport</label>
-                <input type="text" id="iataFrom" list="iataAirportList" placeholder="DXB or Dubai">
+                <label>From Airport / Country</label>
+                <input type="text" id="iataFrom" list="iataDestinationList" placeholder="DXB, Dubai, or United Arab Emirates">
             </div>
 
             <div class="iata-row">
-                <label>To Airport</label>
-                <input type="text" id="iataTo" list="iataAirportList" placeholder="KRT or Khartoum">
+                <label>To Airport / Destination</label>
+                <input type="text" id="iataTo" list="iataDestinationList" placeholder="KRT, Khartoum, or Sudan">
             </div>
 
             <div class="iata-row">
                 <label>Nationality</label>
-                <input type="text" id="iataNationality" placeholder="Example: Syrian">
+                <input type="text" id="iataNationality" list="iataNationalityList" placeholder="Example: Syrian">
             </div>
 
             <div class="iata-row">
                 <label>Residence</label>
-                <input type="text" id="iataResidence" placeholder="Example: UAE">
+                <input type="text" id="iataResidence" list="iataResidenceList" placeholder="Example: UAE">
             </div>
 
             <div class="iata-row">
@@ -477,7 +477,9 @@
             </div>
         </div>
 
-        <datalist id="iataAirportList"></datalist>
+        <datalist id="iataDestinationList"></datalist>
+        <datalist id="iataNationalityList"></datalist>
+        <datalist id="iataResidenceList"></datalist>
 
         <div class="iata-result-card">
             <div id="iataRouteSummary">Enter route details to verify before opening IATA.</div>
