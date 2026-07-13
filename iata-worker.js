@@ -81,20 +81,22 @@ export default {
             );
         }
 
+        const portalStatus = await checkIataPortalStatus();
+
         return json(
             {
                 error: false,
-                live: false,
-                source: "IATA Travel Centre / Timatic",
-                message: "Official Timatic live requirements require IATA API credentials. Use the official IATA Travel Centre link to verify the passenger details.",
+                source: "IATA Travel Centre",
+                message: "Route prepared. Open the official IATA Travel Centre to verify current travel requirements.",
                 query,
                 result: {
-                    status: "verification_required",
-                    action: "Open IATA Travel Centre and enter the same route, nationality, residence, and passport type.",
+                    status: "official_verification_required",
+                    portalAvailable: portalStatus.available,
+                    portalStatus: portalStatus.status,
+                    action: "Use the official IATA Travel Centre with the same route, nationality, residence, and passport type.",
                     warnings: [
                         "Travel requirements can change without prior notice.",
-                        "Final acceptance remains subject to airport, immigration, and destination authority decision.",
-                        "This endpoint is API-ready and should be connected to official Timatic credentials when available."
+                        "Final acceptance remains subject to airport, immigration, and destination authority decision."
                     ]
                 },
                 officialUrl: IATA_TRAVEL_CENTRE_URL
@@ -107,6 +109,29 @@ export default {
 
 function clean(value) {
     return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+async function checkIataPortalStatus() {
+    try {
+        const response = await fetch(IATA_TRAVEL_CENTRE_URL, {
+            method: "GET",
+            headers: {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.8",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+            }
+        });
+
+        return {
+            available: response.ok,
+            status: response.status
+        };
+    } catch (error) {
+        return {
+            available: false,
+            status: "unreachable"
+        };
+    }
 }
 
 function corsHeaders(request) {
