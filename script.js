@@ -13,6 +13,7 @@ const PAYPORT_PROXY_URL =
     "https://payport-proxy.dominater988.workers.dev/api/convert";
 
 const PAYPORT_PROXY_VERSION = "1.1";
+const IATA_TRAVEL_CENTRE_URL = "https://www.iatatravelcentre.com/";
 
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -743,6 +744,7 @@ function switchView(view) {
     const delayPanel = document.getElementById('delayPolicyView');
     const specialServicesPanel = document.getElementById('specialServicesView');
     const operationsPanel = document.getElementById('operationsView');
+    const iataTravelPanel = document.getElementById('iataTravelView');
     const currencyPanel = document.getElementById('currencyView');
 
     const tabAirports = document.getElementById('tabAirports');
@@ -750,6 +752,7 @@ function switchView(view) {
     const tabDelay = document.getElementById('tabDelayPolicy');
     const tabSpecialServices = document.getElementById('tabSpecialServices');
     const tabOperations = document.getElementById('tabOperations');
+    const tabIataTravel = document.getElementById('tabIataTravel');
     const tabCurrency = document.getElementById('tabCurrency');
 
     const containerEl = document.querySelector('.container');
@@ -763,6 +766,7 @@ function switchView(view) {
             view === 'delay' ||
             view === 'specialServices' ||
             view === 'operations' ||
+            view === 'iataTravel' ||
             view === 'currency'
         );
     }
@@ -773,6 +777,7 @@ function switchView(view) {
         delayPanel,
         specialServicesPanel,
         operationsPanel,
+        iataTravelPanel,
         currencyPanel
     ].forEach(function (p) {
         if (p) p.classList.remove('active');
@@ -784,6 +789,7 @@ function switchView(view) {
         tabDelay,
         tabSpecialServices,
         tabOperations,
+        tabIataTravel,
         tabCurrency
     ].forEach(function (t) {
         if (t) {
@@ -878,6 +884,18 @@ function switchView(view) {
         if (clearBtn) clearBtn.classList.add('hidden');
 
         convertCurrencyPayport();
+    } else if (view === 'iataTravel') {
+        if (iataTravelPanel) iataTravelPanel.classList.add('active');
+
+        if (tabIataTravel) {
+            tabIataTravel.classList.add('active');
+            tabIataTravel.setAttribute('aria-pressed', 'true');
+        }
+
+        if (searchInput && searchInput.parentElement) searchInput.parentElement.style.display = 'none';
+        if (clearBtn) clearBtn.classList.add('hidden');
+
+        initialiseIataTravelCentre();
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -1879,6 +1897,113 @@ function clearCurrencyConverter() {
 
     if (resultEl) resultEl.textContent = "--";
     if (rateEl) rateEl.textContent = "Rate: --";
+}
+
+function initialiseIataTravelCentre() {
+    const list = document.getElementById("iataAirportList");
+    const from = document.getElementById("iataFrom");
+    const to = document.getElementById("iataTo");
+    const nationality = document.getElementById("iataNationality");
+    const residence = document.getElementById("iataResidence");
+    const passportType = document.getElementById("iataPassportType");
+    const openBtn = document.getElementById("iataOpenBtn");
+    const clearBtn = document.getElementById("iataClearBtn");
+
+    if (list && !list.dataset.ready) {
+        const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+
+        list.innerHTML = data.map(function (airport) {
+            return '<option value="' + escapeHTML(airport.iata + ' - ' + airport.city + ' - ' + airport.country) + '"></option>';
+        }).join("");
+        list.dataset.ready = "true";
+    }
+
+    [from, to, nationality, residence, passportType].forEach(function (field) {
+        if (field && !field.dataset.iataBound) {
+            field.addEventListener("input", updateIataTravelSummary);
+            field.addEventListener("change", updateIataTravelSummary);
+            field.dataset.iataBound = "true";
+        }
+    });
+
+    if (openBtn && !openBtn.dataset.iataBound) {
+        openBtn.addEventListener("click", openIataTravelCentre);
+        openBtn.dataset.iataBound = "true";
+    }
+
+    if (clearBtn && !clearBtn.dataset.iataBound) {
+        clearBtn.addEventListener("click", clearIataTravelCentre);
+        clearBtn.dataset.iataBound = "true";
+    }
+
+    updateIataTravelSummary();
+}
+
+function getIataAirportByInput(value) {
+    const raw = String(value || "").trim().toLowerCase();
+    const code = raw.split(/\s|-/)[0].toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+    const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
+
+    if (!raw) return null;
+
+    return data.find(function (airport) {
+        return String(airport.iata || "").toUpperCase() === code;
+    }) || data.find(function (airport) {
+        return [airport.city, airport.airport, airport.country, airport.region].some(function (item) {
+            return String(item || "").toLowerCase().includes(raw);
+        });
+    }) || null;
+}
+
+function updateIataTravelSummary() {
+    const from = document.getElementById("iataFrom");
+    const to = document.getElementById("iataTo");
+    const nationality = document.getElementById("iataNationality");
+    const residence = document.getElementById("iataResidence");
+    const passportType = document.getElementById("iataPassportType");
+    const routeSummary = document.getElementById("iataRouteSummary");
+    const note = document.getElementById("iataRequirementNote");
+
+    if (!routeSummary || !note) return;
+
+    const fromAirport = getIataAirportByInput(from ? from.value : "");
+    const toAirport = getIataAirportByInput(to ? to.value : "");
+    const parts = [
+        "From: " + formatIataAirport(from ? from.value : "", fromAirport),
+        "To: " + formatIataAirport(to ? to.value : "", toAirport),
+        "Nationality: " + (nationality && nationality.value.trim() ? nationality.value.trim() : "Not entered"),
+        "Residence: " + (residence && residence.value.trim() ? residence.value.trim() : "Not entered"),
+        "Passport: " + (passportType && passportType.value ? passportType.options[passportType.selectedIndex].text : "Ordinary passport")
+    ];
+
+    routeSummary.textContent = parts.join(" | ");
+    note.textContent = (!fromAirport || !toAirport)
+        ? "Verify airport code/city before checking IATA Travel Centre."
+        : "Route detected. Open IATA Travel Centre and enter the same route/passenger details for official requirements.";
+}
+
+function formatIataAirport(value, airport) {
+    if (!String(value || "").trim()) return "Not entered";
+    if (!airport) return "Not found (" + String(value || "").trim() + ")";
+
+    return airport.iata + " - " + airport.city + ", " + airport.country;
+}
+
+function openIataTravelCentre() {
+    updateIataTravelSummary();
+    window.open(IATA_TRAVEL_CENTRE_URL, "_blank", "noopener,noreferrer");
+}
+
+function clearIataTravelCentre() {
+    ["iataFrom", "iataTo", "iataNationality", "iataResidence"].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) field.value = "";
+    });
+
+    const passportType = document.getElementById("iataPassportType");
+    if (passportType) passportType.selectedIndex = 0;
+
+    updateIataTravelSummary();
 }
    
 async function convertCurrencyPayport() {
@@ -3645,6 +3770,41 @@ const operationsGuideData = [
         ]
     },
     {
+        id: "iata-travel-centre",
+        title: "IATA Travel Centre",
+        icon: "globe-2",
+        link: {
+            url: "https://www.iatatravelcentre.com/",
+            label: "Open IATA Travel Centre"
+        },
+        quickGuide: {
+            channel: "External IATA reference",
+            timing: "Use before advising document / entry requirement rules",
+            type: "Travel document, visa, health, and destination requirement reference",
+            action: "Open IATA Travel Centre and verify the passenger route, nationality, passport, visa, and transit points.",
+            warning: "Use as a verification reference only; final travel acceptance remains subject to airport, immigration, and destination authority rules."
+        },
+        classifications: ["IATA", "Travel Centre", "Travel Center", "TIMATIC", "Visa", "Passport", "Health", "Entry requirements", "Transit"],
+        sections: [
+            {
+                title: "Agent Use",
+                items: [
+                    "Use when the passenger asks about visa, passport, entry, transit, or health document requirements.",
+                    "Check route, nationality, residence, passport type, transit point, and destination before advising.",
+                    "Use the result as guidance and advise passenger to verify with the relevant embassy, immigration, or destination authority where required."
+                ]
+            },
+            {
+                title: "Customer Advice",
+                items: [
+                    "Passenger remains responsible for valid travel documents and entry approval.",
+                    "Travel requirements can change without prior notice.",
+                    "Airport acceptance and immigration approval are subject to final authority decision."
+                ]
+            }
+        ]
+    },
+    {
         id: "ok-to-board",
         title: "OKTB / OK to Board",
         icon: "badge-check",
@@ -4892,6 +5052,7 @@ const tabInterline = document.getElementById('tabInterline');
 const tabDelay = document.getElementById('tabDelayPolicy');
 const tabSpecialServices = document.getElementById('tabSpecialServices');
 const tabOperations = document.getElementById('tabOperations');
+const tabIataTravel = document.getElementById('tabIataTravel');
 const tabCurrency = document.getElementById('tabCurrency');
 
 if (tabAirports) tabAirports.onclick = function () { switchView('airports'); };
@@ -4899,6 +5060,7 @@ if (tabInterline) tabInterline.onclick = function () { switchView('interline'); 
 if (tabDelay) tabDelay.onclick = function () { switchView('delay'); };
 if (tabSpecialServices) tabSpecialServices.onclick = function () { switchView('specialServices'); };
 if (tabOperations) tabOperations.onclick = function () { switchView('operations'); };
+if (tabIataTravel) tabIataTravel.onclick = function () { switchView('iataTravel'); };
 if (tabCurrency) tabCurrency.onclick = function () { switchView('currency'); };
 
     document.querySelectorAll('.carrier-filter-btn').forEach(function (btn) {
