@@ -2316,13 +2316,7 @@ async function convertCurrencyPayport() {
         resultEl.textContent = "Loading...";
         rateEl.textContent = "";
 
-        const d = new Date(selectedDate);
-
-        const period = d.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, "-");
+        const period = formatPayportDate(selectedDate);
 
         const url =
             PAYPORT_PROXY_URL +
@@ -2380,6 +2374,19 @@ async function convertCurrencyPayport() {
         console.error("PayPort Error:", error);
     }
 }
+
+function formatPayportDate(dateValue) {
+    const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    const [year, month, day] = String(dateValue || "").split("-");
+    const monthName = months[Number(month) - 1];
+
+    if (!year || !monthName || !day) return "";
+    return `${day}-${monthName}-${year}`;
+}
+
 function normalizeSpecialServiceText(value) {
     return String(value || "")
         .toLowerCase()
