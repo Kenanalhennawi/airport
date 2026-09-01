@@ -14,19 +14,9 @@ const PAYPORT_PROXY_URL =
 
 const PAYPORT_PROXY_VERSION = "1.1";
 const IATA_TRAVEL_CENTRE_URL = "https://www.iatatravelcentre.com/";
-const IATA_REQUIREMENTS_PROXY_URL =
-    "https://iata-travel-proxy.dominater988.workers.dev/api/iata/requirements";
-const IATA_NATIONALITY_OPTIONS = [
-    "Afghan", "Albanian", "Algerian", "American", "Armenian", "Australian", "Austrian", "Azerbaijani",
-    "Bahraini", "Bangladeshi", "Belarusian", "Belgian", "Bosnian", "Brazilian", "British", "Bulgarian",
-    "Canadian", "Chinese", "Croatian", "Cypriot", "Czech", "Danish", "Dutch", "Egyptian", "Emirati",
-    "Eritrean", "Ethiopian", "Filipino", "Finnish", "French", "Georgian", "German", "Ghanaian",
-    "Greek", "Indian", "Indonesian", "Iranian", "Iraqi", "Irish", "Italian", "Jordanian", "Kazakh",
-    "Kenyan", "Kuwaiti", "Kyrgyz", "Lebanese", "Libyan", "Malaysian", "Moldovan", "Moroccan",
-    "Nepalese", "Nigerian", "Omani", "Pakistani", "Polish", "Qatari", "Romanian", "Russian",
-    "Saudi", "Serbian", "Somali", "South African", "Sri Lankan", "Sudanese", "Syrian", "Tajik",
-    "Tanzanian", "Thai", "Turkish", "Ukrainian", "Uzbek", "Yemeni"
-];
+const IATA_EXTENSION_MESSAGE_SOURCE = "flydubai-ops-guide";
+let iataExtensionReady = false;
+let iataLastOfficialResult = "";
 
 const countryCodes = {
     "Saudi Arabia": "sa", "UAE": "ae", "United Arab Emirates": "ae", "Bahrain": "bh",
@@ -1918,16 +1908,23 @@ function initialiseIataTravelCentre() {
     const residenceList = document.getElementById("iataResidenceList");
     const from = document.getElementById("iataFrom");
     const to = document.getElementById("iataTo");
+    const transit = document.getElementById("iataTransit");
     const nationality = document.getElementById("iataNationality");
     const residence = document.getElementById("iataResidence");
+    const journeyType = document.getElementById("iataJourneyType");
+    const departureDate = document.getElementById("iataDepartureDate");
+    const returnDate = document.getElementById("iataReturnDate");
+    const stayDuration = document.getElementById("iataStayDuration");
+    const travelPurpose = document.getElementById("iataTravelPurpose");
     const passportType = document.getElementById("iataPassportType");
     const checkBtn = document.getElementById("iataCheckBtn");
     const openBtn = document.getElementById("iataOpenBtn");
     const clearBtn = document.getElementById("iataClearBtn");
+    const copyResultBtn = document.getElementById("iataCopyResultBtn");
 
     populateIataTravelLists(destinationList, nationalityList, residenceList);
 
-    [from, to, nationality, residence, passportType].forEach(function (field) {
+    [from, to, transit, nationality, residence, journeyType, departureDate, returnDate, stayDuration, travelPurpose, passportType].forEach(function (field) {
         if (field && !field.dataset.iataBound) {
             field.addEventListener("input", updateIataTravelSummary);
             field.addEventListener("change", updateIataTravelSummary);
@@ -1950,7 +1947,13 @@ function initialiseIataTravelCentre() {
         clearBtn.dataset.iataBound = "true";
     }
 
+    if (copyResultBtn && !copyResultBtn.dataset.iataBound) {
+        copyResultBtn.addEventListener("click", copyIataOfficialResult);
+        copyResultBtn.dataset.iataBound = "true";
+    }
+
     updateIataTravelSummary();
+    window.postMessage({ source: IATA_EXTENSION_MESSAGE_SOURCE, type: "IATA_EXTENSION_PING" }, "*");
 }
 
 function populateIataTravelLists(destinationList, nationalityList, residenceList) {
@@ -1969,7 +1972,7 @@ function populateIataTravelLists(destinationList, nationalityList, residenceList
     }
 
     if (nationalityList && !nationalityList.dataset.ready) {
-        nationalityList.innerHTML = uniqueIataOptions(IATA_NATIONALITY_OPTIONS.concat(countries)).map(function (item) {
+        nationalityList.innerHTML = countries.map(function (item) {
             return '<option value="' + escapeHTML(item) + '"></option>';
         }).join("");
         nationalityList.dataset.ready = "true";
@@ -2006,7 +2009,7 @@ function uniqueIataOptions(items) {
     });
 }
 
-async function checkIataRequirements() {
+function checkIataRequirements() {
     const from = document.getElementById("iataFrom");
     const to = document.getElementById("iataTo");
     const nationality = document.getElementById("iataNationality");
@@ -2027,33 +2030,163 @@ async function checkIataRequirements() {
         return;
     }
 
-    const url =
-        IATA_REQUIREMENTS_PROXY_URL +
-        "?from=" + encodeURIComponent(fromAirport ? fromAirport.iata : fromValue) +
-        "&to=" + encodeURIComponent(toAirport ? toAirport.iata : toValue) +
-        "&nationality=" + encodeURIComponent(nationalityValue) +
-        "&residence=" + encodeURIComponent(residence && residence.value.trim() ? residence.value.trim() : "") +
-        "&passportType=" + encodeURIComponent(passportType && passportType.value ? passportType.value : "ordinary");
+    if (!iataExtensionReady) {
+        note.textContent = "IATA Assistant extension is not detected. Install or enable the extension, refresh this page, then try again.";
+        setIataExtensionStatus(false);
+        return;
+    }
 
-    note.textContent = "Checking IATA requirements...";
+    note.textContent = "Opening the official IATA Travel Centre and preparing the search...";
+    clearIataOfficialResult();
 
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
+    window.postMessage({
+        source: IATA_EXTENSION_MESSAGE_SOURCE,
+        type: "IATA_SEARCH_REQUEST",
+        payload: buildIataAutomationPayload(fromAirport, toAirport)
+    }, "*");
+}
 
-        if (!response.ok || data.error) {
-            throw new Error(data.message || "IATA requirements service unavailable");
-        }
+function buildIataAutomationPayload(fromAirport, toAirport) {
+    const getValue = function (id) {
+        const field = document.getElementById(id);
+        return field ? cleanIataInput(field.value) : "";
+    };
+    const getSelect = function (id) {
+        const field = document.getElementById(id);
+        return {
+            value: field && field.value ? field.value : "",
+            text: field && field.selectedIndex >= 0 ? field.options[field.selectedIndex].text : ""
+        };
+    };
 
-        const portalText = data.result && data.result.portalAvailable
-            ? " Official IATA portal is reachable."
-            : " Open the official IATA portal to continue.";
+    const transitValue = getValue("iataTransit");
+    const transitAirport = getIataAirportByInput(transitValue);
 
-        note.textContent = (data.message || "Route prepared for IATA Travel Centre.") + portalText;
-    } catch (error) {
-        note.textContent = "Unable to reach the IATA helper. Open IATA Travel Centre to verify official requirements.";
+    return {
+        from: fromAirport ? fromAirport.iata : getValue("iataFrom"),
+        fromLabel: formatIataAirport(getValue("iataFrom"), fromAirport),
+        to: toAirport ? toAirport.iata : getValue("iataTo"),
+        toLabel: formatIataAirport(getValue("iataTo"), toAirport),
+        transit: transitAirport ? transitAirport.iata : transitValue,
+        nationality: getValue("iataNationality"),
+        residence: getValue("iataResidence"),
+        journeyType: getSelect("iataJourneyType"),
+        departureDate: getValue("iataDepartureDate"),
+        returnDate: getValue("iataReturnDate"),
+        stayDuration: getSelect("iataStayDuration"),
+        purpose: getSelect("iataTravelPurpose"),
+        passportType: getSelect("iataPassportType")
+    };
+}
+
+function handleIataExtensionMessage(event) {
+    if (event.source !== window || !event.data || event.data.source !== "flydubai-iata-assistant") return;
+
+    const note = document.getElementById("iataRequirementNote");
+
+    if (event.data.type === "IATA_EXTENSION_READY") {
+        iataExtensionReady = true;
+        setIataExtensionStatus(true);
+        return;
+    }
+
+    if (event.data.type === "IATA_SEARCH_STATUS" && note) {
+        note.textContent = event.data.message || "IATA search is in progress...";
+        return;
+    }
+
+    if (event.data.type === "IATA_AGENT_ACTION_REQUIRED" && note) {
+        note.textContent = event.data.message || "Complete the highlighted step in the official IATA tab. The assistant will continue automatically.";
+        return;
+    }
+
+    if (event.data.type === "IATA_SEARCH_ERROR" && note) {
+        note.textContent = event.data.message || "The official IATA search could not be completed automatically. Continue in the open IATA tab.";
+        return;
+    }
+
+    if (event.data.type === "IATA_SEARCH_RESULT") {
+        renderIataOfficialResult(event.data);
     }
 }
+
+function setIataExtensionStatus(isReady) {
+    const status = document.getElementById("iataExtensionStatus");
+    if (!status) return;
+
+    status.textContent = isReady ? "IATA Assistant connected" : "IATA Assistant extension not detected";
+    status.classList.toggle("connected", Boolean(isReady));
+}
+
+function renderIataOfficialResult(data) {
+    const container = document.getElementById("iataOfficialResult");
+    const meta = document.getElementById("iataResultMeta");
+    const text = document.getElementById("iataResultText");
+    const note = document.getElementById("iataRequirementNote");
+
+    if (!container || !meta || !text) return;
+
+    iataLastOfficialResult = String(data.resultText || "").trim();
+    if (!iataLastOfficialResult) {
+        if (note) note.textContent = "IATA opened, but no official result text was detected. Review the official tab manually.";
+        return;
+    }
+
+    meta.textContent = "Captured from " + (data.url || IATA_TRAVEL_CENTRE_URL) + " at " + (data.capturedAt || new Date().toLocaleString());
+    text.textContent = iataLastOfficialResult;
+    container.hidden = false;
+    if (note) note.textContent = "Official IATA page output received. Read all exceptions and verify the open IATA page before advising the passenger.";
+}
+
+function clearIataOfficialResult() {
+    const container = document.getElementById("iataOfficialResult");
+    const text = document.getElementById("iataResultText");
+    const meta = document.getElementById("iataResultMeta");
+
+    iataLastOfficialResult = "";
+    if (container) container.hidden = true;
+    if (text) text.textContent = "";
+    if (meta) meta.textContent = "";
+}
+
+function copyIataOfficialResult() {
+    const note = document.getElementById("iataRequirementNote");
+    if (!iataLastOfficialResult) {
+        if (note) note.textContent = "No official IATA result is available to copy.";
+        return;
+    }
+
+    const copyText = "Official IATA Travel Centre result\nCaptured: " + new Date().toLocaleString() + "\n\n" + iataLastOfficialResult;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(function () {
+            if (note) note.textContent = "Official IATA result copied.";
+        }).catch(function () {
+            copyIataTextFallback(copyText, note);
+        });
+    } else {
+        copyIataTextFallback(copyText, note);
+    }
+}
+
+function copyIataTextFallback(text, note) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        document.execCommand("copy");
+        if (note) note.textContent = "Official IATA result copied.";
+    } catch (error) {
+        if (note) note.textContent = "Copy failed. Select and copy the result manually.";
+    }
+
+    document.body.removeChild(textarea);
+}
+
+window.addEventListener("message", handleIataExtensionMessage);
 
 function cleanIataInput(value) {
     return String(value || "").trim().replace(/\s+/g, " ");
@@ -2087,8 +2220,14 @@ function getIataAirportByInput(value) {
 function updateIataTravelSummary() {
     const from = document.getElementById("iataFrom");
     const to = document.getElementById("iataTo");
+    const transit = document.getElementById("iataTransit");
     const nationality = document.getElementById("iataNationality");
     const residence = document.getElementById("iataResidence");
+    const journeyType = document.getElementById("iataJourneyType");
+    const departureDate = document.getElementById("iataDepartureDate");
+    const returnDate = document.getElementById("iataReturnDate");
+    const stayDuration = document.getElementById("iataStayDuration");
+    const travelPurpose = document.getElementById("iataTravelPurpose");
     const passportType = document.getElementById("iataPassportType");
     const routeSummary = document.getElementById("iataRouteSummary");
     const note = document.getElementById("iataRequirementNote");
@@ -2097,11 +2236,18 @@ function updateIataTravelSummary() {
 
     const fromAirport = getIataAirportByInput(from ? from.value : "");
     const toAirport = getIataAirportByInput(to ? to.value : "");
+    const transitAirport = getIataAirportByInput(transit ? transit.value : "");
     const parts = [
         "From: " + formatIataAirport(from ? from.value : "", fromAirport),
         "To: " + formatIataAirport(to ? to.value : "", toAirport),
+        "Transit: " + formatIataAirport(transit ? transit.value : "", transitAirport),
         "Nationality: " + (nationality && nationality.value.trim() ? nationality.value.trim() : "Not entered"),
         "Residence: " + (residence && residence.value.trim() ? residence.value.trim() : "Not entered"),
+        "Journey: " + (journeyType && journeyType.selectedIndex >= 0 ? journeyType.options[journeyType.selectedIndex].text : "One way"),
+        "Departure: " + (departureDate && departureDate.value ? departureDate.value : "Not entered"),
+        "Return: " + (returnDate && returnDate.value ? returnDate.value : "Not applicable"),
+        "Stay: " + (stayDuration && stayDuration.selectedIndex >= 0 ? stayDuration.options[stayDuration.selectedIndex].text : "Not entered"),
+        "Purpose: " + (travelPurpose && travelPurpose.selectedIndex >= 0 ? travelPurpose.options[travelPurpose.selectedIndex].text : "Not entered"),
         "Passport: " + (passportType && passportType.value ? passportType.options[passportType.selectedIndex].text : "Ordinary passport")
     ];
 
@@ -2125,14 +2271,17 @@ function openIataTravelCentre() {
 }
 
 function clearIataTravelCentre() {
-    ["iataFrom", "iataTo", "iataNationality", "iataResidence"].forEach(function (id) {
+    ["iataFrom", "iataTo", "iataTransit", "iataNationality", "iataResidence", "iataDepartureDate", "iataReturnDate"].forEach(function (id) {
         const field = document.getElementById(id);
         if (field) field.value = "";
     });
 
-    const passportType = document.getElementById("iataPassportType");
-    if (passportType) passportType.selectedIndex = 0;
+    ["iataJourneyType", "iataStayDuration", "iataTravelPurpose", "iataPassportType"].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) field.selectedIndex = 0;
+    });
 
+    clearIataOfficialResult();
     updateIataTravelSummary();
 }
    
@@ -2180,7 +2329,8 @@ async function convertCurrencyPayport() {
             "?amount=" + encodeURIComponent(amount) +
             "&from=" + encodeURIComponent(from) +
             "&to=" + encodeURIComponent(to) +
-            "&period=" + encodeURIComponent(period);
+            "&period=" + encodeURIComponent(period) +
+            "&requestId=" + Date.now();
 
         const response = await fetch(url);
 
