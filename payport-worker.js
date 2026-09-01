@@ -100,6 +100,7 @@ export default {
         try {
             let data = null;
             let lastStatus = 502;
+            let cookie = "";
 
             for (let attempt = 1; attempt <= 3; attempt += 1) {
                 const sessionUrl = new URL(PAYPORT_INDEX_URL);
@@ -108,9 +109,12 @@ export default {
 
                 const sessionResponse = await fetch(sessionUrl.toString(), {
                     method: "GET",
-                    headers: payportHeaders()
+                    headers: payportHeaders(cookie)
                 });
-                const cookie = getCookieHeader(sessionResponse.headers.get("set-cookie"));
+                cookie = mergeCookieHeaders(
+                    cookie,
+                    getCookieHeader(sessionResponse.headers.get("set-cookie"))
+                );
 
                 const response = await fetch(payportUrl.toString(), {
                     method: "GET",
@@ -118,6 +122,10 @@ export default {
                 });
                 const text = await response.text();
                 lastStatus = response.status;
+                cookie = mergeCookieHeaders(
+                    cookie,
+                    getCookieHeader(response.headers.get("set-cookie"))
+                );
 
                 if (!response.ok) continue;
 
@@ -125,7 +133,7 @@ export default {
                     data = JSON.parse(text);
                     break;
                 } catch (parseError) {
-                    // PayPort may return an Akamai HTML challenge; retry with a fresh session.
+                    // Preserve Akamai cookies and retry the same session.
                 }
             }
 
@@ -184,7 +192,11 @@ function payportHeaders(cookie) {
         "Content-Type": "application/x-www-form-urlencoded",
         "Cache-Control": "no-cache",
         "Pragma": "no-cache",
+        "Origin": "https://payport.flydubai.com",
         "Referer": PAYPORT_INDEX_URL,
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
         "X-Requested-With": "XMLHttpRequest"
     };
@@ -202,12 +214,38 @@ function getCookieHeader(setCookie) {
         .join("; ");
 }
 
+function mergeCookieHeaders(current, incoming) {
+    const cookies = new Map();
+
+    [current, incoming].forEach((header) => {
+        String(header || "").split(";").forEach((part) => {
+            const separator = part.indexOf("=");
+            if (separator <= 0) return;
+            const name = part.slice(0, separator).trim();
+            const value = part.slice(separator + 1).trim();
+            if (name) cookies.set(name, value);
+        });
+    });
+
+    return Array.from(cookies, ([name, value]) => `${name}=${value}`).join("; ");
+}
+
 function getTodayPayportDate() {
-    return new Date().toLocaleDateString("en-GB", {
+    const months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Dubai",
         day: "2-digit",
-        month: "short",
+        month: "2-digit",
         year: "numeric"
-    }).replace(/ /g, "-");
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(
+        parts.map(({ type, value }) => [type, value])
+    );
+
+    return `${values.day}-${months[Number(values.month) - 1]}-${values.year}`;
 }
 
 function parsePayportNumber(value) {
