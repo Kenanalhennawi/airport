@@ -98,42 +98,43 @@ export default {
         payportUrl.searchParams.set("_", Date.now().toString());
 
         try {
-            const sessionResponse = await fetch(PAYPORT_INDEX_URL, {
-                method: "GET",
-                headers: payportHeaders()
-            });
-            const cookie = getCookieHeader(sessionResponse.headers.get("set-cookie"));
+            let data = null;
+            let lastStatus = 502;
 
-            const response = await fetch(payportUrl.toString(), {
-                method: "GET",
-                headers: payportHeaders(cookie)
-            });
+            for (let attempt = 1; attempt <= 3; attempt += 1) {
+                const sessionUrl = new URL(PAYPORT_INDEX_URL);
+                sessionUrl.searchParams.set("_", `${Date.now()}-${attempt}`);
+                payportUrl.searchParams.set("_", `${Date.now()}-${attempt}`);
 
-            const text = await response.text();
+                const sessionResponse = await fetch(sessionUrl.toString(), {
+                    method: "GET",
+                    headers: payportHeaders()
+                });
+                const cookie = getCookieHeader(sessionResponse.headers.get("set-cookie"));
 
-            if (!response.ok) {
-                return json(
-                    {
-                        error: true,
-                        message: "PayPort returned error",
-                        status: response.status,
-                        body: text
-                    },
-                    502,
-                    request
-                );
+                const response = await fetch(payportUrl.toString(), {
+                    method: "GET",
+                    headers: payportHeaders(cookie)
+                });
+                const text = await response.text();
+                lastStatus = response.status;
+
+                if (!response.ok) continue;
+
+                try {
+                    data = JSON.parse(text);
+                    break;
+                } catch (parseError) {
+                    // PayPort may return an Akamai HTML challenge; retry with a fresh session.
+                }
             }
 
-            let data;
-
-            try {
-                data = JSON.parse(text);
-            } catch (parseError) {
+            if (!data) {
                 return json(
                     {
                         error: true,
                         message: "Invalid JSON returned from PayPort",
-                        body: text
+                        status: lastStatus
                     },
                     502,
                     request
