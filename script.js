@@ -3578,6 +3578,7 @@ const operationsGuideData = [
                 items: [
                     "Holiday packages include flights and hotels, with activities, transfers, insurance, and UAE visa services if available.",
                     "Holiday packages can be purchased on codeshare flights.",
+                    "For government or membership discounts on holiday packages, verify eligibility directly with the official Holidays team."
                     "Miles points are accrued for flights only.",
                     "Payment option is credit card only.",
                     "Contact Centre can assist through SPRINT for existing flight services only: baggage, seats, special meals, baggage upgrade, wheelchair, insurance, and similar services."
@@ -3640,11 +3641,11 @@ const operationsGuideData = [
             {
                 title: "Travelling To UAE - Name Entry Examples",
                 items: [
-                    "Two given names on front page and no surname: enter first given name as First Name and second given name as Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima.",
-                    "Two surnames on front page and no given name: enter first surname as First Name and second surname as Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima.",
+                    "Two or more given names with no surname: verify the matching UAE-entry example on the official policy before confirming.",
+                    "Two or more surnames with no given name: verify the matching UAE-entry example on the official policy before confirming.",
                     "One given name on front page plus other names on other passport pages: enter given name as First Name and other names as Last Name. Example: Mariyam + Syed Hassan -> First Name Mariyam, Last Name Syed Hassan.",
                     "One surname on front page plus other names on other passport pages: enter other names as First Name and surname as Last Name. Example: Surname Mariyam + other names Syed Hassan -> First Name Syed Hassan, Last Name Mariyam.",
-                    "Two given names or two surnames on front page plus other names on other pages: use the two names on the front page as First Name and Last Name. Example: Mariyam Fatima -> First Name Mariyam, Last Name Fatima."
+                    "If additional names appear on other pages, verify the official example and the passenger’s eligibility before confirming."
                 ]
             },
             {
@@ -3687,11 +3688,11 @@ const operationsGuideData = [
             {
                 title: "Core Rules",
                 items: [
-                    "Leg 1 boarded and Leg 2 no-show: customer can cancel or modify the no-show leg as per fare rules.",
+                    "Leg 1 boarded and Leg 2 no-show: check fare rules, itinerary type and approved cancellation matrix before advising modification or refund.",
                     "Leg 1 no-show and Leg 2 boarded: modification or cancellation is not permitted.",
                     "One-way connection, boarded then no-show: modification or cancellation on no-show leg may be allowed as per fare rules.",
                     "Round-trip connection: inbound segment changes may be allowed as per fare rules; no-show leg handling depends on leg status order and system flow.",
-                    "Cancellation of no-show segment must be completed by Supervisor / FS in-charge when applicable."
+                    "For cancellation of a no-show segment, verify the current approved scenario matrix and escalate to Supervisor / FS when applicable. Do not promise a refund solely from leg status."
                 ]
             },
             {
@@ -3925,6 +3926,7 @@ const operationsGuideData = [
     {
         id: "upgrade-cutoffs",
         title: "Upgrade Cut-offs",
+        link: { url: "https://www.flydubai.com/en/flying-with-us/upgrade-to-business-class/", label: "Official Business Class upgrade policy" },
         icon: "arrow-up-circle",
         quickGuide: {
             channel: "Bidding, OLCI banner, Airport counter",
@@ -3968,6 +3970,7 @@ const operationsGuideData = [
                     "If authorization fails, upgrade is not triggered and PNR remains untouched.",
                     "After successful bid, booking is automatically modified to Business Class.",
                     "Verify current fare basis against the approved reference.",
+                    "When changing to a regular Business Class fare, verify that a prior no-lounge restriction is not carried forward incorrectly."
                     "History shows SSR PGRD with payment amount.",
                     "Once passenger checks in online, bidding is automatically cancelled.",
                     "All bid upgrades are non-transferable and non-refundable."
@@ -4723,7 +4726,7 @@ function renderOperationsSsrCell(cell, index) {
     return (
         '<td class="' + classNames.join(" ") + '">' +
             lines.map(function (line) {
-                const codeMatch = line.match(/^(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\b/i);
+                const codeMatch = line.match(/^(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|BIKE|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\b/i);
                 const label = codeMatch ? '<strong>' + escapeHTML(codeMatch[1].trim()) + '</strong> ' : "";
                 const body = codeMatch ? line.replace(codeMatch[1], "").trim() : line;
 
@@ -4748,8 +4751,8 @@ function splitOperationsSsrCell(text, index) {
     if (!text || index < 4) return [text];
 
     const codeSplit = text
-        .replace(/,\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, "\n$1 ")
-        .replace(/\.\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, ".\n$1 ");
+        .replace(/,\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|BIKE|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, "\n$1 ")
+        .replace(/\.\s+(BAGB|BAGL|BAGX|BUPL|BUPX|BUPZ|BUPD|BUPE|NCFB|NCFE|SPEQ|BIKE|SPEX|WEAP|EXST|CBBG|PETC|BAGI|CCOK|CCHK|UPGJ|VIOK)\s+/g, ".\n$1 ");
 
     if (codeSplit.includes("\n")) {
         return codeSplit.split("\n").map(function (line) {
