@@ -32,7 +32,7 @@ const specialServicesData = [
             approval: "Prior airline approval required",
             charge: "AED 1500 per falcon per direction",
             mainAction: "Create unpaid booking, collect details, escalate Salesforce case, and update SPRINT comments.",
-            warning: "This is not a confirmation until approved. Do not confirm falcon carriage to the customer until approval is received."
+            warning: "SPX is not accepted. This is not a confirmation until approved. Do not confirm falcon carriage to the customer until approval is received."
         },
 
         agentForm: {
@@ -246,7 +246,7 @@ const specialServicesData = [
                         "Falcons arriving into DXB / DWC must be carried in a box only.",
                         "DMM: Falcons are not allowed.",
                         "ULH / MED: Naama approval is required.",
-                        "SPX / HBE / DBB: Egypt import approval is required.",
+                        "SPX: Falcon carriage is not available. HBE / DBB: Egypt import approval is required.",
                         "For interline / codeshare journeys, falcons must be booked directly with the operating carrier.",
                         "flydubai cannot accept falcons on behalf of other carriers."
                     ]
@@ -305,7 +305,7 @@ const specialServicesData = [
         agentQuickGuide: {
             cutOff: "More than 48 hours before departure",
             approval: "Floor Support / Supervisor confirmation required",
-            charge: "As per cake option / applicable charge",
+            charge: "AED 110",
             mainAction: "Add SSR CAKE, send payment link, email request details, escalate Salesforce case, and update SPRINT comments.",
             warning: "For DAR / ZNZ, EBB, KTM, MLE, WAW, BUD, or TLV, check with Shift In Charge as special arrangement is required."
         },
@@ -354,7 +354,7 @@ const specialServicesData = [
                     label: "Preferred Cake Flavor",
                     type: "select",
                     required: true,
-                    options: ["Chocolate", "Vanilla"]
+                    options: ["Chocolate", "Vanilla", "Strawberry"]
                 },
                 {
                     id: "cakeMessage",
@@ -392,7 +392,7 @@ const specialServicesData = [
         customerAdvice: [
             "Cake request must be more than 48 hours before departure.",
             "Cake request is subject to policy, charge, payment, and catering arrangement.",
-            "Customer must confirm preferred cake flavor and message details.",
+            "Customer must confirm preferred cake flavor and message details (maximum 35 characters).",
             "Once the service is booked, accepted, and paid, there will be no refund.",
             "No refund applies even in cases of segment modification or flight delays due to operational reasons."
         ],
@@ -403,7 +403,7 @@ const specialServicesData = [
                 {
                     title: "SSR / Timing",
                     items: [
-                        "SSR: CAKE.",
+                        "SSR: CAKE. Public product: AED 110; 10 × 10 cm, 225 g, message up to 35 characters.",
                         "Request must be more than 48 hours before departure.",
                         "SSR CAKE is added under Category MISC Leg Level."
                     ]
@@ -443,107 +443,33 @@ const specialServicesData = [
     },
 
     {
-        id: "fruit-basket",
-        title: "Fruit Basket",
-        icon: "apple",
-        category: "Catering / Special Service",
-        serviceType: "paid-catering-request",
-        ssr: ["FRBS"],
-        searchKeywords: [
+        "id": "fruit-basket",
+        "title": "Fruit Basket",
+        "icon": "apple",
+        "category": "Catering / Special Service",
+        "serviceType": "reference",
+        "ssr": [
+            "FRBS"
+        ],
+        "searchKeywords": [
             "fruit",
             "fruit basket",
             "frbs",
-            "basket",
-            "catering",
-            "special service",
-            "apple",
-            "banana",
-            "grapes",
-            "pear",
-            "orange"
+            "suspended"
         ],
-
-        agentQuickGuide: {
-            cutOff: "Up to 48 hours before departure",
-            approval: "No special approval mentioned",
-            charge: "AED 35 or equivalent",
-            mainAction: "Add SSR FRBS, collect payment, and update SPRINT comments.",
-            warning: "Once booked, accepted, and paid, the service is non-refundable."
+        "agentQuickGuide": {
+            "cutOff": "Unavailable",
+            "approval": "Not applicable",
+            "charge": "Do not collect payment",
+            "mainAction": "Do not add FRBS. Verify current availability with the official service reference.",
+            "warning": "Service suspended until further notice."
         },
-
-        agentChecklist: [
-            "Verify the request is up to 48 hours before departure.",
-            "Add SSR FRBS for the required flight / leg.",
-            "Collect AED 35 or equivalent.",
-            "Advise the customer that the service is non-refundable once booked, accepted, and paid.",
-            "Update SPRINT comments."
+        "agentProcess": [
+            "Do not create new requests or collect payment. Refer existing requests for review."
         ],
-
-        agentEmail: {
-            enabled: false,
-            to: [],
-            cc: [],
-            subjectTemplate: "",
-            bodyTemplate: ""
-        },
-
-        agentProcess: [
-            "Retrieve PNR and verify request timing.",
-            "Advise customer that Fruit Basket can be pre-ordered up to 48 hours prior to departure.",
-            "Advise customer about the charge: AED 35 or equivalent.",
-            "Add SSR FRBS as applicable.",
-            "Collect payment.",
-            "Update SPRINT comments."
-        ],
-
-        customerAdvice: [
-            "Fruit Basket can be pre-ordered up to 48 hours prior to departure.",
-            "Charge is AED 35 or equivalent.",
-            "Once the service is booked, accepted, and paid, there will be no refund.",
-            "No refund applies even in case of segment modification or operational flight delays."
-        ],
-
-        hiddenDetails: {
-            title: "Full Conditions / SSR / Contents",
-            sections: [
-                {
-                    title: "SSR / Charge",
-                    items: [
-                        "SSR: FRBS.",
-                        "Charge: AED 35 or equivalent in other currencies.",
-                        "Service can be pre-ordered up to 48 hours prior to departure."
-                    ]
-                },
-                {
-                    title: "Fruit Basket Contents",
-                    items: [
-                        "Black sanitized grapes",
-                        "White sanitized grapes",
-                        "Red sanitized apple",
-                        "Tangerine / orange",
-                        "Pear",
-                        "Banana"
-                    ]
-                },
-                {
-                    title: "Refund Condition",
-                    items: [
-                        "Once the service is booked, accepted, and paid, there will be no refund.",
-                        "No refund applies in cases of segment modification.",
-                        "No refund applies in cases of flight delays due to operational reasons."
-                    ]
-                }
-            ]
-        },
-
-        supervisorSection: {
-            title: "FS / Supervisor Steps",
-            hiddenByDefault: true,
-            items: [
-                "No specific FS / Supervisor email process mentioned for standard Fruit Basket request.",
-                "If payment, SSR, or operational acceptance is unclear, agent should check with Floor Support / Supervisor."
-            ]
-        }
+        "customerAdvice": [
+            "Service currently unavailable; confirm current availability before advising."
+        ]
     },
 
     {
@@ -831,515 +757,84 @@ const specialServicesData = [
     },
 
     {
-        id: "sporting-equipment",
-        title: "Sporting Equipment",
-        icon: "dumbbell",
-        category: "Special Baggage / Airport Handling Fee",
-        serviceType: "special-baggage",
-        ssr: ["SPEQ", "SPEX"],
-        searchKeywords: [
+        "id": "sporting-equipment",
+        "title": "Sporting Equipment",
+        "icon": "dumbbell",
+        "category": "Special Baggage",
+        "serviceType": "reference",
+        "ssr": [
+            "SPEQ",
+            "BIKE"
+        ],
+        "searchKeywords": [
             "sport",
             "sports",
-            "sporting",
             "sporting equipment",
             "speq",
             "spex",
-            "sporting ssr",
-            "golf",
-            "bicycle",
             "bike",
-            "surfboard",
+            "bicycle",
+            "golf",
             "ski",
-            "snowboard",
-            "diving",
-            "fishing",
-            "equipment",
-            "special baggage",
-            "oversize",
-            "pole vault",
-            "javelin",
-            "hang glider",
-            "sports bag"
+            "surfboard"
         ],
-
-        agentQuickGuide: {
-            cutOff: "At least 24 hours before departure",
-            approval: "Required for restricted / oversized cases or requests beyond limits",
-            charge: "SPEQ AED 150 / SPEX AED 270 per item per flight",
-            mainAction: "Check dimensions, add SPEQ/SPEX when eligible, collect payment, and update SPRINT comments.",
-            warning: "No sports equipment over 32 kg will be accepted. Go-show is subject to space and payload availability."
+        "agentQuickGuide": {
+            "cutOff": "Check current service availability before departure",
+            "approval": "Subject to acceptance and capacity",
+            "charge": "Included within checked baggage allowance; excess baggage charges may apply",
+            "mainAction": "Check current official sporting equipment policy and booking availability.",
+            "warning": "Do not quote legacy SPEX or sporting handling fees."
         },
-
-        agentForm: {
-            title: "Sporting Equipment Request Details",
-            description: "Fill the below details before adding SPEQ / SPEX or escalating to Supervisor.",
-            fields: [
-                {
-                    id: "pnr",
-                    label: "PNR",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: ABC123"
-                },
-                {
-                    id: "passengerName",
-                    label: "Passenger Name",
-                    type: "text",
-                    required: true,
-                    placeholder: "Passenger name"
-                },
-                {
-                    id: "flightDateSector",
-                    label: "Flight / Date / Sector",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: FZ123 / 15JAN / DXB-KTM"
-                },
-                {
-                    id: "itineraryType",
-                    label: "Itinerary Type",
-                    type: "select",
-                    required: true,
-                    options: ["Point-to-point FZ", "Connecting FZ", "Interline", "Codeshare", "Separate Ticket", "Stopover in DXB"]
-                },
-                {
-                    id: "equipmentType",
-                    label: "Equipment Type",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: Golf bag / bicycle / ski equipment"
-                },
-                {
-                    id: "dimensions",
-                    label: "Total Dimensions L + W + H",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: 175 cm"
-                },
-                {
-                    id: "weight",
-                    label: "Weight",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: 20 kg"
-                },
-                {
-                    id: "ssrRequired",
-                    label: "SSR Required",
-                    type: "select",
-                    required: true,
-                    options: ["Free - within allowance", "SPEQ", "SPEX", "Supervisor Approval Required"]
-                },
-                {
-                    id: "paymentCollected",
-                    label: "Payment Collected?",
-                    type: "select",
-                    required: true,
-                    options: ["YES", "NO", "Not Applicable"]
-                },
-                {
-                    id: "commentsUpdated",
-                    label: "SPRINT Comments Updated?",
-                    type: "select",
-                    required: true,
-                    options: ["YES", "NO"]
-                }
-            ]
-        },
-
-        agentEmail: {
-            enabled: false,
-            to: [],
-            cc: [],
-            subjectTemplate: "",
-            bodyTemplate: ""
-        },
-
-        agentChecklist: [
-            "Ask the customer for equipment type, total dimensions L + W + H, and weight.",
-            "If total dimensions are 160 cm to 189 cm, add SPEQ per applicable flight / sector.",
-            "If total dimensions are 190 cm to 350 cm, add SPEX per applicable flight / sector.",
-            "Confirm maximum 32 kg per individual item; sports equipment over 32 kg is not accepted.",
-            "Collect AED 150 for SPEQ or AED 270 for SPEX per item per flight where applicable.",
-            "If within 24 hours, check Supervisor / FS before applying the SSR.",
-            "Advise the customer to arrive at least 2 hours before departure and update SPRINT comments."
+        "agentProcess": [
+            "Verify the allowance and dimensions against the current official sporting equipment policy.",
+            "Refer to the current approved booking workflow before adding a service."
         ],
-
-        agentProcess: [
-            "Retrieve PNR and verify the flight is more than 24 hours before departure.",
-            "Advise customer with maximum dimensions, packing requirements, terms, conditions, and charges.",
-            "For point-to-point bookings, add SSR based on dimensions mentioned by passenger.",
-            "If total dimensions are between 160 cm and 189 cm, add SPEQ per leg.",
-            "If total dimensions are between 190 cm and 350 cm, add SPEX per leg.",
-            "Collect payment from passenger where applicable.",
-            "Update SPRINT comments.",
-            "For connecting, interline, or codeshare requests, escalate to Supervisor to add SSR and advise customer to call back for payment completion if applicable."
+        "customerAdvice": [
+            "Sporting equipment is included within checked baggage allowance, subject to acceptance.",
+            "Maximum combined dimensions: 300 cm; maximum weight per item: 32 kg."
         ],
-
-        customerAdvice: [
-            "Sporting equipment must be pre-booked when applicable.",
-            "Passenger travelling with sporting equipment must arrive at least 2 hours before departure because additional handling is required.",
-            "Equipment must be securely packed.",
-            "No dangerous goods should be packed inside sports equipment unless permitted by IATA DGR.",
-            "Go-show sporting equipment is subject to space and payload availability.",
-            "No sports equipment over 32 kg will be accepted."
-        ],
-
-        hiddenDetails: {
-            title: "Full Conditions / Dimensions / Charges",
-            sections: [
+        "hiddenDetails": {
+            "title": "Official reference",
+            "sections": [
                 {
-                    title: "Timing",
-                    items: [
-                        "Sporting equipment must be pre-booked at least 24 hours prior to departure.",
-                        "If flight is less than 24 hours, check with Supervisor in Charge if SSR SPEQ / SPEX can be added.",
-                        "Supervisor / Floor Support only can add SSR up to 12 hours prior to departure, subject to limits.",
-                        "Passenger travelling with sporting equipment must arrive at least 2 hours before departure.",
-                        "Sporting equipment beyond 350 cm requires pre-authorization 48 hours before departure.",
-                        "Pole vaults, javelins, and hang gliders require pre-authorization 48 hours before departure."
-                    ]
-                },
-                {
-                    title: "Charges",
-                    items: [
-                        "SPEQ handling fee: AED 150 per item per flight.",
-                        "SPEX handling fee: AED 270 per item per flight.",
-                        "Charges are applicable per sector.",
-                        "For connection flights, charge applies per flight sector when applicable.",
-                        "Handling fee is refundable up to 24 hours prior to departure as per flydubai refund policy.",
-                        "Within 24 hours, handling fee is non-refundable and non-transferable.",
-                        "Within 24 hours, service can only be used by the passenger for the specific flight and sector paid."
-                    ]
-                },
-                {
-                    title: "Dimensions",
-                    items: [
-                        "Within hand baggage dimensions 55 cm H × 38 cm W × 20 cm D: Free.",
-                        "Within checked baggage dimensions H + W + D maximum 159 cm: Free.",
-                        "160 cm to 189 cm total dimensions: SPEQ / AED 150 per item per flight.",
-                        "190 cm to 350 cm total dimensions: SPEX / AED 270 per item per flight.",
-                        "Sporting equipment beyond 350 cm requires pre-authorization 48 hours before departure and additional charges.",
-                        "No sports equipment over 32 kg will be accepted for health and safety reasons."
-                    ]
-                },
-                {
-                    title: "Baggage Rules",
-                    items: [
-                        "Each passenger is entitled to one sporting equipment per sector booked.",
-                        "Additional sporting equipment requests require Airport Services Manager approval at station.",
-                        "Any request beyond maximum limit of 10 requires approval from Special Handling team.",
-                        "Each passenger can check in one item or one set of sporting equipment.",
-                        "All sports equipment will be accepted as part of the passenger's checked baggage allowance.",
-                        "If total weight is within checked baggage allowance, no excess baggage charge applies.",
-                        "If weight exceeds allowance, excess baggage rates apply as with any checked item.",
-                        "Maximum 32 kg per individual item applies.",
-                        "If passenger has no baggage allowance, they can pre-purchase baggage or pay excess baggage at airport, subject to availability."
-                    ]
-                },
-                {
-                    title: "Restricted Sporting Equipment",
-                    items: [
-                        "Sporting equipment beyond 350 cm requires pre-authorization 48 hours before departure.",
-                        "Pole vaults require pre-authorization 48 hours before departure.",
-                        "Javelins require pre-authorization 48 hours before departure.",
-                        "Hang gliders require pre-authorization 48 hours before departure.",
-                        "Sporting weapons require pre-authorization 96 hours before departure.",
-                        "No dangerous goods may be carried in sports equipment unless specifically permitted under IATA DGR."
-                    ]
-                },
-                {
-                    title: "Interline / Codeshare Rules",
-                    items: [
-                        "Sporting equipment handling fees are applicable only on flydubai-operated flights.",
-                        "This charge applies to all ticket types including interline, staff travel, and codeshare, except EK mixed metal codeshare itinerary where applicable.",
-                        "If passenger travels on FZ with onward codeshare, interline, or OAL connection, acceptance is subject to the other carrier's approval and charges.",
-                        "Passengers holding separate tickets must pay handling charge for the flydubai leg.",
-                        "At DXB for non-TCI passengers or passengers who made a stopover and approach check-in, applicable handling charge must be applied for the FZ leg.",
-                        "Sporting equipment handling charge does not apply to mixed metal Emirates codeshare itineraries where passengers are booked onward between FZ and EK or vice versa.",
-                        "If passenger originates from partner airline with bags and connects via DXB, no FZ handling charge is collected unless there is a stopover in DXB or separate tickets."
+                    "title": "Sporting equipment",
+                    "items": [
+                        "https://www.flydubai.com/en/flying-with-us/baggage/sporting-equipment/"
                     ]
                 }
-            ]
-        },
-
-        supervisorSection: {
-            title: "FS / Supervisor Steps",
-            hiddenByDefault: true,
-            items: [
-                "Retrieve PNR and verify the flight is more than 24 hours before departure.",
-                "Add SSR SPEQ or SPEX per sector for applicable connecting / interline / codeshare cases.",
-                "Update case comments.",
-                "Supervisor / Floor Support only can add SSR up to 12 hours prior to departure, subject to maximum equipment limits.",
-                "Any request beyond maximum limit of 10 requires approval from Special Handling team.",
-                "Cancelling SPEX / SPEQ is permitted up to 24 hours prior to departure; refund is in the form of voucher.",
-                "Agents must escalate cancellation request to Supervisor or Floor Support if applicable.",
-                "Supervisor or Floor Support will send request to Reservations and voucher will be issued."
             ]
         }
     },
 
     {
-        id: "sporting-weapons-firearms",
-        title: "Sporting Weapons / Firearms",
-        icon: "shield-alert",
-        category: "Restricted Sporting Equipment / Security Approval",
-        serviceType: "restricted-baggage",
-        ssr: ["WEAP", "SPEX"],
-        searchKeywords: [
+        "id": "sporting-weapons-firearms",
+        "title": "Sporting Weapons / Firearms",
+        "icon": "shield-alert",
+        "category": "Restricted Baggage",
+        "serviceType": "reference",
+        "ssr": [
+            "WEAP"
+        ],
+        "searchKeywords": [
             "weapon",
-            "weapons",
             "firearm",
-            "firearms",
             "ammunition",
-            "sporting weapon",
-            "sporting weapons",
             "weap",
-            "spex",
-            "security approval",
-            "dubai police",
-            "hunting",
-            "gun",
-            "guns",
-            "rifle",
-            "caliber",
-            "calibre",
-            "licence",
-            "license",
-            "serial number"
+            "spex"
         ],
-
-        agentQuickGuide: {
-            cutOff: "96 hours / 4 working days before travel",
-            approval: "Security / Dubai Police approval required",
-            charge: "WEAP AED 300 per passenger + SPEX AED 270 per passenger per segment",
-            mainAction: "Advise customer to email required documents to letstalk@flydubai.com or retrieve case number if already written, then escalate to Supervisor.",
-            warning: "Do not confirm weapon / firearm / ammunition carriage without written documents and security approval."
+        "agentQuickGuide": {
+            "cutOff": "Refer to current approved policy",
+            "approval": "Required",
+            "charge": "Verify current official charges",
+            "mainAction": "Refer request to the authorized team using the current approved procedure.",
+            "warning": "Do not use legacy SPEX instructions or confirm carriage without approval."
         },
-
-        agentForm: {
-            title: "Sporting Weapon / Firearm Request Details",
-            description: "Fill the below details before escalating the request to Supervisor.",
-            fields: [
-                {
-                    id: "caseStatus",
-                    label: "Customer Already Wrote to flydubai?",
-                    type: "select",
-                    required: true,
-                    options: ["NO - Advise customer to email letstalk@flydubai.com", "YES - Customer provided case number"]
-                },
-                {
-                    id: "caseNumber",
-                    label: "Case Number",
-                    type: "text",
-                    required: false,
-                    placeholder: "If customer already wrote to flydubai"
-                },
-                {
-                    id: "pnr",
-                    label: "PNR",
-                    type: "text",
-                    required: true,
-                    placeholder: "Example: ABC123"
-                },
-                {
-                    id: "passengerName",
-                    label: "Passenger Name",
-                    type: "text",
-                    required: true,
-                    placeholder: "Passenger name"
-                },
-                {
-                    id: "nationality",
-                    label: "Nationality",
-                    type: "text",
-                    required: true,
-                    placeholder: "Passenger nationality"
-                },
-                {
-                    id: "passportDetails",
-                    label: "Passport Details / Copy Available?",
-                    type: "select",
-                    required: true,
-                    options: ["YES", "NO"]
-                },
-                {
-                    id: "flightDetails",
-                    label: "Flight Details",
-                    type: "text",
-                    required: true,
-                    placeholder: "Flight / Date / Sector"
-                },
-                {
-                    id: "weaponDetails",
-                    label: "Weapon Details",
-                    type: "textarea",
-                    required: true,
-                    placeholder: "Type of weapon / firearm / ammunition"
-                },
-                {
-                    id: "makeCaliberModel",
-                    label: "Make, Caliber, and Model",
-                    type: "text",
-                    required: true,
-                    placeholder: "Make / caliber / model"
-                },
-                {
-                    id: "serialNumber",
-                    label: "Serial Number",
-                    type: "text",
-                    required: true,
-                    placeholder: "Weapon serial number"
-                },
-                {
-                    id: "licenseCopy",
-                    label: "License Copy Available?",
-                    type: "select",
-                    required: true,
-                    options: ["YES", "NO"]
-                },
-                {
-                    id: "numberOfFirearms",
-                    label: "Number of Firearms",
-                    type: "number",
-                    required: true,
-                    placeholder: "Example: 1"
-                },
-                {
-                    id: "ammunitionWeight",
-                    label: "Quantity of Ammunition / Weight",
-                    type: "text",
-                    required: true,
-                    placeholder: "Maximum gross weight must not exceed 5 kg"
-                },
-                {
-                    id: "purpose",
-                    label: "Purpose of Carriage",
-                    type: "textarea",
-                    required: true,
-                    placeholder: "Sports / hunting event / other purpose"
-                }
-            ]
-        },
-
-        agentEmail: {
-            enabled: false,
-            to: [],
-            cc: [],
-            subjectTemplate: "",
-            bodyTemplate: ""
-        },
-
-        agentChecklist: [
-            "Ask whether the customer has already emailed flydubai and has a case number.",
-            "If not, advise the customer to email letstalk@flydubai.com with all required documents and details.",
-            "Do not confirm carriage until security / Dubai Police approval is received.",
-            "Advise the 96-hour / 4-working-day pre-authorization requirement.",
-            "After approval, apply WEAP AED 300 per passenger and SPEX AED 270 per passenger per segment where applicable.",
-            "Escalate the case to Supervisor / FS for security approval handling.",
-            "Update Salesforce case and SPRINT comments."
+        "agentProcess": [
+            "Refer to the approved current policy and authorized team."
         ],
-
-        agentProcess: [
-            "If customer did not write to flydubai or wrote with incomplete information, inform the customer to email letstalk@flydubai.com with all required documents and details.",
-            "Advise customer of approval turnaround time: 4 days prior to journey.",
-            "Advise cost per passenger: SSR WEAP AED 300 in addition to SSR SPEX AED 270 per passenger per segment.",
-            "Advise that unloaded weapons must be declared during check-in.",
-            "Advise that ammunition maximum gross weight must not exceed 5 kg.",
-            "Advise that ammunition must be packed in a sturdy box.",
-            "Inform customer that the request is subject to approval.",
-            "If customer already wrote to flydubai, retrieve case number and verify all required details.",
-            "Create and escalate case in Salesforce to Supervisor.",
-            "Update SPRINT comments."
-        ],
-
-        customerAdvice: [
-            "Customer must provide complete written documents before processing.",
-            "Request is subject to security approval.",
-            "Approval is valid only for the approved flight, date, and sector.",
-            "New approval and new charges are required if travel date changes.",
-            "Weapons must be unloaded and declared at check-in.",
-            "Ammunition must not exceed 5 kg gross weight and must be properly packed.",
-            "Sporting weapons, firearms, and ammunition can be carried as checked baggage only."
-        ],
-
-        hiddenDetails: {
-            title: "Full Conditions / Documents / Charges",
-            sections: [
-                {
-                    title: "Timing",
-                    items: [
-                        "Sporting weapons must be pre-booked and pre-authorized at least 96 hours before departure.",
-                        "Required documents must be available at least 4 working days before date of travel.",
-                        "Approval turnaround time should be advised as 4 days prior to journey."
-                    ]
-                },
-                {
-                    title: "Charges",
-                    items: [
-                        "WEAP charge: AED 300 per passenger.",
-                        "SPEX charge: AED 270 per passenger per segment.",
-                        "WEAP charge is for permissions arranged with Dubai Police.",
-                        "WEAP charge applies per passenger.",
-                        "SPEX charge applies per passenger per segment where applicable.",
-                        "Example: 3 passengers travelling with weapons require 3 SSR WEAP charges."
-                    ]
-                },
-                {
-                    title: "Restrictions",
-                    items: [
-                        "Sporting weapons, firearms, and ammunition can be carried as checked-in baggage only.",
-                        "Weapons must be unloaded.",
-                        "Weapons must be declared during check-in.",
-                        "Maximum gross weight of ammunition must not exceed 5 kg.",
-                        "Ammunition must be packed in a sturdy box.",
-                        "Request is subject to security approval.",
-                        "Approval is valid only for the approved flight, date, and sector.",
-                        "A new approval is required if passenger changes date of travel.",
-                        "New charges apply if new approval is required."
-                    ]
-                },
-                {
-                    title: "Required Documents",
-                    items: [
-                        "Passenger name",
-                        "Nationality",
-                        "Passport details or copy",
-                        "Passenger PNR",
-                        "Flight details",
-                        "Details of the weapon",
-                        "Make, caliber, and model",
-                        "Serial number",
-                        "License copy",
-                        "Number of firearms",
-                        "Quantity of ammunition / weight",
-                        "Purpose of carriage",
-                        "Invitation letter if for sports or hunting event"
-                    ]
-                },
-                {
-                    title: "Interline / Codeshare",
-                    items: [
-                        "For interline or codeshare with EK bookings where origin is on OAL, ideally the OAL carrier handles the request.",
-                        "If the request comes to flydubai for approval, charges apply."
-                    ]
-                }
-            ]
-        },
-
-        supervisorSection: {
-            title: "FS / Supervisor Steps",
-            hiddenByDefault: true,
-            items: [
-                "Retrieve case number from customer.",
-                "Verify all required details and documents.",
-                "Create a follow-up request to Customer Service Group via Chatter titled firearms/ammunition so the case is picked up on priority.",
-                "Update SPRINT comments.",
-                "Request with all relevant documents must be forwarded to Security@flydubai.com for necessary approval.",
-                "Approval from Dubai Police authority must be obtained where required.",
-                "Once approval from Security is received, Reservations Support keeps reminder to send advisory to Airports.",
-                "Security informs NCC, Airport, and originator of the request after approval."
-            ]
-        }
+        "customerAdvice": [
+            "Carriage is subject to approval and applicable restrictions."
+        ]
     }
 ];
 
