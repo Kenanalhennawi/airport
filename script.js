@@ -3584,7 +3584,7 @@ const operationsGuideData = [
                 items: [
                     "Holiday packages include flights and hotels, with activities, transfers, insurance, and UAE visa services if available.",
                     "Holiday packages can be purchased on codeshare flights.",
-                    "For government or membership discounts on holiday packages, verify eligibility directly with the official Holidays team."
+                    "For government or membership discounts on holiday packages, verify eligibility directly with the official Holidays team.",
                     "Miles points are accrued for flights only.",
                     "Payment option is credit card only.",
                     "Contact Centre can assist through SPRINT for existing flight services only: baggage, seats, special meals, baggage upgrade, wheelchair, insurance, and similar services."
@@ -3976,7 +3976,7 @@ const operationsGuideData = [
                     "If authorization fails, upgrade is not triggered and PNR remains untouched.",
                     "After successful bid, booking is automatically modified to Business Class.",
                     "Verify current fare basis against the approved reference.",
-                    "When changing to a regular Business Class fare, verify that a prior no-lounge restriction is not carried forward incorrectly."
+                    "When changing to a regular Business Class fare, verify that a prior no-lounge restriction is not carried forward incorrectly.",
                     "History shows SSR PGRD with payment amount.",
                     "Once passenger checks in online, bidding is automatically cancelled.",
                     "All bid upgrades are non-transferable and non-refundable."
