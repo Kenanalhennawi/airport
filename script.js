@@ -4507,6 +4507,8 @@ function renderSingleNameBookingTool() {
             '<div class="single-name-grid">' +
                 renderSingleNameField("From", "from", "DXB") +
                 renderSingleNameField("To", "to", "KRT") +
+                '<label class="single-name-field"><span>Journey type</span><select data-single-name-field="journey" style="width:100%;padding:10px;border:1px solid #cdd5df;border-radius:6px;background:inherit;color:inherit;"><option value="">Select journey type</option><option value="entry">Entering UAE</option><option value="transit">Transit through UAE (no entry)</option><option value="outbound">Departing UAE / other destinations</option></select></label>' +
+                '<label class="single-name-field"><span>UAE entry exception (if applicable)</span><select data-single-name-field="exception" style="width:100%;padding:10px;border:1px solid #cdd5df;border-radius:6px;background:inherit;color:inherit;"><option value="">None / not verified</option><option value="eid">Valid Emirates ID</option><option value="visa">UAE visa with additional names</option><option value="id">National ID with additional names</option><option value="annotation">Travel document observations / annotations</option></select></label>' +
                 '<label class="single-name-field">' +
                     '<span>Given name(s) on front page</span>' +
                     '<input type="text" data-single-name-field="given" placeholder="Example: Mariyam Fatima">' +
@@ -4872,141 +4874,28 @@ function splitFirstNamePair(value) {
 }
 
 function getSingleNameRecommendation(values) {
-    const from = parseAirportInput(values.from);
-    const to = parseAirportInput(values.to);
-    const fromAirport = findAirportByInput(values.from);
-    const toAirport = findAirportByInput(values.to);
-    const given = cleanPassengerName(values.given);
-    const surname = cleanPassengerName(values.surname);
-    const other = cleanPassengerName(values.other);
-    const fromKnown = !values.from || !!fromAirport;
-    const toKnown = !values.to || !!toAirport;
-    const routeLooksUaeEntry = !!toAirport && isUaeAirportCode(values.to) && !isUaeAirportCode(values.from);
-    const isUaeEntry = routeLooksUaeEntry;
-    const isTransitOrOther = !routeLooksUaeEntry;
-    let firstName = "";
-    let lastName = "";
-    let status = "ready";
-    const notes = [];
-    const hasGiven = !!given;
-    const hasSurname = !!surname;
-    const hasOther = !!other;
-    const singleNameOnly = (hasGiven && !hasSurname && !hasOther && given.split(" ").length === 1) ||
-        (!hasGiven && hasSurname && !hasOther && surname.split(" ").length === 1);
-
-    if (!fromKnown) notes.push("From airport code was not found in airport data; verify route manually.");
-    if (!toKnown) notes.push("To airport code was not found in airport data; verify route manually.");
-
-    if (!hasGiven && !hasSurname) {
-        return {
-            status: "empty",
-            firstName: "",
-            lastName: "",
-            notes: ["Enter the given name(s) and/or surname(s) exactly as shown on the passport front page."]
-        };
+    const result = (status, note, firstName = "", lastName = "") => ({status, firstName, lastName, notes: [note]});
+    const raw = [values.given, values.surname, values.other].map(v => String(v || "").trim());
+    if (!raw[0] && !raw[1]) return result("empty", "Enter passport name details.");
+    if (!findAirportByInput(values.from) || !findAirportByInput(values.to)) return result("review", "Select both valid airports.");
+    if (!["entry", "transit", "outbound"].includes(values.journey)) return result("review", "Select the full journey type; airport codes alone do not establish UAE entry.");
+    if (values.journey === "outbound" && isUaeAirportCode(values.to)) return result("review", "Destination is in the UAE. Verify the complete itinerary and select entry or transit.");
+    if (raw.some(v => /[^A-Za-z ]/.test(v))) return result("review", "Verify passport spelling and permitted characters; do not silently remove characters.");
+    const [given, surname, other] = raw.map(v => v.replace(/ +/g, " "));
+    const checked = (first, last, note) => (first.length + last.length + 1 > 59) ?
+        result("review", "Combined booking name exceeds 59 characters including spaces.") :
+        result("ready", note, first, last);
+    if (given && surname) return checked(given, surname, "Use the passport fields as shown; verify documents separately.");
+    const name = given || surname;
+    const count = name.split(" ").length;
+    const exception = ["eid", "visa", "id", "annotation"].includes(values.exception);
+    if (values.journey === "entry") {
+        if (count === 1 && !other && !exception) return result("blocked", "A single-name passport without additional names or a qualifying exception does not meet the published UAE entry rule.");
+        return result("review", "Verify the applicable UAE entry exception and official name-entry example before confirming. An exception does not itself determine the booking name.");
     }
-
-    if (!values.from || !values.to || !fromAirport || !toAirport) {
-        return {status: "review", firstName: "", lastName: "", notes: ["Select both valid airports before using name guidance."]};
-    }
-    const rawNames = [values.given, values.surname, values.other].filter(Boolean).join(" ");
-    if (/[^A-Za-z\s]/.test(rawNames) || rawNames.trim().length > 59) {
-        return {status: "review", firstName: "", lastName: "", notes: ["Verify passport spelling, permitted characters and the 59-character limit with the official policy."]};
-    }
-    if (!hasGiven || !hasSurname) {
-        if (isUaeEntry && singleNameOnly) {
-            return {status: "blocked", firstName: "", lastName: "", notes: ["UAE entry with one name may be refused unless an official exception applies. Verify the full itinerary and documents."]};
-        }
-        if (isUaeEntry || hasOther) {
-            return {status: "review", firstName: "", lastName: "", notes: ["Verify UAE entry or transit, exceptions and the matching example on the official single-name booking page before confirming."]};
-        }
-        const name = given || surname;
-        if (name.length + 4 > 59) return {status:"review",firstName:"",lastName:"",notes:["Combined booking fields exceed 59 characters."]};
-        return {status:"review",firstName:"FNU",lastName:name,notes:["For destinations outside UAE without entering UAE, FNU is used when a name field is absent. Verify the full itinerary and official policy before confirming."]};
-    }
-
-    if (isUaeEntry && singleNameOnly) {
-        status = "blocked";
-        notes.push("Do not confirm UAE entry booking with a single-name passport unless an exception applies.");
-        notes.push("Exception examples: passenger only transits via UAE, UAE visa shows additional names, valid Emirates ID, national ID with additional names, or Observations / Annotations show additional names.");
-        notes.push("If the passenger is not entering UAE or has a valid exception, use other destination rules: First Name FNU and Last Name as the single passport name.");
-
-        return {
-            status: status,
-            firstName: "",
-            lastName: "",
-            notes: notes
-        };
-    }
-
-    if (isUaeEntry) {
-        if (hasGiven && hasSurname) {
-            firstName = given;
-            lastName = surname;
-        } else if (hasGiven && hasOther && given.split(" ").length === 1) {
-            firstName = given;
-            lastName = other;
-        } else if (hasSurname && hasOther && surname.split(" ").length === 1) {
-            firstName = other;
-            lastName = surname;
-        } else if (hasGiven && !hasSurname) {
-            const split = splitFirstNamePair(given);
-            firstName = split.firstName;
-            lastName = split.lastName;
-            if (split.note) notes.push(split.note);
-            if (hasOther) notes.push("For UAE entry with two names on the front page, use the front-page two names as First Name and Last Name.");
-        } else if (hasSurname && !hasGiven) {
-            const split = splitFirstNamePair(surname);
-            firstName = split.firstName;
-            lastName = split.lastName;
-            if (split.note) notes.push(split.note);
-            if (hasOther) notes.push("For UAE entry with two surnames on the front page, use the front-page two names as First Name and Last Name.");
-        }
-
-        notes.push("UAE entry flow detected from the To airport.");
-    } else if (isTransitOrOther) {
-        if (hasGiven && hasSurname) {
-            firstName = given;
-            lastName = surname;
-        } else if (singleNameOnly) {
-            firstName = "FNU";
-            lastName = given || surname;
-            notes.push("Use FNU in First Name for other destinations / transit flow when only one name appears on the front page.");
-        } else if (hasGiven && !hasSurname) {
-            const split = splitFirstNamePair(given);
-            firstName = split.firstName;
-            lastName = split.lastName;
-            if (split.note) notes.push(split.note);
-        } else if (hasSurname && !hasGiven) {
-            if (surname.split(" ").length > 1) {
-                const split = splitFirstNamePair(surname);
-                firstName = split.firstName;
-                lastName = split.lastName;
-                if (split.note) notes.push(split.note);
-            } else {
-                firstName = "FNU";
-                lastName = surname;
-                notes.push("Use FNU in First Name when no given name appears on the front page.");
-            }
-        }
-    }
-
-    if (!firstName || !lastName) {
-        status = "review";
-        notes.push("Could not complete both fields. Check passport example and contact support if no example matches.");
-    }
-
-    if ((!fromKnown || !toKnown) && status === "ready") {
-        status = "review";
-        notes.push("Route could not be fully detected from airport data; verify destination before confirming UAE entry rules.");
-    }
-
-    return {
-        status: status,
-        firstName: firstName,
-        lastName: lastName,
-        notes: notes
-    };
+    if (other) return result("review", "Additional document names require verification against the official example.");
+    if (count > 1) return result("review", "Published examples for multiple names in one passport field differ. Consult the official policy; do not split or omit names automatically.");
+    return checked("FNU", name, "Published guidance for departures from or transit through Dubai uses FNU when a passport name field is missing. Verify itinerary and document requirements.");
 }
 
 function updateSingleNameBookingTool() {
@@ -5030,6 +4919,8 @@ function updateSingleNameBookingTool() {
         given: getValue("given"),
         surname: getValue("surname"),
         other: getValue("other"),
+        journey: getValue("journey"),
+        exception: getValue("exception"),
     });
 
     if (recommendation.status === "empty") {
