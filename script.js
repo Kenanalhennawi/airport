@@ -91,7 +91,7 @@ function parseTimeFlexible(str) {
         var hr = parseInt(m12[1], 10);
         var min = parseInt(m12[2], 10);
 
-        if (min < 0 || min > 59) return null;
+        if (hr < 1 || hr > 12 || min < 0 || min > 59) return null;
 
         if ((m12[3] || '').toLowerCase() === 'pm') {
             if (hr !== 12) hr += 12;
@@ -104,6 +104,7 @@ function parseTimeFlexible(str) {
         return { hr: hr, min: min };
     }
 
+    if (!/^\d{1,2}:\d{2}$/.test(s)) return null;
     var parts = s.split(':');
 
     if (parts.length !== 2) return null;
@@ -4886,18 +4887,19 @@ function parseAirportInput(value) {
 
 function findAirportByInput(value) {
     const raw = String(value || "").trim().toLowerCase();
-    const code = parseAirportInput(value);
     const data = (typeof window !== "undefined" && Array.isArray(window.airportsData)) ? window.airportsData : [];
-
     if (!raw) return null;
 
-    return data.find(function (airport) {
-        return String(airport.iata || "").toUpperCase() === code;
-    }) || data.find(function (airport) {
-        return [airport.city, airport.airport, airport.country, airport.region].some(function (item) {
-            return String(item || "").toLowerCase().includes(raw);
-        });
-    }) || null;
+    // Accept an exact IATA code or an exact datalist label; never truncate free text to three letters.
+    const exact = data.find(airport => String(airport.iata || "").toLowerCase() === raw ||
+        (airport.iata + " - " + airport.city + " - " + airport.country).toLowerCase() === raw);
+    if (exact) return exact;
+    if (/^[a-z]{3}$/.test(raw)) return null;
+
+    // A full airport or city name is safe only when it identifies one record.
+    const matches = data.filter(airport => [airport.city, airport.airport].some(item =>
+        String(item || "").trim().toLowerCase() === raw));
+    return matches.length === 1 ? matches[0] : null;
 }
 
 function isUaeAirportCode(code) {
