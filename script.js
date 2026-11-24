@@ -2085,7 +2085,16 @@ function buildIataAutomationPayload(fromAirport, toAirport) {
 }
 
 function handleIataExtensionMessage(event) {
-    if (event.source !== window || !event.data || event.data.source !== "flydubai-iata-assistant") return;
+    if (event.source !== window || event.origin !== window.location.origin || !event.data ||
+        typeof event.data !== "object" || event.data.source !== "flydubai-iata-assistant") return;
+    const allowedTypes = ["IATA_EXTENSION_READY", "IATA_SEARCH_STATUS", "IATA_AGENT_ACTION_REQUIRED", "IATA_SEARCH_ERROR", "IATA_SEARCH_RESULT"];
+    if (!allowedTypes.includes(event.data.type)) return;
+    if (event.data.message != null && (typeof event.data.message !== "string" || event.data.message.length > 4000)) return;
+    if (event.data.type === "IATA_SEARCH_RESULT") {
+        if (typeof event.data.resultText !== "string" || event.data.resultText.length > 200000) return;
+        if (event.data.url != null && (typeof event.data.url !== "string" || event.data.url.length > 2048)) return;
+        if (event.data.capturedAt != null && (typeof event.data.capturedAt !== "string" || event.data.capturedAt.length > 100)) return;
+    }
 
     const note = document.getElementById("iataRequirementNote");
 
