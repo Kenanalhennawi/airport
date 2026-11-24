@@ -331,7 +331,6 @@ const interlineCarriers = [
     {carrier:"SriLankan Airlines",code:"UL",account:"603",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
     {carrier:"Thai Airways",code:"TG",account:"217",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
     {carrier:"Turkish Airlines",code:"TK",account:"235",host:"Troya",type:"Unilateral",iatci:"YES",iatciType:"Both IB/OB",throughCheckInBp:"YES",throughCheckInBag:"YES",bpAtTransfer:"Not Required",remarks:""},
-    {carrier:"Vistara",code:"UK",account:"228",host:"Navitaire",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
     {carrier:"Vueling",code:"VY",account:"030",host:"Amadeus",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
     {carrier:"Wizz Air",code:"W6",account:"537",host:"Navitaire",type:"Separate Ticket",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"NO",bpAtTransfer:"NO",remarks:"Not Interline"},
     {carrier:"Air Arabia",code:"G9",account:"514",host:"Radixx",type:"Unilateral",iatci:"NO",iatciType:"N/A",throughCheckInBp:"NO",throughCheckInBag:"YES",bpAtTransfer:"YES",remarks:"IET Activation -11Dec 25"},
