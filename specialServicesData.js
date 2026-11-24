@@ -361,7 +361,7 @@ const specialServicesData = [
                     label: "Message Details on the Cake",
                     type: "textarea",
                     required: true,
-                    placeholder: "Example: Happy Honeymoon to M & K from Colleagues"
+                    placeholder: "Example: Happy Birthday Sara (max 35 characters)"
                 }
             ]
         },
@@ -425,7 +425,7 @@ const specialServicesData = [
                     title: "Refund Condition",
                     items: [
                         "Once the service is booked, accepted, and paid, there will be no refund.",
-                        "No refund applies in cases of segment modification.",
+                        "No refund applies in cases of segment modification. For any modification or cancellation involving an existing cake request, verify the required follow-up with the authorized support team.",
                         "No refund applies in cases of flight delays due to operational reasons."
                     ]
                 }
@@ -437,7 +437,7 @@ const specialServicesData = [
             hiddenByDefault: true,
             items: [
                 "Verify the PNR to ensure that payment has been completed.",
-                "Send the request to catering.flydubai@flydubai.com."
+                "Verify the current authorized catering distribution list before forwarding the request."
             ]
         }
     },
@@ -689,7 +689,7 @@ const specialServicesData = [
                         "Passenger pays an equal amount of fare for the extra seat based on available fare.",
                         "Pre-assigned seats for passenger and extra seat are chargeable as per standard seat rates.",
                         "Standard penalties and change fees apply to both seats if booking is modified.",
-                        "Go-show fares apply for additional seat booked at airport for EXST or CBBG. Verify airport eligibility and capacity."
+                        "Go-show fares may apply for additional seats booked at the airport. Confirm airport-specific eligibility, capacity and approval before advising."
                     ]
                 },
                 {
@@ -698,7 +698,7 @@ const specialServicesData = [
                         "Maximum 2 additional EXST seats can be booked per passenger.",
                         "Only 1 CBBG seat is allowed per passenger.",
                         "No fixed limitation on the number of extra seats on each flight, subject to availability.",
-                        "Hand baggage entitlement is per passenger, not per seat. For EXST checked baggage, confirm entitlement under the booked fare.",
+                        "Hand baggage entitlement is per passenger, not per seat. EXST for comfort includes checked baggage entitlement for the passenger and extra seat according to the booked fare.",
                         "Economy passenger may carry one piece of hand baggage up to 7 kg.",
                         "Business passenger hand baggage entitlement remains as per passenger allowance."
                     ]
