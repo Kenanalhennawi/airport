@@ -3238,18 +3238,20 @@ function buildSpecialServiceEmail(serviceId) {
         service.id === "cake-on-board" ? "Please verify payment status and catering arrangements before processing." : "";
     const plain = ["Dear Team,", "", "Kindly assist with the below " + title + " request.", "", ...fields.map(field => (field.label || field.id) + ": " + (values[field.id] || "Not provided")), "", ...(note ? ["Note: " + note, ""] : []), "Regards"].join("\r\n");
     const safe = value => escapeHTML(String(value ?? "")).replace(/\r\n|\r|\n/g, "<br>");
+    const cellBase = "border:1px solid #8091a5;text-align:left;direction:ltr;vertical-align:top;padding:9px 12px;font-family:Arial,Calibri,sans-serif;font-size:13px;line-height:1.45;";
     const rows = fields.map((field, index) => {
-        const bg = index % 2 ? "#f2f5f8" : "#ffffff";
-        return '<tr><td width="40%" bgcolor="' + bg + '" style="width:40%;padding:10px 14px;border:1px solid #cdd5df;font-weight:600;color:#23374d;vertical-align:top;">' + safe(field.label || field.id) + '</td><td bgcolor="' + bg + '" style="padding:10px 14px;border:1px solid #cdd5df;color:#202b38;vertical-align:top;overflow-wrap:anywhere;">' + safe(values[field.id] || "Not provided") + '</td></tr>';
+        const bg = index % 2 ? "#f3f6fa" : "#ffffff";
+        return '<tr><td align="left" valign="top" width="38%" bgcolor="#eaf0f6" style="' + cellBase + 'width:38%;background-color:#eaf0f6;font-weight:bold;color:#17365d;word-wrap:break-word;">' + safe(field.label || field.id) + '</td>' +
+            '<td align="left" valign="top" width="62%" bgcolor="' + bg + '" style="' + cellBase + 'width:62%;background-color:' + bg + ';color:#202b38;word-wrap:break-word;overflow-wrap:anywhere;">' + safe(values[field.id] || "Not provided") + '</td></tr>';
     }).join("");
-    const html = '<div style="font-family:Arial,Calibri,sans-serif;font-size:14px;color:#202b38;line-height:1.5;">' +
-        '<p>Dear Team,</p><p>Kindly assist with the below ' + safe(title) + ' request.</p>' +
-        '<table width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:680px;border-collapse:collapse;font-family:Arial,Calibri,sans-serif;font-size:13px;table-layout:fixed;">' +
-        '<tbody><tr><td colspan="2" bgcolor="#17365d" style="background-color:#17365d;color:#ffffff;font-weight:bold;font-size:17px;padding:14px;border:1px solid #17365d;">' + safe(title) + ' Request Details</td></tr>' +
-        '<tr><th align="left" bgcolor="#e4eaf1" style="background-color:#e4eaf1;color:#17365d;padding:10px 14px;border:1px solid #cdd5df;">Field</th><th align="left" bgcolor="#e4eaf1" style="background-color:#e4eaf1;color:#17365d;padding:10px 14px;border:1px solid #cdd5df;">Details</th></tr>' +
-        rows + '</tbody></table>' +
-        (note ? '<p style="max-width:680px;padding:10px 12px;background-color:#fff3df;border-left:4px solid #e99b31;"><strong>Note:</strong> ' + safe(note) + '</p>' : '') +
-        '<p>Regards</p></div>';
+    const html = '<div dir="ltr" align="left" style="direction:ltr;text-align:left;font-family:Arial,Calibri,sans-serif;font-size:14px;color:#202b38;line-height:1.5;">' +
+        '<p align="left" style="text-align:left;margin:0 0 12px;">Dear Team,</p><p align="left" style="text-align:left;margin:0 0 14px;">Kindly assist with the below ' + safe(title) + ' request.</p>' +
+        '<table dir="ltr" align="left" border="1" bordercolor="#8091a5" width="640" cellpadding="0" cellspacing="0" style="direction:ltr;text-align:left;margin:0 auto 0 0;width:640px;max-width:100%;border:1px solid #8091a5;border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Arial,Calibri,sans-serif;font-size:13px;table-layout:fixed;">' +
+        '<tbody><tr><td colspan="2" align="left" bgcolor="#17365d" style="text-align:left;direction:ltr;background-color:#17365d;color:#ffffff;font-weight:bold;font-size:16px;padding:13px 12px;border:1px solid #8091a5;border-top:4px solid #f6881f;">' + safe(title) + ' Request Details</td></tr>' +
+        '<tr><th width="38%" align="left" bgcolor="#dbe5ef" style="' + cellBase + 'width:38%;background-color:#dbe5ef;color:#17365d;font-weight:bold;">Field</th><th width="62%" align="left" bgcolor="#dbe5ef" style="' + cellBase + 'width:62%;background-color:#dbe5ef;color:#17365d;font-weight:bold;">Details</th></tr>' +
+        rows + '</tbody></table><div style="clear:both;"></div>' +
+        (note ? '<p align="left" style="clear:both;text-align:left;max-width:640px;margin:14px 0 0;padding:10px 12px;background-color:#fff3df;border:1px solid #e2bc80;border-left:4px solid #e99b31;"><strong>Note:</strong> ' + safe(note) + '</p>' : '') +
+        '<p align="left" style="clear:both;text-align:left;margin:16px 0 0;">Regards</p></div>';
     return {to: Array.isArray(service.agentEmail.to) ? service.agentEmail.to.join(";") : "",
         cc: Array.isArray(service.agentEmail.cc) ? service.agentEmail.cc.join(";") : "",
         subject: title + " Request", body: plain, html};
