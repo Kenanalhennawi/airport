@@ -354,7 +354,7 @@ const specialServicesData = [
                     label: "Preferred Cake Flavor",
                     type: "select",
                     required: true,
-                    options: ["Chocolate", "Vanilla", "Strawberry"]
+                    options: ["Chocolate", "Vanilla"]
                 },
                 {
                     id: "cakeMessage",
@@ -382,7 +382,7 @@ const specialServicesData = [
             "Advise the customer with cake options, policy, and charge.",
             "Gain confirmation from Floor Support or Supervisor.",
             "Add SSR CAKE by going to Category MISC Leg Level, choose SSR CAKE, and add it to the required segment.",
-            "Send the payment link.",
+            "Collect payment immediately after adding the service.",
             "Fill the required cake request details.",
             "Send the request details by email to CallcenterDXBops@flydubai.com.",
             "Escalate the case on Salesforce with the same details.",
@@ -392,7 +392,7 @@ const specialServicesData = [
         customerAdvice: [
             "Cake request must be more than 48 hours before departure.",
             "Cake request is subject to policy, charge, payment, and catering arrangement.",
-            "Customer must confirm preferred cake flavor and message details (maximum 35 characters).",
+            "Customer must confirm preferred cake flavor and message details (maximum 35 characters). Verify strawberry availability before promising it.",
             "Once the service is booked, accepted, and paid, there will be no refund.",
             "No refund applies even in cases of segment modification or flight delays due to operational reasons."
         ],
@@ -403,7 +403,7 @@ const specialServicesData = [
                 {
                     title: "SSR / Timing",
                     items: [
-                        "SSR: CAKE. Public product: AED 110; 10 × 10 cm, 225 g, message up to 35 characters.",
+                        "SSR: CAKE. AED 110; 10 cm diameter, five portions, message up to 35 characters.",
                         "Request must be more than 48 hours before departure.",
                         "SSR CAKE is added under Category MISC Leg Level."
                     ]
@@ -689,7 +689,7 @@ const specialServicesData = [
                         "Passenger pays an equal amount of fare for the extra seat based on available fare.",
                         "Pre-assigned seats for passenger and extra seat are chargeable as per standard seat rates.",
                         "Standard penalties and change fees apply to both seats if booking is modified.",
-                        "Go-show fares apply for additional seat booked at airport for EXST or CBBG."
+                        "Go-show fares apply for additional seat booked at airport for EXST or CBBG. Verify airport eligibility and capacity."
                     ]
                 },
                 {
@@ -698,7 +698,7 @@ const specialServicesData = [
                         "Maximum 2 additional EXST seats can be booked per passenger.",
                         "Only 1 CBBG seat is allowed per passenger.",
                         "No fixed limitation on the number of extra seats on each flight, subject to availability.",
-                        "Hand baggage entitlement is per passenger, not per seat.",
+                        "Hand baggage entitlement is per passenger, not per seat. For EXST checked baggage, confirm entitlement under the booked fare.",
                         "Economy passenger may carry one piece of hand baggage up to 7 kg.",
                         "Business passenger hand baggage entitlement remains as per passenger allowance."
                     ]
@@ -711,7 +711,7 @@ const specialServicesData = [
                         "CBBG is not available for Business Class passengers.",
                         "EXST is available in both Economy and Business Class.",
                         "Two seat assignments are mandatory and must be reserved together.",
-                        "Both seats must be booked in the same fare option.",
+                        "Both seats must be booked in the same fare option. Verify the same fare brand before proceeding.",
                         "EXST must not be allocated in emergency exit rows 15 or 16.",
                         "CBBG must not be allocated in rows 14, 15, 16, or 17.",
                         "Passengers with CBBG are not eligible to carry extra checked-in baggage allowance.",
