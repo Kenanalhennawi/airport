@@ -314,7 +314,7 @@
         <div id="delayPolicyView" class="view-panel">
     <div class="delay-policy-search-wrap">
         <i data-lucide="search" class="delay-search-icon"></i>
-        <input type="text" id="delayPolicySearch" placeholder="Search airport (e.g. DXB, BEG)... Not found = All Other" autocomplete="off">
+        <input type="text" id="delayPolicySearch" placeholder="Search airport code (e.g. DXB, BEG)" autocomplete="off">
 
         <div id="delayClearBtn" class="delay-clear-btn hidden">
             <i data-lucide="x"></i>
@@ -330,10 +330,10 @@
                 <thead>
                     <tr>
                         <th>Airports</th>
-                        <th>Pax Email/SMS<br><small>STD-03h (delay 90+ mins)</small></th>
-                        <th>Pax Email/SMS<br><small>ETD-03h (delay 30+ mins)</small></th>
-                        <th>Check-in closure<br><small>90 mins delay</small></th>
-                        <th>Check-in closure<br><small>30 mins delay</small></th>
+                        <th>Pax Email/SMS<br><small>Delay 90+ mins</small></th>
+                        <th>Report for check-in<br><small>STD − 3h</small></th>
+                        <th>Pax Email/SMS<br><small>Delay 30+ mins</small></th>
+                        <th>Report for check-in<br><small>ETD − 3h</small></th>
                         <th>Closure time<br><small>STD or ETD based</small></th>
                     </tr>
                 </thead>
@@ -355,7 +355,7 @@
 
             <ul>
                 <li>
-                    <strong>Departure from DXB/DWC:</strong>
+                    <strong>Departure from DXB/DWC, ALA or IST:</strong>
                     Passengers receive Email/SMS if delay is 30 mins or more.
                     Report 3h before new departure (ETD-03h).
                     Check-in closure: ETD-60.
@@ -369,7 +369,7 @@
                 </li>
 
                 <li>
-                    <strong>All Other Outstations:</strong>
+                    <strong>All Other Outstations (verify departure airport):</strong>
                     Passengers receive Email/SMS if delay is 90 mins or more.
                     Report 3h before new departure (ETD-03h).
                     Check-in closure: ETD-60.
