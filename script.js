@@ -2863,17 +2863,18 @@ function renderAgentFormField(serviceId, field) {
     const defaultValue = escapeHTML(field.defaultValue || "");
 
     let inputHtml = "";
+    const constraints = (field.required ? " required" : "") + (field.id === "cakeMessage" ? ' maxlength="35"' : "") + (fieldType === "number" ? ' min="1" step="1"' : "");
 
     if (field.type === "textarea") {
         inputHtml =
-            '<textarea id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + ' placeholder="' + placeholder + '">' +
+            '<textarea id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + constraints + ' placeholder="' + placeholder + '">' +
                 defaultValue +
             "</textarea>";
     } else if (field.type === "select") {
         const options = Array.isArray(field.options) ? field.options : [];
 
         inputHtml =
-            '<select id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + '>' +
+            '<select id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + constraints + '>' +
                 '<option value="">Select</option>' +
                 options.map(function (option) {
                     return '<option value="' + escapeHTML(option) + '">' + escapeHTML(option) + "</option>";
@@ -2881,7 +2882,7 @@ function renderAgentFormField(serviceId, field) {
             "</select>";
     } else {
         inputHtml =
-            '<input id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + ' type="' + escapeHTML(field.type || "text") + '" placeholder="' + placeholder + '" value="' + defaultValue + '">';
+            '<input id="' + inputId + '" data-field-id="' + fieldId + '"' + (field.required ? ' data-required="true"' : "") + constraints + ' type="' + escapeHTML(field.type || "text") + '" placeholder="' + placeholder + '" value="' + defaultValue + '">';
     }
 
     return (
@@ -2899,6 +2900,7 @@ function renderAgentEmailActions(service) {
 
     return (
         '<div class="special-email-actions">' +
+            '<button type="button" class="special-copy-email-btn" data-special-action="preview-email" data-service-id="' + serviceId + '"><i data-lucide="eye"></i><span>Preview Email</span></button>' +
             '<button type="button" class="special-copy-email-btn" data-special-action="copy-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="copy"></i>' +
                 '<span>Copy Formatted Table</span>' +
@@ -3315,7 +3317,15 @@ function showSpecialEmailPreview(email, message) {
     close.style.cssText = "margin-top:16px;padding:8px 18px;border:0;border-radius:6px;background:#17365d;color:white;cursor:pointer;";
     close.addEventListener("click", () => { if (typeof dialog.close === "function") dialog.close(); else dialog.remove(); });
     dialog.addEventListener("close", () => dialog.remove());
-    dialog.append(heading, preview, close);
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.textContent = "Copy Formatted Table";
+    copy.style.cssText = close.style.cssText + "margin-right:10px;";
+    copy.addEventListener("click", async () => {
+        const copied = await copyFormattedSpecialEmail(email);
+        heading.textContent = copied ? "Formatted table copied. Paste into Outlook Web." : "Copy unavailable. Select and copy the email manually.";
+    });
+    dialog.append(heading, preview, copy, close);
     document.body.appendChild(dialog);
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.setAttribute("open", "");
@@ -3325,7 +3335,12 @@ async function copySpecialServiceEmail(serviceId) {
     const email = buildSpecialServiceEmail(serviceId);
     if (!email) return;
     if (await copyFormattedSpecialEmail(email)) {
-        alert("Formatted email table copied. Paste into Outlook Web using Ctrl+V.");
+        const status = document.createElement("div");
+        status.setAttribute("role", "status");
+        status.textContent = "Formatted table copied. Paste into Outlook Web.";
+        status.style.cssText = "position:fixed;bottom:20px;right:20px;z-index:9999;background:#17365d;color:white;padding:12px 18px;border-radius:8px;max-width:90vw;";
+        document.body.appendChild(status);
+        setTimeout(() => status.remove(), 3500);
     } else {
         showSpecialEmailPreview(email);
     }
@@ -3349,25 +3364,43 @@ async function openSpecialServiceEmail(serviceId) {
 function validateSpecialServiceForm(serviceId) {
     const form = document.querySelector('[data-service-form="' + serviceId + '"]');
     const error = document.querySelector('[data-service-form-error="' + serviceId + '"]');
-    let isValid = true;
-    let firstInvalid = null;
-
     if (!form) return false;
-
-    form.querySelectorAll("[data-field-id]").forEach(function (field) {
+    const fields = Array.from(form.querySelectorAll("[data-field-id]"));
+    const get = id => fields.find(f => f.dataset.fieldId === id);
+    const valueOf = id => String(get(id)?.value || "").trim();
+    const issues = [];
+    let firstInvalid = null;
+    const mark = (field, message) => {
+        if (!field) return;
+        field.classList.add("is-invalid");
+        field.setAttribute("aria-invalid", "true");
+        if (!firstInvalid) firstInvalid = field;
+        issues.push((field.closest("label")?.querySelector("span")?.textContent || field.dataset.fieldId) + ": " + message);
+    };
+    fields.forEach(field => {
+        field.classList.remove("is-invalid");
+        field.removeAttribute("aria-invalid");
         const value = String(field.value || "").trim();
-        const required = field.dataset.required === "true";
-        const valid = (!required || !!value) && (!value || field.checkValidity()) && (field.dataset.fieldId !== "cakeMessage" || value.length <= 35);
-        field.classList.toggle("is-invalid", !valid);
-
-        if (!valid && !firstInvalid) firstInvalid = field;
-        if (!valid) isValid = false;
+        const id = field.dataset.fieldId;
+        if (field.dataset.required === "true" && !value) mark(field, "Required");
+        else if (field.validity.badInput || (value && !field.checkValidity())) mark(field, "Invalid value");
+        else if (value && field.type === "number" && (!Number.isSafeInteger(Number(value)) || Number(value) < 1)) mark(field, "Enter a positive whole number");
+        else if (id === "cakeMessage" && field.value.length > 35) mark(field, "Maximum 35 characters");
+        else if (id === "flightNumber" && value && !/^FZ\s?\d{1,4}$/i.test(value)) mark(field, "Enter an FZ flight number");
+        else if (id === "pnr" && value && !(serviceId === "falcon" ? /^[A-Z0-9]{6}(?:[\s,;/]+[A-Z0-9]{6})*$/i : /^[A-Z0-9]{6}$/i).test(value)) mark(field, "Enter a six-character booking reference");
     });
-
-    if (error) error.classList.toggle("hidden", isValid);
+    if (serviceId === "falcon" && ["Box", "Combination"].includes(valueOf("carriageMethod"))) {
+        for (const id of ["falconsPerBox", "numberOfBoxes"]) {
+            if (!valueOf(id)) mark(get(id), "Required for carriage in boxes");
+        }
+        if (valueOf("falconsPerBox") && Number(valueOf("falconsPerBox")) !== 1) mark(get("falconsPerBox"), "One falcon per box");
+    }
+    if (error) {
+        error.textContent = issues.join(" • ");
+        error.classList.toggle("hidden", issues.length === 0);
+    }
     if (firstInvalid) firstInvalid.focus();
-
-    return isValid;
+    return issues.length === 0;
 }
 
 function filterSpecialAnswerFinder(input) {
@@ -3441,7 +3474,10 @@ function handleSpecialServicesClick(event) {
 
     if (!serviceId) return;
 
-    if (action === "copy-email") {
+    if (action === "preview-email") {
+        const email = buildSpecialServiceEmail(serviceId);
+        if (email) showSpecialEmailPreview(email, "Review the formatted email before copying.");
+    } else if (action === "copy-email") {
         copySpecialServiceEmail(serviceId);
     } else if (action === "open-email") {
         openSpecialServiceEmail(serviceId);
