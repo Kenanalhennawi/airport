@@ -182,19 +182,16 @@ function getTimezoneOffsetMinutes(timezone, date) {
 
 function localTimeInTimezoneToUTC(y, m, d, hr, min, timezone) {
     try {
-        var utcGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0));
-
-        for (var i = 0; i < 4; i++) {
-            var offsetMinutes = getTimezoneOffsetMinutes(timezone, utcGuess);
-            var nextGuess = new Date(Date.UTC(y, m - 1, d, hr, min, 0) - offsetMinutes * 60000);
-
-            if (Math.abs(nextGuess.getTime() - utcGuess.getTime()) < 1000) break;
-
-            utcGuess = nextGuess;
+        const wall = Date.UTC(y, m - 1, d, hr, min, 0);
+        const offsets = new Set();
+        for (let hours = -36; hours <= 36; hours += 6) {
+            offsets.add(getTimezoneOffsetMinutes(timezone, new Date(wall + hours * 3600000)));
         }
-
-        return utcGuess;
-    } catch (e) {
+        const matches = [...offsets].map(offset => new Date(wall - offset * 60000))
+            .filter(candidate => candidate.getTime() + getTimezoneOffsetMinutes(timezone, candidate) * 60000 === wall);
+        // Reject nonexistent and ambiguous local times rather than silently choosing an instant.
+        return matches.length === 1 ? matches[0] : null;
+    } catch (error) {
         return null;
     }
 }
@@ -262,7 +259,7 @@ function calculateTimeDifference(iata, timezone) {
     }
 
     if (!targetDate) {
-        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid timezone</span>';
+        resultEl.innerHTML = '<span style="color:#dc2626;font-weight:bold;">Invalid or ambiguous local time (check timezone / DST)</span>';
         return;
     }
 
@@ -2839,7 +2836,7 @@ function renderAgentForm(service) {
                 '<span>' + escapeHTML(service.agentForm.title || "Request Details") + "</span>" +
             "</div>" +
             (service.agentForm.description ? '<p class="special-service-form-desc">' + escapeHTML(service.agentForm.description) + "</p>" : "") +
-            '<div class="special-service-form-error hidden" data-service-form-error="' + serviceId + '">Please fill all mandatory fields before generating the email.</div>' +
+            '<div class="special-service-form-error hidden" data-service-form-error="' + serviceId + '">Please complete required fields and correct invalid values before generating the email.</div>' +
             '<div class="special-service-form-grid" data-service-form="' + serviceId + '">' +
                 fieldsHtml +
             "</div>" +
@@ -5245,14 +5242,6 @@ function initialiseSpecialServices() {
     }
 }
 
-function escapeHTML(value) {
-    return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
 function init() {
     updateLiveClock();
     populateInterlineTable();
