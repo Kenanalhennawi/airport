@@ -2896,11 +2896,11 @@ function renderAgentEmailActions(service) {
         '<div class="special-email-actions">' +
             '<button type="button" class="special-copy-email-btn" data-special-action="copy-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="copy"></i>' +
-                '<span>Copy Email Body</span>' +
+                '<span>Copy Formatted Table</span>' +
             "</button>" +
             '<button type="button" class="special-open-email-btn" data-special-action="open-email" data-service-id="' + serviceId + '">' +
                 '<i data-lucide="mail"></i>' +
-                '<span>Open in Outlook Web</span>' +
+                '<span>Copy &amp; Open Outlook Web</span>' +
             "</button>" +
         "</div>"
     );
@@ -3230,161 +3230,113 @@ function applySpecialTemplate(template, values) {
 
 function buildSpecialServiceEmail(serviceId) {
     const service = getSpecialServiceById(serviceId);
-
-    if (!service || !service.agentEmail) return null;
-    if (!validateSpecialServiceForm(serviceId)) return null;
-
+    if (!service || !service.agentEmail || !service.agentEmail.enabled || !service.agentForm || !validateSpecialServiceForm(serviceId)) return null;
     const values = getSpecialServiceFormValues(serviceId);
-
-    const subject = applySpecialTemplate(service.agentEmail.subjectTemplate, values);
-    const body = buildSpecialServiceTextTableEmail(service, values);
-
-    return {
-        to: Array.isArray(service.agentEmail.to) ? service.agentEmail.to.join(";") : "",
-        cc: Array.isArray(service.agentEmail.cc) ? service.agentEmail.cc.join(";") : "",
-        subject: subject,
-        body: body
-    };
-}
-
-function buildSpecialServiceTextTableEmail(service, values) {
-    const lines = [];
     const title = service.title || "Special Service";
-
-    lines.push("Dear Team,");
-    lines.push("");
-    lines.push("Kindly assist with the below " + title + " request.");
-    lines.push("");
-    lines.push(title + " Request Details");
-    lines.push("------------------------------------------------------------");
-
-    if (service.agentForm && Array.isArray(service.agentForm.fields)) {
-        let maxLabelLength = 0;
-
-        service.agentForm.fields.forEach(function (field) {
-            const label = field.label || field.id || "";
-            if (label.length > maxLabelLength) maxLabelLength = label.length;
-        });
-
-        service.agentForm.fields.forEach(function (field) {
-            const label = field.label || field.id || "";
-            const value = values[field.id] || "";
-            const paddedLabel = label.padEnd(maxLabelLength, " ");
-
-            lines.push(paddedLabel + " : " + value);
-        });
-    }
-
-    lines.push("------------------------------------------------------------");
-    lines.push("");
-
-    if (service.id === "falcon") {
-        lines.push("Note:");
-        lines.push("Customer has been advised that this request is subject to approval and is not a confirmation to carry the falcon(s).");
-        lines.push("");
-    }
-
-    if (service.id === "cake-on-board") {
-        lines.push("Note:");
-        lines.push("Payment link has been sent / payment status to be verified as per process.");
-        lines.push("");
-    }
-
-    lines.push("Regards");
-
-    return lines.join("\r\n");
-}
-function buildSpecialServicePlainEmail(service, values) {
-    const lines = [];
-
-    lines.push("Dear Team,");
-    lines.push("");
-    lines.push("Kindly assist with the below " + (service.title || "Special Service") + " request.");
-    lines.push("");
-
-    if (service.agentForm && Array.isArray(service.agentForm.fields)) {
-        service.agentForm.fields.forEach(function (field) {
-            const label = field.label || field.id || "";
-            const value = values[field.id] || "";
-            lines.push(label + ": " + value);
-        });
-    }
-
-    lines.push("");
-
-    if (service.id === "falcon") {
-        lines.push("Customer has been advised that this request is subject to approval and is not a confirmation to carry the falcon(s).");
-    }
-
-    if (service.id === "cake-on-board") {
-        lines.push("Payment link has been sent / payment status to be verified as per process.");
-    }
-
-    lines.push("");
-    lines.push("Regards");
-
-    return lines.join("\n");
+    const fields = service.agentForm.fields || [];
+    const note = service.id === "falcon" ? "Request is subject to approval; carriage is not confirmed." :
+        service.id === "cake-on-board" ? "Please verify payment status and catering arrangements before processing." : "";
+    const plain = ["Dear Team,", "", "Kindly assist with the below " + title + " request.", "", ...fields.map(field => (field.label || field.id) + ": " + (values[field.id] || "Not provided")), "", ...(note ? ["Note: " + note, ""] : []), "Regards"].join("\r\n");
+    const safe = value => escapeHTML(String(value ?? "")).replace(/\r\n|\r|\n/g, "<br>");
+    const rows = fields.map((field, index) => {
+        const bg = index % 2 ? "#f2f5f8" : "#ffffff";
+        return '<tr><td width="40%" bgcolor="' + bg + '" style="width:40%;padding:10px 14px;border:1px solid #cdd5df;font-weight:600;color:#23374d;vertical-align:top;">' + safe(field.label || field.id) + '</td><td bgcolor="' + bg + '" style="padding:10px 14px;border:1px solid #cdd5df;color:#202b38;vertical-align:top;overflow-wrap:anywhere;">' + safe(values[field.id] || "Not provided") + '</td></tr>';
+    }).join("");
+    const html = '<div style="font-family:Arial,Calibri,sans-serif;font-size:14px;color:#202b38;line-height:1.5;">' +
+        '<p>Dear Team,</p><p>Kindly assist with the below ' + safe(title) + ' request.</p>' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:680px;border-collapse:collapse;font-family:Arial,Calibri,sans-serif;font-size:13px;table-layout:fixed;">' +
+        '<tbody><tr><td colspan="2" bgcolor="#17365d" style="background-color:#17365d;color:#ffffff;font-weight:bold;font-size:17px;padding:14px;border:1px solid #17365d;">' + safe(title) + ' Request Details</td></tr>' +
+        '<tr><th align="left" bgcolor="#e4eaf1" style="background-color:#e4eaf1;color:#17365d;padding:10px 14px;border:1px solid #cdd5df;">Field</th><th align="left" bgcolor="#e4eaf1" style="background-color:#e4eaf1;color:#17365d;padding:10px 14px;border:1px solid #cdd5df;">Details</th></tr>' +
+        rows + '</tbody></table>' +
+        (note ? '<p style="max-width:680px;padding:10px 12px;background-color:#fff3df;border-left:4px solid #e99b31;"><strong>Note:</strong> ' + safe(note) + '</p>' : '') +
+        '<p>Regards</p></div>';
+    return {to: Array.isArray(service.agentEmail.to) ? service.agentEmail.to.join(";") : "",
+        cc: Array.isArray(service.agentEmail.cc) ? service.agentEmail.cc.join(";") : "",
+        subject: title + " Request", body: plain, html};
 }
 
-
-function copySpecialServiceEmail(serviceId) {
-    const email = buildSpecialServiceEmail(serviceId);
-
-    if (!email) return;
-
-    const fullText =
-        "To: " + email.to + "\n" +
-        (email.cc ? "CC: " + email.cc + "\n" : "") +
-        "Subject: " + email.subject + "\n\n" +
-        email.body;
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(fullText).then(function () {
-            alert("Email body copied successfully.");
-        }).catch(function () {
-            fallbackCopyText(fullText);
-        });
-    } else {
-        fallbackCopyText(fullText);
+async function copyFormattedSpecialEmail(email) {
+    if (navigator.clipboard && typeof navigator.clipboard.write === "function" && typeof ClipboardItem !== "undefined") {
+        try {
+            await navigator.clipboard.write([new ClipboardItem({
+                "text/html": new Blob([email.html], {type:"text/html"}),
+                "text/plain": new Blob([email.body], {type:"text/plain"})
+            })]);
+            return true;
+        } catch (error) { /* Try local rich-text copy fallback. */ }
     }
-}
-
-function fallbackCopyText(text) {
-    const textarea = document.createElement("textarea");
-
-    textarea.value = text;
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-
+    const holder = document.createElement("div");
+    holder.contentEditable = "true";
+    holder.style.cssText = "position:fixed;left:-10000px;top:0;width:680px;";
+    holder.innerHTML = email.html;
+    document.body.appendChild(holder);
+    const selection = window.getSelection();
+    if (!selection) { holder.remove(); return false; }
+    const previous = Array.from({length:selection.rangeCount}, (_, i) => selection.getRangeAt(i).cloneRange());
+    const focused = document.activeElement;
+    let copied = false;
     try {
-        document.execCommand("copy");
-        alert("Email body copied successfully.");
-    } catch (error) {
-        alert("Copy failed. Please copy manually.");
+        holder.focus();
+        const range = document.createRange();
+        range.selectNodeContents(holder);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        copied = document.execCommand("copy") === true;
+    } catch (error) { copied = false; }
+    finally {
+        selection.removeAllRanges();
+        holder.remove();
+        if (focused && focused.focus) focused.focus();
+        previous.forEach(range => { try { selection.addRange(range); } catch (error) {} });
     }
-
-    document.body.removeChild(textarea);
+    return copied;
 }
 
-function openSpecialServiceEmail(serviceId) {
+function showSpecialEmailPreview(email, message) {
+    const old = document.getElementById("specialEmailPreviewDialog");
+    if (old) old.remove();
+    const dialog = document.createElement("dialog");
+    dialog.id = "specialEmailPreviewDialog";
+    dialog.style.cssText = "width:min(760px,92vw);max-height:85vh;padding:20px;border:1px solid #cdd5df;border-radius:12px;background:#fff;color:#202b38;overflow:auto;";
+    const heading = document.createElement("p");
+    heading.textContent = message || "Select the formatted email below, copy it, then paste into Outlook Web.";
+    const preview = document.createElement("div");
+    preview.innerHTML = email.html;
+    const close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "Close";
+    close.style.cssText = "margin-top:16px;padding:8px 18px;border:0;border-radius:6px;background:#17365d;color:white;cursor:pointer;";
+    close.addEventListener("click", () => { if (typeof dialog.close === "function") dialog.close(); else dialog.remove(); });
+    dialog.addEventListener("close", () => dialog.remove());
+    dialog.append(heading, preview, close);
+    document.body.appendChild(dialog);
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+}
+
+async function copySpecialServiceEmail(serviceId) {
     const email = buildSpecialServiceEmail(serviceId);
-
     if (!email) return;
+    if (await copyFormattedSpecialEmail(email)) {
+        alert("Formatted email table copied. Paste into Outlook Web using Ctrl+V.");
+    } else {
+        showSpecialEmailPreview(email);
+    }
+}
 
-    const baseUrl = "https://outlook.cloud.microsoft/mail/deeplink/compose";
-
-    const outlookUrl =
-        baseUrl +
-        "?to=" + encodeURIComponent(email.to || "") +
+async function openSpecialServiceEmail(serviceId) {
+    const email = buildSpecialServiceEmail(serviceId);
+    if (!email) return;
+    const copyPromise = copyFormattedSpecialEmail(email);
+    const outlookUrl = "https://outlook.cloud.microsoft/mail/deeplink/compose" +
+        "?to=" + encodeURIComponent(email.to) +
         (email.cc ? "&cc=" + encodeURIComponent(email.cc) : "") +
-        "&subject=" + encodeURIComponent(email.subject || "") +
-        "&body=" + encodeURIComponent(email.body || "");
-
+        "&subject=" + encodeURIComponent(email.subject);
     window.open(outlookUrl, "_blank", "noopener,noreferrer");
+    const copied = await copyPromise;
+    showSpecialEmailPreview(email, copied ?
+        "Formatted table copied. In Outlook Web, click the message body and paste with Ctrl+V. Review before sending." :
+        "Automatic copy unavailable. Select and copy the formatted email below, then paste into Outlook Web.");
 }
 
 function validateSpecialServiceForm(serviceId) {
@@ -3393,10 +3345,12 @@ function validateSpecialServiceForm(serviceId) {
     let isValid = true;
     let firstInvalid = null;
 
-    if (!form) return true;
+    if (!form) return false;
 
-    form.querySelectorAll("[data-required='true']").forEach(function (field) {
-        const valid = !!String(field.value || "").trim();
+    form.querySelectorAll("[data-field-id]").forEach(function (field) {
+        const value = String(field.value || "").trim();
+        const required = field.dataset.required === "true";
+        const valid = (!required || !!value) && (!value || field.checkValidity()) && (field.dataset.fieldId !== "cakeMessage" || value.length <= 35);
         field.classList.toggle("is-invalid", !valid);
 
         if (!valid && !firstInvalid) firstInvalid = field;
