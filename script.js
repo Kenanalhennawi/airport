@@ -603,6 +603,7 @@ function filterDelayPolicy(query) {
     var allOtherRow = null;
     var hasMatch = false;
     var matchedRows = [];
+    var validCode = /^[a-z]{3}$/.test(q) && !!findAirportByInput(q);
 
     for (var i = 0; i < tbody.rows.length; i++) {
         var row = tbody.rows[i];
@@ -624,7 +625,7 @@ function filterDelayPolicy(query) {
         }
 
         row.style.display = match ? '' : 'none';
-        row.classList.remove('delay-result-highlight', 'delay-all-other', 'delay-row-std', 'delay-row-etd');
+        row.classList.remove('delay-result-highlight', 'delay-all-other');
 
         if (match && q) {
             row.classList.add('delay-result-highlight');
@@ -639,12 +640,12 @@ function filterDelayPolicy(query) {
     var hintEl = document.getElementById('delaySearchHint');
     var summaryEl = document.getElementById('delayResultSummary');
 
-    if (q && allOtherRow && !hasMatch) {
+    if (q && allOtherRow && !hasMatch && validCode) {
         allOtherRow.style.display = '';
         allOtherRow.classList.add('delay-result-highlight', 'delay-all-other', 'delay-row-etd');
 
         if (hintEl) {
-            hintEl.textContent = 'Airport not in list — applies: All Other';
+            hintEl.textContent = 'Airport not individually listed — applies: All Other Outstations. Verify flight-specific instructions.';
             hintEl.classList.remove('hidden');
         }
 
@@ -653,7 +654,14 @@ function filterDelayPolicy(query) {
             summaryEl.classList.remove('hidden');
         }
     } else {
-        if (hintEl) hintEl.classList.add('hidden');
+        if (hintEl) {
+            if (q && !hasMatch) {
+                hintEl.textContent = 'Enter a valid departure airport IATA code. No policy is assigned to an unrecognized code.';
+                hintEl.classList.remove('hidden');
+            } else {
+                hintEl.classList.add('hidden');
+            }
+        }
 
         if (summaryEl) {
             if (q && matchedRows.length > 0) {
